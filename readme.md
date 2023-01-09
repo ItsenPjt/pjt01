@@ -4,7 +4,7 @@
 
 ## 깃 플로우 전략
 
-![0](C:\Users\dhkdw\Desktop\이력서\과제\아이티센 자바2반 과제\사진\0.png)
+![0](https://user-images.githubusercontent.com/82326116/211334754-02dfd431-ae00-45ca-982c-70ddde5efe27.png)
 
 
 
