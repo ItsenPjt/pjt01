@@ -43,10 +43,11 @@ Git Flow에서 가장 중요한 점은, **브런치의 역할에 따라 무조�
    - fix의 경우 수정사항이 있을 시
 7. `git push origin feat/BE/login` 해당 브랜치에 푸쉬를 한다.
 8. 머지 리퀘스트를 기다린다.
-9. `git branch -d feat/BE/login` 사용했던 브랜치를 로컬에서 삭제한다.
-10. `git push origin --delete feat/BE/login` 사용했던 브랜치를 원격 레파지토리에서 삭제한다.
-11. `git pull origin develop` 머지가 완료되면 머지된 develop 브랜치를 풀받는다.
-12. develop 브랜치에서 다시 하위 브랜치로 분기한다.
+9. `git switch develop` 머지가 완료되면 develop 브랜치로 이동한다.
+10. `git pull origin develop` 머지된 develop 브랜치를 풀받는다.
+11. `git branch -d feat/BE/login` 사용했던 브랜치를 로컬에서 삭제한다.
+12. `git push origin --delete feat/BE/login` 사용했던 브랜치를 원격 레파지토리에서 삭제한다.
+13. develop 브랜치에서 다시 하위 브랜치로 분기한다.
 
 
 
