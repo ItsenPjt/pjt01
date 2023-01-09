@@ -2,7 +2,7 @@
 
 # 깃 전략
 
-## 깃 플로우 전략
+## 깃 플로우(git-flow) 전략
 
 ![0](https://user-images.githubusercontent.com/82326116/211334754-02dfd431-ae00-45ca-982c-70ddde5efe27.png)
 
