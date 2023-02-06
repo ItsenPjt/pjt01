@@ -18,6 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of="userId")
+@Table(name = "user")
 public class UserEntity {
 
 
