@@ -20,7 +20,7 @@ public class BoardEntity {
     @Id
     @Column(name="board_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private long boardId;
 
     @Column(name="board_type")
     @Enumerated(EnumType.STRING)
