@@ -6,7 +6,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -16,6 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "boardId")
+@Table(name="board")
 public class BoardEntity {
     @Id
     @Column(name="board_id")
@@ -32,13 +32,16 @@ public class BoardEntity {
     @Column(name="board_writer",nullable = false)
     private String boardWriter;
 
+    @Column(name="board_content",nullable = false)
+    private String boardContent;
+
     @Column(name="board_createdate")
     @CreationTimestamp
     private LocalDateTime createDate;
 
     @Column(name="board_updatedate")
     @LastModifiedDate
-    private LocalDateTime boardUpdatedate;
+    private LocalDateTime boardUpdateDate;
 
     @Column(name="board_iscomment")
     @Enumerated(EnumType.STRING)
@@ -51,5 +54,4 @@ public class BoardEntity {
 
     @Column(name="user_id")
     private String userId;
-
 }
