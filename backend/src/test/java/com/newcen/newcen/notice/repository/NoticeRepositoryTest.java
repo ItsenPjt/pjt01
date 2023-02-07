@@ -1,13 +1,12 @@
 package com.newcen.newcen.notice.repository;
 
-import com.newcen.newcen.common.entity.BoardCommentIs;
-import com.newcen.newcen.common.entity.BoardEntity;
-import com.newcen.newcen.common.entity.BoardType;
+import com.newcen.newcen.common.entity.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.test.annotation.Rollback;
 
 import javax.transaction.Transactional;
@@ -20,14 +19,24 @@ class NoticeRepositoryTest {
     @Autowired
     NoticeRepository noticeRepository;
 
+
     @BeforeEach
     void insertTest() {
+
+        UserEntity user1 = UserEntity
+                .builder()
+                .userEmail("test@naver.com")
+                .userPassword("test12")
+                .userName("관리자")
+                .userRole(UserRole.ADMIN)
+                .build();
+
         BoardEntity board1 = BoardEntity
                 .builder()
                 .boardType(BoardType.NOTICE)
                 .boardTitle("공지사항1")
                 .boardContent("내용1")
-                .boardWriter("관리자")
+                .boardWriter(user1.getUserName())
                 .boardCommentIs(BoardCommentIs.OFF)
                 .build();
 
@@ -36,8 +45,8 @@ class NoticeRepositoryTest {
                 .boardType(BoardType.NOTICE)
                 .boardTitle("공지사항2")
                 .boardContent("내용2")
-                .boardWriter("관리자")
-                .boardCommentIs(BoardCommentIs.OFF)
+                .boardWriter(user1.getUserName())
+                .boardCommentIs(BoardCommentIs.ON)
                 .build();
 
         noticeRepository.save(board1);
@@ -46,8 +55,6 @@ class NoticeRepositoryTest {
 
     @Test
     @DisplayName("공지사항 목록을 조회하면 리스트의 사이즈가 2이어야 한다.")
-    @Transactional
-    @Rollback
     void findAllTest() {
         // given
 
@@ -56,5 +63,6 @@ class NoticeRepositoryTest {
 
         // then
         assertEquals(2, list.size());
+        list.forEach(System.out::println);
     }
 }
