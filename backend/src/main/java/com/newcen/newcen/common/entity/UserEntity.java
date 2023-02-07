@@ -2,11 +2,11 @@ package com.newcen.newcen.common.entity;
 
 
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of="userId")
+@Table(name = "user")
 public class UserEntity {
 
 
@@ -36,6 +37,7 @@ public class UserEntity {
     private String userName;
 
     @Column(name="user_role")
+    @ColumnDefault("MEMBER")
     private UserRole userRole;
 
     @CreationTimestamp
