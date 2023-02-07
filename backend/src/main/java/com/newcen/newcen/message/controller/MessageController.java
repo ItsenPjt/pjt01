@@ -1,6 +1,6 @@
-package com.newcen.newcen.mainPage.controller;
+package com.newcen.newcen.message.controller;
 
-import com.newcen.newcen.mainPage.service.MessageService;
+import com.newcen.newcen.message.service.MessageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
