@@ -28,8 +28,12 @@ public class UserSignUpDTO {
     @Size(min = 2, max = 10)
     private String userName;
 
+    @NotBlank
+    @Size(min = 2, max = 10)
+    private String validCode;
 
-    // UserEntity로 변경하는 메서드
+
+    // UserEntity 로 변경하는 메서드
     public UserEntity toEntity() {
         return UserEntity.builder()
                 .userEmail(this.userEmail)
