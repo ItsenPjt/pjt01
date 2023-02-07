@@ -37,7 +37,7 @@ public class UserEntity {
     private String userName;
 
     @Column(name="user_role")
-    @ColumnDefault("MEMBER")
+    @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
     @CreationTimestamp

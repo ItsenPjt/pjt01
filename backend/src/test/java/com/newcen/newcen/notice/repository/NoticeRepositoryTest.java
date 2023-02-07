@@ -1,6 +1,7 @@
 package com.newcen.newcen.notice.repository;
 
 import com.newcen.newcen.common.entity.*;
+import com.newcen.newcen.users.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,8 @@ class NoticeRepositoryTest {
     @Autowired
     NoticeRepository noticeRepository;
 
+    @Autowired
+    UserRepository userRepository;
 
     @BeforeEach
     void insertTest() {
@@ -49,6 +52,7 @@ class NoticeRepositoryTest {
                 .boardCommentIs(BoardCommentIs.ON)
                 .build();
 
+        userRepository.save(user1);
         noticeRepository.save(board1);
         noticeRepository.save(board2);
     }
