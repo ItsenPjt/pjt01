@@ -16,7 +16,7 @@ import javax.persistence.*;
 public class BoardFileEntity {
 
     @Id
-    @Column(name="boardFileId")
+    @Column(name="board_file_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long boardFileId;
 

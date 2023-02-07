@@ -7,10 +7,12 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
-@ToString
+@ToString(exclude = {"user"})
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -54,4 +56,14 @@ public class BoardEntity {
 
     @Column(name="user_id")
     private String userId;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name="comment_id")
+    private final List<CommentEntity> commentEntityList = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name="board_file_id")
+    private final List<BoardFileEntity> boardFileEntityList = new ArrayList<>();
+
+
 }
