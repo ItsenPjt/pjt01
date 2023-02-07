@@ -5,11 +5,14 @@ import com.newcen.newcen.common.entity.BoardEntity;
 import com.newcen.newcen.common.entity.UserEntity;
 import com.newcen.newcen.question.repository.QuestionsRepository;
 import com.newcen.newcen.question.request.QuestionCreateRequestDTO;
+import com.newcen.newcen.question.request.QuestionUpdateRequestDTO;
 import com.newcen.newcen.question.response.QuestionListResponseDTO;
 import com.newcen.newcen.question.response.QuestionResponseDTO;
 import com.newcen.newcen.users.repository.UserRepository;
+import com.newcen.newcen.users.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,7 +25,7 @@ import java.util.stream.Collectors;
 public class QuestionService {
     private final UserRepository userRepository;
     private final QuestionsRepository questionsRepository;
-
+    private final BoardEntity boardEntity;
     private final TokenProvider tokenProvider;
 
 
@@ -55,7 +58,10 @@ public class QuestionService {
 
     }
 
-    public QuestionResponseDTO update(){
+    public QuestionResponseDTO update(QuestionUpdateRequestDTO dto, String userId){
+        UserEntity user = userRepository.getById(userId);
+
+
 
 
 

@@ -49,7 +49,6 @@ class QuestionServiceTest {
                 .builder()
                 .boardContent("안녕하세요")
                 .boardTitle("하이하이")
-                .boardWriter(user.getUserName())
                 .boardType(BoardType.QUESTION)
                 .build();
 
