@@ -2,6 +2,7 @@ package com.newcen.newcen.common.entity;
 
 
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -36,6 +37,7 @@ public class UserEntity {
     private String userName;
 
     @Column(name="user_role")
+    @ColumnDefault("MEMBER")
     private UserRole userRole;
 
     @CreationTimestamp

@@ -17,6 +17,10 @@ class UserRepositoryTest {
     @Autowired
     UserRepository userRepository;
 
+
+    /**
+     * 해당 테스트 실행 전 user 테이블 데이터 삭제 후 진행 필요
+     */
     @Test
     @DisplayName("회원가입에 성공해야 한다.")
 //    @Transactional

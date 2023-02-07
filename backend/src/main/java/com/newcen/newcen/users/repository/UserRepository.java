@@ -14,4 +14,5 @@ public interface UserRepository extends JpaRepository<UserEntity, String> {
     // @Query("select count(*) from UserEntity u where u.email=?1"
     boolean existsByUserEmail(String email);
 
+
 }
