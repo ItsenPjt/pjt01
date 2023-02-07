@@ -9,11 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Commit;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 
 
 @SpringBootTest
+@Commit
 class QuestionsRepositoryTest {
 
     @Autowired
@@ -32,7 +35,7 @@ class QuestionsRepositoryTest {
                 .build();
         UserEntity user2 = userRepository.save(user1);
         BoardEntity board1 = BoardEntity.builder()
-                .boardId(1L)
+                .boardId(2L)
                 .boardContent("김")
                 .boardCommentIs(BoardCommentIs.ON)
                 .boardType(BoardType.QUESTION)
@@ -42,7 +45,17 @@ class QuestionsRepositoryTest {
                 .build();
 
         BoardEntity board2 = questionsRepository.save(board1);
+
+
+
         Assertions.assertEquals("김",board2.getBoardTitle());
+    }
+
+    @Test
+    @DisplayName("문의사항 목록을 조회한다.")
+    void getList(){
+        List<BoardEntity> board = questionsRepository.findAll();
+        Assertions.assertEquals(2,board.size());
     }
 
 }
