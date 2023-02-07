@@ -29,13 +29,13 @@ public class QuestionResponseDTO {
 
     private BoardCommentIs boardCommentIs;
 
-    private String userName;
+    private String boardWriter;
     public QuestionResponseDTO(BoardEntity boardEntity){
         this.boardCommentIs= boardEntity.getBoardCommentIs();
         this.createDate=boardEntity.getCreateDate();
         this.boardContent=boardEntity.getBoardContent();
         this.boardTitle=boardEntity.getBoardTitle();
         this.boardUpdateDate=boardEntity.getBoardUpdateDate();
-        this.userName=boardEntity.getUser().getUserName();
+        this.boardWriter=boardEntity.getUser().getUserName();
     }
 }

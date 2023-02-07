@@ -65,5 +65,9 @@ public class BoardEntity {
     @JoinColumn(name="board_file_id")
     private final List<BoardFileEntity> boardFileEntityList = new ArrayList<>();
 
+    public void updateQuestion(String boardTitle, String boardContent){
+        this.boardContent = boardContent;
+        this.boardTitle = boardTitle;
 
+    }
 }
