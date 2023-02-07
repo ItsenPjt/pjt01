@@ -1,5 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
 import Header from './components/Header';
+import NoticeTemplate from './components/notice/NoticeTemplate';
 
 function App() {
   return (
@@ -7,7 +8,7 @@ function App() {
       <Header />
 
       <Routes>
-        <Route />
+        <Route path="/notice" element={<NoticeTemplate />} />
       </Routes>
     </>
   );
