@@ -19,29 +19,23 @@ import java.time.LocalDateTime;
 public class CommentReplyEntity {
 
     @Id
-    @Column(name="comment_reply_id")
+    @Column(name = "comment_reply_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long commentReplyId;
 
-    @Column(name="comment_reply_content", nullable = false)
+    @Column(name = "comment_reply_content", nullable = false)
     private String commentReplyContent;
 
-    @Column(name="comment_reply_writer", nullable = false)
+    @Column(name = "comment_reply_writer", nullable = false)
     private String commentReplyWriter;
 
-    @Column(name="comment_reply_createdate")
+    @Column(name = "comment_reply_createdate")
     @CreationTimestamp
     private LocalDateTime commentReplyCreateDate;
 
-    @Column(name="comment_reply_updatedate")
+    @Column(name = "comment_reply_updatedate")
     @UpdateTimestamp
     private LocalDateTime commentReplyUpdateDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnore
-    @JoinColumn(name="comment_id", insertable = false, updatable = false)
-    private CommentEntity comment;
 
-    @Column(name="comment_id")
-    private Long commentId;
 }

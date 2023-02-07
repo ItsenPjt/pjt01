@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "boardId")
+@Table(name="board")
 public class BoardEntity {
     @Id
     @Column(name="board_id")

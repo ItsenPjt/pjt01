@@ -24,8 +24,4 @@ public class CommentFileEntity {
     @Column(name="comment_file_path", nullable = false)
     private String commentFilePath;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JsonIgnore
-//    @JoinColumn(name="comment_id", insertable = false, updatable = false)
-//    private CommentEntity comment;
 }
