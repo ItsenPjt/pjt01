@@ -36,5 +36,5 @@ public class QuestionService {
 
     //문의사항 등록
 
-    public QuestionResponseDTO create()
+
 }
