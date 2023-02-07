@@ -3,6 +3,8 @@ package com.newcen.newcen.users.repository;
 import com.newcen.newcen.common.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 public interface UserRepository extends JpaRepository<UserEntity, String> {
 
     // 이메일로 회원 조회
@@ -13,6 +15,9 @@ public interface UserRepository extends JpaRepository<UserEntity, String> {
     // select count(*) from user where email=?
     // @Query("select count(*) from UserEntity u where u.email=?1"
     boolean existsByUserEmail(String email);
+
+    // 회원명으로 회원 조회
+    List<UserEntity> findByUserName(String userName);
 
 
 }
