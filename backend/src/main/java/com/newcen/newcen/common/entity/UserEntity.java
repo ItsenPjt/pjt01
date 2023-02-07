@@ -2,11 +2,11 @@ package com.newcen.newcen.common.entity;
 
 
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +19,8 @@ import java.util.List;
 @AllArgsConstructor
 @EqualsAndHashCode(of="userId")
 @Table(name = "user")
+@DynamicInsert  // insert문 실행 시 null값 컬럼 제외 @ColumnDefault() 사용
+@DynamicUpdate  // update문 실행 시 null값 컬럼 제외 @ColumnDefault() 사용
 public class UserEntity {
 
 
