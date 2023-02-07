@@ -50,9 +50,9 @@ class NoticeServiceTest {
 
         // given
         NoticeCreateRequestDTO newNotice = NoticeCreateRequestDTO.builder()
-                .boardTitle("service 공지")
-                .boardContent("service 내용")
-                .boardCommentIs(BoardCommentIs.OFF)
+                .boardTitle("service 공지2")
+                .boardContent("service 내용2")
+                .boardCommentIs(BoardCommentIs.ON)
                 .build();
 
         // when
@@ -60,7 +60,7 @@ class NoticeServiceTest {
 
         // then
         List<NoticeDetailResponseDTO> notices = responseDTO.getNotices();
-        assertEquals(5, notices.size());
+        assertEquals(6, notices.size());
 
         System.out.println("========================");
         notices.forEach(System.out::println);
