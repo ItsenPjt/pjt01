@@ -1,8 +1,24 @@
 package com.newcen.newcen.common.entity;
 
 
-import javax.persistence.Entity;
+import lombok.*;
+
+import javax.persistence.*;
 
 @Entity
+@Getter
+@ToString
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(of = "boardFileId")
+@Table(name = "board_file")
 public class BoardFileEntity {
+
+    @Id
+    @Column(name="boardFileId")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long boardFileId;
+
+
 }

@@ -1,6 +1,8 @@
 package com.newcen.newcen.mainPage.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.newcen.newcen.common.entity.BoardEntity;
+import com.newcen.newcen.common.entity.UserEntity;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -12,7 +14,7 @@ import java.util.List;
 @Getter @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
+@EqualsAndHashCode(of = "messageId")
 @Builder
 @Entity
 public class MessageEntity {
@@ -38,8 +40,16 @@ public class MessageEntity {
     @CreationTimestamp
     private LocalDateTime messageSenddate;
 
-    @OneToMany(orphanRemoval = true, mappedBy = "message")
-    private final List<UserMessageEntity> userMessageEntityList = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="user_id", insertable = false, updatable = false)
+    private UserEntity sender;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="user_id", insertable = false, updatable = false)
+    private UserEntity receiver;
+
+
+
 
 
 
