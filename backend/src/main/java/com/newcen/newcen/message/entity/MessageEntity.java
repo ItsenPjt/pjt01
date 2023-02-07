@@ -21,16 +21,16 @@ public class MessageEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long messageId;
 
-    @Column(name = "message_title")
+    @Column(name = "message_title", nullable = false)
     private String messageTitle;
 
-    @Column(name = "message_content")
+    @Column(name = "message_content", nullable = false)
     private String messageContent;
 
-    @Column(name = "message_sender")
+    @Column(name = "message_sender", nullable = false)
     private String messageSender;
 
-    @Column(name = "message_receiver")
+    @Column(name = "message_receiver", nullable = false)
     private String messageReceiver;
 
     @Column(name = "message_senddate")

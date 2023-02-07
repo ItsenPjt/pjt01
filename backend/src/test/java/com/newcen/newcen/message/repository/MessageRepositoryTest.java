@@ -3,12 +3,14 @@ package com.newcen.newcen.message.repository;
 import com.newcen.newcen.common.entity.UserEntity;
 import com.newcen.newcen.common.entity.UserRole;
 import com.newcen.newcen.message.entity.MessageEntity;
+import com.newcen.newcen.users.repository.UserRepository;
 import org.apache.catalina.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,6 +20,9 @@ class MessageRepositoryTest {
 
     @Autowired
     MessageRepository messageRepository;
+
+    @Autowired
+    UserRepository userRepository;
 
     @Test
     @DisplayName("테스트2 회원이 테스트1 회원에게 메세지를 전송해야한다")
@@ -29,6 +34,7 @@ class MessageRepositoryTest {
                 .userEmail("test@naver.com")
                 .userPassword("1234")
                 .userName("테스트")
+                .userRole(UserRole.MEMBER)
                 .build();
 
         UserEntity user2 = UserEntity.builder()
@@ -36,7 +42,11 @@ class MessageRepositoryTest {
                 .userEmail("test2@naver.com")
                 .userPassword("1234")
                 .userName("테스트2")
+                .userRole(UserRole.MEMBER)
                 .build();
+
+        userRepository.save(user1);
+        userRepository.save(user2);
 
         MessageEntity message = MessageEntity.builder()
                 .messageTitle("보내기 테스트 제목입니다.")
