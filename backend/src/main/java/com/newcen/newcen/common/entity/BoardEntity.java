@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@ToString
+@ToString(exclude = {"user"})
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
