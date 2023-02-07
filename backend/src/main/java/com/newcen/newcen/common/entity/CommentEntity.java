@@ -7,6 +7,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -44,4 +46,13 @@ public class CommentEntity {
 
     @Column(name="board_id")
     private Long boardId;
+
+    @JoinColumn(name="comment_file_id")
+    @OneToMany(orphanRemoval = true)
+    private final List<CommentFileEntity> commentFileList = new ArrayList<>();
+
+    @JoinColumn(name = "comment_reply_id")
+    @OneToMany(orphanRemoval = true)
+    private final List<CommentReplyEntity> commentReplyList = new ArrayList<>();
+
 }
