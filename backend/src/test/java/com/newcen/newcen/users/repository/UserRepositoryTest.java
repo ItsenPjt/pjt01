@@ -39,15 +39,29 @@ class UserRepositoryTest {
 
     @Test
     @DisplayName("이메일로 회원을 조회해야 한다.")
-    void findByEmailTest() {
+    void findByUserEmailTest() {
         // given
         String email = "postman@naver.com";
 
         // when
-        UserEntity foundUser = userRepository.findByEmail(email);
+        UserEntity foundUser = userRepository.findByUserEmail(email);
 
         // then
         assertEquals("강감찬", foundUser.getUserName());
     }
 
+    @Test
+    @DisplayName("이메일 중복을 체크해야 한다.")
+    void existEmailTest() {
+        // given
+        String email = "dagil2@naver.com";
+
+        //when
+        boolean flag = userRepository.existsByUserEmail(email);
+
+        //then
+        assertFalse(flag);
+    }
+
 }
+

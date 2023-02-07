@@ -7,11 +7,11 @@ public interface UserRepository extends JpaRepository<UserEntity, String> {
 
     // 이메일로 회원 조회
     // select * from user where email=?
-    UserEntity findByEmail(String email);
+    UserEntity findByUserEmail(String email);
 
-//    // 이메일 중복 검사
-//    // select count(*) from user where email=?
-//    // @Query("select count(*) from UserEntity u where u.email=?1"
-//    boolean existsByEmail(String email);
+    // 이메일 중복 검사
+    // select count(*) from user where email=?
+    // @Query("select count(*) from UserEntity u where u.email=?1"
+    boolean existsByUserEmail(String email);
 
 }
