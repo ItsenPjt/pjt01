@@ -19,8 +19,8 @@ class UserRepositoryTest {
 
     @Test
     @DisplayName("회원가입에 성공해야 한다.")
-    @Transactional
-    @Rollback
+//    @Transactional
+//    @Rollback
     void saveTest() {
         // given
         UserEntity user = UserEntity.builder()
@@ -37,17 +37,17 @@ class UserRepositoryTest {
 
     }
 
-//    @Test
-//    @DisplayName("이메일로 회원을 조회해야 한다.")
-//    void findByEmailTest() {
-//        // given
-//        String email = "postman@naver.com";
-//
-//        // when
-//        UserEntity foundUser = userRepository.findByEmail(email);
-//
-//        // then
-//        assertEquals("강감찬", foundUser.getUserName());
-//    }
+    @Test
+    @DisplayName("이메일로 회원을 조회해야 한다.")
+    void findByEmailTest() {
+        // given
+        String email = "postman@naver.com";
+
+        // when
+        UserEntity foundUser = userRepository.findByEmail(email);
+
+        // then
+        assertEquals("강감찬", foundUser.getUserName());
+    }
 
 }
