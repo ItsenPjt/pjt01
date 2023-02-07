@@ -2,6 +2,7 @@ package com.newcen.newcen.notice.service;
 
 import com.newcen.newcen.common.entity.BoardEntity;
 import com.newcen.newcen.common.entity.UserEntity;
+import com.newcen.newcen.common.entity.UserRole;
 import com.newcen.newcen.notice.dto.request.NoticeCreateRequestDTO;
 import com.newcen.newcen.notice.dto.response.NoticeDetailResponseDTO;
 import com.newcen.newcen.notice.dto.response.NoticeListResponseDTO;
@@ -37,10 +38,21 @@ public class NoticeService {
 
     // 공지사항 등록
     public NoticeListResponseDTO create(final NoticeCreateRequestDTO createRequestDTO, UserEntity userEntity) {
-        noticeRepository.save(createRequestDTO.toEntity(userEntity));     // 이 DTO 를 entity 로 변환해서 save 메서드 안에 넣기
 
-        log.info("공지사항이 저장되었습니다. - 제목: {}, 내용: {}, 댓글 허용 여부: {}",
-                createRequestDTO.getBoardTitle(), createRequestDTO.getBoardContent(), createRequestDTO.getBoardCommentIs());
+        if (userEntity.getUserRole().equals(UserRole.ADMIN)) {
+            noticeRepository.save(createRequestDTO.toEntity(userEntity));     // 이 DTO 를 entity 로 변환해서 save 메서드 안에 넣기
+
+            log.info("공지사항이 저장되었습니다. - 제목: {}, 내용: {}, 댓글 허용 여부: {}",
+                    createRequestDTO.getBoardTitle(), createRequestDTO.getBoardContent(), createRequestDTO.getBoardCommentIs());
+        }
+
+        try {
+
+        } catch (Exception e) {
+
+        }
+
+
 
         return retrieve();
     }
