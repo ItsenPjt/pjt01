@@ -20,5 +20,6 @@ public class BoardFileEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long boardFileId;
 
-
+    @Column(name="board_file_path", nullable = false)
+    private String boardFilePath;
 }
