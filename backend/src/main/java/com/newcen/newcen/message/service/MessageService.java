@@ -39,6 +39,8 @@ public class MessageService {
     public MessageReceivedDetailResponseDTO receivedMessageDetail(final String userId, final long messageId) {
         List<MessageEntity> receivedMessageEntityList = messageRepository.findByReceiverId(userId);
 
+        receivedMessageEntityList.get(0).getSender().getUserEmail();
+
         MessageReceivedDetailResponseDTO messageDetail = receivedMessageEntityList.stream()
                 .filter(msg -> msg.getMessageId() == messageId)
                 .map(msg -> new MessageReceivedDetailResponseDTO(msg))
@@ -76,6 +78,10 @@ public class MessageService {
 
     // 단일 메세지 보내기
     public MessageReceivedListResponseDTO sendMessage(final String senderId, final String receiverId, MessageSendRequestDTO message) {
+
+
+
+
         return null;
     }
 

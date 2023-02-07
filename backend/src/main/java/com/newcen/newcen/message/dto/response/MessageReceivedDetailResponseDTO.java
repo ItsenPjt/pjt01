@@ -13,12 +13,15 @@ public class MessageReceivedDetailResponseDTO {
     private String messageTitle;
     private String messageContent;
     private String messageSender;
+    private String messageSenderEmail;
 
     public MessageReceivedDetailResponseDTO(MessageEntity entity) {
         this.messageTitle = entity.getMessageTitle();
         this.messageContent = entity.getMessageContent();
         this.messageSender = entity.getMessageSender();
+        this.messageSenderEmail = entity.getSender().getUserEmail();
     }
+
 
 
 
