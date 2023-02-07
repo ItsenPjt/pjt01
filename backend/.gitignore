@@ -6,7 +6,11 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
+<<<<<<< HEAD
 */*.properties
+=======
+application.properties
+>>>>>>> d14b885ebd7dde28a8087fe52e6be59a3f46a3b5
 
 ### STS ###
 .apt_generated
