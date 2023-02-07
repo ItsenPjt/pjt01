@@ -64,5 +64,7 @@ class NoticeServiceTest {
 
         System.out.println("========================");
         notices.forEach(System.out::println);
+
+        
     }
 }
