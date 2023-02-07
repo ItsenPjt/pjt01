@@ -2,13 +2,10 @@ package com.newcen.newcen.notice.repository;
 
 import com.newcen.newcen.common.entity.*;
 import com.newcen.newcen.users.repository.UserRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.test.annotation.Rollback;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -62,7 +59,6 @@ class NoticeRepositoryTest {
     @Test
     @DisplayName("공지사항 목록을 조회하면 리스트의 사이즈가 4이어야 한다.")
     @Transactional
-//    @Rollback(false)
     void findAllTest() {
         // given
 
