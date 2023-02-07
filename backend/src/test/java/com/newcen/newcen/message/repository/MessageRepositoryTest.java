@@ -72,10 +72,12 @@ class MessageRepositoryTest {
         Assertions.assertEquals(1, receivedMessage.size());
         Assertions.assertEquals("테스트2", receivedMessage.get(0).getMessageReceiver());
         Assertions.assertEquals("테스트", receivedMessage.get(0).getMessageSender());
-
-
-
     }
 
+    @Test
+    @DisplayName("회원1이 회원2와 회원3에게 메세지를 보내야 한다")
+    void SendMessageToUsersTest() {
+
+    }
 
 }
