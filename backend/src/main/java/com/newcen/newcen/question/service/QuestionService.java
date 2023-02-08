@@ -26,6 +26,7 @@ public class QuestionService {
     private final UserRepository userRepository;
     private final QuestionsRepository questionsRepository;
     private final BoardEntity boardEntity;
+
     private final TokenProvider tokenProvider;
 
 
@@ -58,11 +59,8 @@ public class QuestionService {
 
     }
 
-    public QuestionResponseDTO update(QuestionUpdateRequestDTO dto, String userId){
+    public QuestionResponseDTO update(QuestionUpdateRequestDTO dto, String userId, String boardId){
         UserEntity user = userRepository.getById(userId);
-
-
-
 
 
         return null;
