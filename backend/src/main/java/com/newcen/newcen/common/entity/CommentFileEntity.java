@@ -19,7 +19,7 @@ public class CommentFileEntity {
     @Column(name="comment_file_id")
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid")
-    private long commentFileId;
+    private String commentFileId;
 
     @Column(name="comment_file_path", nullable = false)
     private String commentFilePath;

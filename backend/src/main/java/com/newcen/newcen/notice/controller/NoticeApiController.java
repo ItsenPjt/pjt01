@@ -2,7 +2,9 @@ package com.newcen.newcen.notice.controller;
 
 import com.newcen.newcen.common.entity.BoardEntity;
 import com.newcen.newcen.notice.dto.request.NoticeCreateRequestDTO;
+import com.newcen.newcen.notice.dto.request.NoticeUpdateRequestDTO;
 import com.newcen.newcen.notice.dto.response.NoticeListResponseDTO;
+import com.newcen.newcen.notice.dto.response.NoticeOneResponseDTO;
 import com.newcen.newcen.notice.service.NoticeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,18 +35,24 @@ public class NoticeApiController {
     }
 
     // 공지사항 상세조회 (GET)
+    @GetMapping("/{board_id}")
+    public ResponseEntity<?> oneNotice(@PathVariable("board_id") Long boardId) {
+        log.info("/api/notices/{} GET request", boardId);
 
+        NoticeOneResponseDTO responseDTO = noticeService.retrieveOne(boardId);
 
+        return ResponseEntity
+                .ok()
+                .body(responseDTO);
+    }
 
     // 공지사항 작성 (POST)
     @PostMapping
     public ResponseEntity<?> createNotice(
-            @AuthenticationPrincipal String userId,         // -> 확인 필요
+            @AuthenticationPrincipal String userId,
             @Validated @RequestBody NoticeCreateRequestDTO requestDTO,
             BindingResult result
     ) {
-        log.info("/api/notices POST request");
-
         if (result.hasErrors()) {
             log.warn("DTO 검증 에러 발생: {}", result.getFieldError());
 
@@ -53,8 +61,10 @@ public class NoticeApiController {
                     .body(result.getFieldError());
         }
 
+        log.info("/api/notices POST request");
+
         try {
-            NoticeListResponseDTO responseDTO = noticeService.create(requestDTO, userId);
+            NoticeOneResponseDTO responseDTO = noticeService.create(requestDTO, userId);
             return ResponseEntity
                     .ok()
                     .body(responseDTO);
@@ -69,8 +79,33 @@ public class NoticeApiController {
     }
 
     // 공지사항 수정 (PUT)
+    @RequestMapping("/{board_id}")
+    public ResponseEntity<?> updateNotice(
+            @AuthenticationPrincipal String userId,
+            @PathVariable("board_id") Long boardId,
+            @Validated @RequestBody NoticeUpdateRequestDTO requestDTO,
+            BindingResult result
+    ) {
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest()
+                    .body(result.getFieldError());
+        }
+        log.info("/api/todos/{} PUT request", boardId);
+        log.info("modifying dto : {}", requestDTO);
 
-
+        try {
+            NoticeOneResponseDTO responseDTO = noticeService.update(boardId, requestDTO, userId);
+            return ResponseEntity
+                    .ok()
+                    .body(responseDTO);
+        } catch (Exception e) {
+            return ResponseEntity
+                    .internalServerError()
+                    .body(NoticeListResponseDTO
+                            .builder()
+                            .error(e.getMessage()));
+        }
+    }
 
     // 공지사항 삭제 (DELETE)
     @DeleteMapping("/{board_id}")
