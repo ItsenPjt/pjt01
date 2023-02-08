@@ -24,15 +24,14 @@ public class MessageSendRequestDTO {
     private String messageContent;
     @NotBlank
     private String messageSender;
-    @NotBlank
-    private String messageReceiver;
+
 
     public MessageEntity toEntity(UserEntity sender, UserEntity receiver) {
         return MessageEntity.builder()
                 .messageTitle(this.messageTitle)
                 .messageContent(this.messageContent)
                 .messageSender(this.messageSender)
-                .messageReceiver(this.messageReceiver)
+                .messageReceiver(receiver.getUserName())
                 .sender(sender)
                 .receiver(receiver)
                 .build();

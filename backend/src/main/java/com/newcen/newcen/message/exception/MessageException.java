@@ -1,2 +1,6 @@
-package com.newcen.newcen.message.exception;public enum MessageException {
+package com.newcen.newcen.message.exception;
+
+public enum MessageException {
+
+
 }

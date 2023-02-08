@@ -16,7 +16,7 @@ public class MessageSentResponseDTO {
     private long messageId;
     private String messageTitle;
     private String messageReceiver;
-    @JsonFormat(pattern = "yyyy-MM-dd : HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime messageSenddate;
 
     public MessageSentResponseDTO(MessageEntity entity) {

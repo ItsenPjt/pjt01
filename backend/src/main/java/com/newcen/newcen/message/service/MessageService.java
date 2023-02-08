@@ -8,11 +8,10 @@ import com.newcen.newcen.message.repository.MessageRepository;
 import com.newcen.newcen.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.User;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,10 +30,10 @@ public class MessageService {
         List<MessageEntity> receivedMessageEntityList = messageRepository.findByReceiverId(userId);
 
         List<MessageReceivedResponseDTO> receivedMessageList = receivedMessageEntityList.stream()
-                .map(msg -> new MessageReceivedResponseDTO(msg))
+                .map(MessageReceivedResponseDTO::new)
                 .collect(Collectors.toList());
         
-        log.info("받은 메세지 목록 조회, 받은 메세지 수: {}", receivedMessageList.size() );
+        log.info("받은 메세지 목록 조회 - 받은 메세지 수: {}", receivedMessageList.size() );
 
         return MessageReceivedListResponseDTO.builder()
                 .receivedMessageList(receivedMessageList)
@@ -45,13 +44,13 @@ public class MessageService {
     public MessageReceivedDetailResponseDTO receivedMessageDetail(final String userId, final long messageId) {
         List<MessageEntity> receivedMessageEntityList = messageRepository.findByReceiverId(userId);
 
-        receivedMessageEntityList.get(0).getSender().getUserEmail();
-
         MessageReceivedDetailResponseDTO messageDetail = receivedMessageEntityList.stream()
                 .filter(msg -> msg.getMessageId() == messageId)
-                .map(msg -> new MessageReceivedDetailResponseDTO(msg))
+                .map(MessageReceivedDetailResponseDTO::new)
                 .findFirst()
-                .get();
+                .orElseThrow(() -> new RuntimeException("Message Does Not Exist"));
+
+        log.info("받은 메세지 상세 - 메세지 제목: {}", messageDetail.getMessageTitle());
 
         return messageDetail;
     }
@@ -61,10 +60,10 @@ public class MessageService {
         List<MessageEntity> sentMessageEntityList = messageRepository.findBySenderId(userId);
 
         List<MessageSentResponseDTO> sentMessageList = sentMessageEntityList.stream()
-                .map(msg -> new MessageSentResponseDTO(msg))
+                .map(MessageSentResponseDTO::new)
                 .collect(Collectors.toList());
 
-        log.info("보낸 메세지 목록 조회, 보낸 메세지 수: {}", sentMessageList.size() );
+        log.info("보낸 메세지 목록 조회 - 보낸 메세지 수: {}", sentMessageList.size() );
 
         return MessageSentListResponseDTO.builder()
                 .sentMessageList(sentMessageList)
@@ -79,7 +78,9 @@ public class MessageService {
                 .filter(msg -> msg.getMessageId() == messageId)
                 .map(MessageSentDetailResponseDTO::new)
                 .findFirst()
-                .get();
+                .orElseThrow(() -> new RuntimeException("Message Does Not Exist"));
+
+        log.info("보낸 메세지 상세 - 메세지 제목: {}", messageDetail.getMessageTitle());
 
         return messageDetail;
     }
@@ -91,26 +92,31 @@ public class MessageService {
                 .map(MessageReceiverResponseDTO::new)
                 .collect(Collectors.toList());
 
+        log.info("받는 이 검색 요청!");
+
         return foundReceiverList;
     }
 
-    // 단일 메세지 보내기
-    public MessageReceivedListResponseDTO sendMessage(final String senderId, final String receiverId, final MessageSendRequestDTO message) {
+    // 메세지 보내기
+    public MessageReceivedListResponseDTO sendMessage(final String senderId, final List<String> receiverId, final MessageSendRequestDTO message) {
 
         UserEntity sender = userRepository.findByUserId(senderId);
-        UserEntity receiver = userRepository.findByUserId(receiverId);
+        for(String id : receiverId) {
+            UserEntity receiver = userRepository.findByUserId(id);
+            MessageEntity sendMessage = message.toEntity(sender, receiver);
+            MessageEntity savedMessage = messageRepository.save(sendMessage);
 
-        MessageEntity sendMessage = message.toEntity(sender, receiver);
-        MessageEntity savedMessage = messageRepository.save(sendMessage);
+            log.info("메세지 전송 완료 보낸 이: {}, 받는 이: {}", savedMessage.getMessageSender(), savedMessage.getMessageReceiver());
+        }
 
-        log.info("메세지 전송 완료 보낸 이: {}, 받는 이: {}", savedMessage.getMessageSender(), savedMessage.getMessageReceiver());
-
-        return receivedMessageList(receiverId);
+        return receivedMessageList(senderId);
     }
 
-    // 단일 메세지 삭제
-    public MessageReceivedListResponseDTO deleteMessage(final long messageId, final String userId) {
-        messageRepository.deleteByMessageId(messageId);
+    // 메세지 삭제
+    public MessageReceivedListResponseDTO deleteMessage(final List<Long> messageId, final String userId) {
+        for(long id : messageId) {
+            messageRepository.deleteByMessageId(id);
+        }
 
         return receivedMessageList(userId);
     }
