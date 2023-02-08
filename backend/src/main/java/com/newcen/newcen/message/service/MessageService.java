@@ -33,6 +33,8 @@ public class MessageService {
         List<MessageReceivedResponseDTO> receivedMessageList = receivedMessageEntityList.stream()
                 .map(msg -> new MessageReceivedResponseDTO(msg))
                 .collect(Collectors.toList());
+        
+        log.info("받은 메세지 목록 조회, 받은 메세지 수: {}", receivedMessageList.size() );
 
         return MessageReceivedListResponseDTO.builder()
                 .receivedMessageList(receivedMessageList)
@@ -61,6 +63,8 @@ public class MessageService {
         List<MessageSentResponseDTO> sentMessageList = sentMessageEntityList.stream()
                 .map(msg -> new MessageSentResponseDTO(msg))
                 .collect(Collectors.toList());
+
+        log.info("보낸 메세지 목록 조회, 보낸 메세지 수: {}", sentMessageList.size() );
 
         return MessageSentListResponseDTO.builder()
                 .sentMessageList(sentMessageList)
@@ -91,7 +95,7 @@ public class MessageService {
     }
 
     // 단일 메세지 보내기
-    public MessageReceivedListResponseDTO sendMessage(final String senderId, final String receiverId, MessageSendRequestDTO message) {
+    public MessageReceivedListResponseDTO sendMessage(final String senderId, final String receiverId, final MessageSendRequestDTO message) {
 
         UserEntity sender = userRepository.findByUserId(senderId);
         UserEntity receiver = userRepository.findByUserId(receiverId);
@@ -101,8 +105,14 @@ public class MessageService {
 
         log.info("메세지 전송 완료 보낸 이: {}, 받는 이: {}", savedMessage.getMessageSender(), savedMessage.getMessageReceiver());
 
-
         return receivedMessageList(receiverId);
+    }
+
+    // 단일 메세지 삭제
+    public MessageReceivedListResponseDTO deleteMessage(final long messageId, final String userId) {
+        messageRepository.deleteByMessageId(messageId);
+
+        return receivedMessageList(userId);
     }
 
 
