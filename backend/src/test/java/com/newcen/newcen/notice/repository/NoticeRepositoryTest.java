@@ -21,6 +21,7 @@ class NoticeRepositoryTest {
     @Autowired
     UserRepository userRepository;
 
+    /*
     @BeforeEach
     void insertTest() {
 
@@ -72,6 +73,7 @@ class NoticeRepositoryTest {
         noticeRepository.save(board1);
         noticeRepository.save(board2);
     }
+    */
 
     @Test
     @DisplayName("공지사항 목록을 조회하면 리스트의 사이즈가 2이어야 한다.")

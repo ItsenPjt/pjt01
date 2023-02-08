@@ -13,6 +13,8 @@ public class NoticeUpdateRequestDTO {
 
     private String boardTitle;
 
+    private String boardWriter;
+
     private String boardContent;
 
     private BoardCommentIs boardCommentIs;

@@ -2,6 +2,7 @@ package com.newcen.newcen.common.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -22,7 +23,7 @@ public class BoardEntity {
     @Id
     @Column(name="board_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long boardId;
+    private Long boardId;
 
     @Column(name="board_type")
     @Enumerated(EnumType.STRING)
@@ -56,14 +57,30 @@ public class BoardEntity {
 
     @Column(name="user_id")
     private String userId;
-
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name="comment_id")
     private final List<CommentEntity> commentEntityList = new ArrayList<>();
 
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name="board_file_id")
     private final List<BoardFileEntity> boardFileEntityList = new ArrayList<>();
 
+    public void updateQuestion(String boardTitle, String boardContent){
+        this.boardContent = boardContent;
+        this.boardTitle = boardTitle;
+    }
 
+    public BoardEntity(long boardId, BoardType boardType, String boardTitle, String boardWriter, String boardContent, LocalDateTime createDate, LocalDateTime boardUpdateDate, BoardCommentIs boardCommentIs, String userId) {
+        this.boardId = boardId;
+        this.boardType = boardType;
+        this.boardTitle = boardTitle;
+        this.boardWriter = boardWriter;
+        this.boardContent = boardContent;
+        this.createDate = createDate;
+        this.boardUpdateDate = boardUpdateDate;
+        this.boardCommentIs = boardCommentIs;
+        this.userId = userId;
+    }
 }
