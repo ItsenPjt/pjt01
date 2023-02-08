@@ -2,7 +2,7 @@ package com.newcen.newcen.users.service;
 
 import com.newcen.newcen.common.config.security.TokenProvider;
 import com.newcen.newcen.common.repository.ValidUserRepository;
-import com.newcen.newcen.users.dto.request.UserSignUpDTO;
+import com.newcen.newcen.users.dto.request.UserSignUpRequestDTO;
 import com.newcen.newcen.users.dto.response.UserSignUpResponseDTO;
 import com.newcen.newcen.users.exception.NoRegisteredArgumentsException;
 import com.newcen.newcen.users.repository.UserRepository;
@@ -23,12 +23,12 @@ public class UserService {
 
 
     // 회원가입 처리
-    public UserSignUpResponseDTO create(final UserSignUpDTO userSignUpDTO) {
-        if (userSignUpDTO == null) {
-            throw new NoRegisteredArgumentsException("가입 정보가 없습니다.");
-        }
-
-    }
+//    public UserSignUpResponseDTO create(final UserSignUpRequestDTO userSignUpRequestDTO) {
+//        if (userSignUpRequestDTO == null) {
+//            throw new NoRegisteredArgumentsException("가입 정보가 없습니다.");
+//        }
+//
+//    }
 
 
 }
