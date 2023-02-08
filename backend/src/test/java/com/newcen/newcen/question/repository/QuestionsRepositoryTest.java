@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Commit;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 @SpringBootTest
-@Commit
+@Rollback
 class QuestionsRepositoryTest {
 
     @Autowired
@@ -26,12 +28,13 @@ class QuestionsRepositoryTest {
 
     @Test
     @DisplayName("회원은 문의게시글을 작성해야 한다.")
+    @Transactional
     void makeQuestion(){
         UserEntity user1 = UserEntity.builder()
-                .userName("김진행1")
-                .userRole(UserRole.ADMIN)
+                .userName("김진행3")
                 .userEmail("dhkd@nave1r.com")
                 .userPassword("12341")
+
                 .build();
         UserEntity user2 = userRepository.save(user1);
         BoardEntity board1 = BoardEntity.builder()
@@ -53,9 +56,10 @@ class QuestionsRepositoryTest {
 
     @Test
     @DisplayName("문의사항 목록을 조회한다.")
+    @Transactional
     void getList(){
         List<BoardEntity> board = questionsRepository.findAll();
-        Assertions.assertEquals(2,board.size());
+        Assertions.assertEquals(3,board.size());
     }
 
 }
