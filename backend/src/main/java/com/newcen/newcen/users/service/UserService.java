@@ -5,6 +5,8 @@ import com.newcen.newcen.common.entity.UserEntity;
 import com.newcen.newcen.common.entity.ValidUserEntity;
 import com.newcen.newcen.common.repository.ValidUserRepository;
 import com.newcen.newcen.users.dto.request.UserSignUpRequestDTO;
+import com.newcen.newcen.users.dto.response.LoginResponseDTO;
+import com.newcen.newcen.users.dto.response.UserModifyResponseDTO;
 import com.newcen.newcen.users.dto.response.UserSignUpResponseDTO;
 import com.newcen.newcen.users.exception.NoRegisteredArgumentsException;
 import com.newcen.newcen.users.repository.UserRepository;
@@ -64,5 +66,35 @@ public class UserService {
 
     }
 
+
+    // 로그인 처리 및 검증
+    public LoginResponseDTO getByCredentials(
+            final String email,
+            final String rawPassword) {
+
+        // 입력한 이메일을 통해 회원정보 조회
+        UserEntity originalUser = userRepository.findByUserEmail(email);
+
+        if (originalUser == null) {
+            throw new RuntimeException("가입된 회원이 아닙니다.");
+        }
+        // 패스워드 검증 (입력 비번, DB에 저장된 비번)
+        if (!passwordEncoder.matches(rawPassword, originalUser.getUserPassword())) {
+            throw new RuntimeException("비밀번호가 틀렸습니다.");
+        }
+
+        log.info("{}님 로그인 성공!", originalUser.getUserName());
+
+        // 토큰 발급
+        String token = tokenProvider.createToken(originalUser);
+
+        return new LoginResponseDTO(originalUser, token);
+
+    }
+
+    // 내정보 수정
+//    public UserModifyResponseDTO update() {
+//
+//    }
 
 }

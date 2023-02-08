@@ -2,13 +2,12 @@ package com.newcen.newcen.users.service;
 
 import com.newcen.newcen.common.entity.UserEntity;
 import com.newcen.newcen.users.dto.request.UserSignUpRequestDTO;
+import com.newcen.newcen.users.dto.response.LoginResponseDTO;
 import com.newcen.newcen.users.dto.response.UserSignUpResponseDTO;
 import com.newcen.newcen.users.repository.UserRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Commit;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -82,6 +81,22 @@ class UserServiceTest {
         assertEquals("암호맨", selectUser.getUserName());
 
         System.out.println("selectUser = " + selectUser);
+
+    }
+
+    @Test
+    @Order(4)
+    @DisplayName("정확한 정보로 로그인을 시도하면 회원정보가 반환되어야 한다.")
+    void loginTest() {
+        // given
+        String email = "postman@naver.com";
+        String password = "abc1234";
+
+        // when
+        LoginResponseDTO loginUser = userService.getByCredentials(email, password);
+
+        // then
+        assertEquals("암호맨", loginUser.getUserName());
 
     }
 
