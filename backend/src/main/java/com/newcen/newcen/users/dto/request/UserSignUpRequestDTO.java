@@ -14,7 +14,7 @@ import javax.validation.constraints.Size;
 @Builder
 
 // 회원 가입 시 클라이언트가 보낸 데이터를 담는 객체
-public class UserSignUpDTO {
+public class UserSignUpRequestDTO {
 
     @NotBlank   // @NotBlank - null 과 "" 과 " " 모두 허용하지 않음
     @Email
