@@ -1,5 +1,6 @@
 package com.newcen.newcen.message.service;
 
+import com.newcen.newcen.common.entity.UserEntity;
 import com.newcen.newcen.message.dto.request.MessageSendRequestDTO;
 import com.newcen.newcen.message.dto.response.*;
 import com.newcen.newcen.message.entity.MessageEntity;
@@ -7,6 +8,7 @@ import com.newcen.newcen.message.repository.MessageRepository;
 import com.newcen.newcen.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +21,8 @@ import java.util.stream.Collectors;
 public class MessageService {
 
     private final MessageRepository messageRepository;
+
+    private final UserRepository userRepository;
 
 
     // 받은 메세지 목록 조회
@@ -76,9 +80,18 @@ public class MessageService {
         return messageDetail;
     }
 
+    // 받는 사람 검색 기능
+    public List<MessageReceiverResponseDTO> findReceiver(final String userName) {
+        List<UserEntity> receiverList = userRepository.findByUserName(userName);
+        List<MessageReceiverResponseDTO> foundReceiverList = receiverList.stream()
+                .map(MessageReceiverResponseDTO::new)
+                .collect(Collectors.toList());
+
+        return foundReceiverList;
+    }
+
     // 단일 메세지 보내기
     public MessageReceivedListResponseDTO sendMessage(final String senderId, final String receiverId, MessageSendRequestDTO message) {
-
 
 
 
