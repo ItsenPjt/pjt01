@@ -1,5 +1,6 @@
 package com.newcen.newcen.question.request;
 
+import com.newcen.newcen.common.entity.BoardCommentIs;
 import com.newcen.newcen.common.entity.BoardEntity;
 import com.newcen.newcen.common.entity.BoardType;
 import com.newcen.newcen.common.entity.UserEntity;
@@ -15,20 +16,22 @@ import javax.validation.constraints.NotBlank;
 @Builder
 public class QuestionCreateRequestDTO {
 
-    @NotBlank
-    private BoardType boardType;
+
     @NotBlank
     private String boardTitle;
     @NotBlank
     private String boardContent;
 
+    private BoardCommentIs boardCommentIs;
 
     public BoardEntity toEntity(UserEntity user){
+
         return BoardEntity.builder()
                 .boardWriter(user.getUserName())
-                .boardType(this.boardType)
                 .boardTitle(this.boardTitle)
                 .boardContent(this.boardContent)
+                .boardCommentIs(this.boardCommentIs)
+                .boardType(BoardType.QUESTION)
                 .user(user)
                 .userId(user.getUserId())
                 .build();
