@@ -93,7 +93,17 @@ class MessageRepositoryTest {
     void findReceivedMessage() {
 
         // given
+        UserEntity user1 = userRepository.findByUserEmail("test@naver.com");
         UserEntity receiver = userRepository.findByUserEmail("test2@naver.com");
+
+        MessageEntity message = MessageEntity.builder()
+                .messageTitle("보내기 테스트 제목입니다.")
+                .messageContent("보내기 테스트 내용입니다.")
+                .messageSender(user1.getUserName())
+                .messageReceiver(receiver.getUserName())
+                .sender(user1)
+                .receiver(receiver)
+                .build();
 
         // when
         List<MessageEntity> receivedMessage = messageRepository.findByReceiverId(receiver.getUserId());
