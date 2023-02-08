@@ -82,7 +82,7 @@ public class MessageService {
 
     // 받는 사람 검색 기능
     public List<MessageReceiverResponseDTO> findReceiver(final String userName) {
-        List<UserEntity> receiverList = userRepository.findByUserName(userName);
+        List<UserEntity> receiverList = userRepository.findByUserNameContains(userName);
         List<MessageReceiverResponseDTO> foundReceiverList = receiverList.stream()
                 .map(MessageReceiverResponseDTO::new)
                 .collect(Collectors.toList());
@@ -93,12 +93,16 @@ public class MessageService {
     // 단일 메세지 보내기
     public MessageReceivedListResponseDTO sendMessage(final String senderId, final String receiverId, MessageSendRequestDTO message) {
 
+        UserEntity sender = userRepository.findByUserId(senderId);
+        UserEntity receiver = userRepository.findByUserId(receiverId);
+
+        MessageEntity sendMessage = message.toEntity(sender, receiver);
+        MessageEntity savedMessage = messageRepository.save(sendMessage);
+
+        log.info("메세지 전송 완료 보낸 이: {}, 받는 이: {}", savedMessage.getMessageSender(), savedMessage.getMessageReceiver());
 
 
-
-        
-
-        return null;
+        return receivedMessageList(receiverId);
     }
 
 
