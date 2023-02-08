@@ -4,7 +4,7 @@ import com.newcen.newcen.common.entity.UserEntity;
 import com.newcen.newcen.common.entity.UserRole;
 import com.newcen.newcen.message.entity.MessageEntity;
 import com.newcen.newcen.users.repository.UserRepository;
-import org.apache.catalina.User;
+import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,13 +12,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Commit;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootTest
+@Transactional
 class MessageRepositoryTest {
 
 
@@ -29,11 +29,8 @@ class MessageRepositoryTest {
     UserRepository userRepository;
 
 
-    @Test
-    @DisplayName("테스트2 회원이 테스트1 회원에게 메세지를 전송해야한다")
-    void sendMessageTest() {
-
-        // given
+    @BeforeEach
+    void beforeTest() {
         UserEntity user1 = UserEntity.builder()
                 .userEmail("test@naver.com")
                 .userPassword("1234")
@@ -48,8 +45,28 @@ class MessageRepositoryTest {
                 .userRole(UserRole.MEMBER)
                 .build();
 
+        UserEntity user3 = UserEntity.builder()
+                .userEmail("test3@naver.com")
+                .userPassword("1234")
+                .userName("테스트3")
+                .userRole(UserRole.MEMBER)
+                .build();
+
         userRepository.save(user1);
         userRepository.save(user2);
+        userRepository.save(user3);
+
+    }
+
+
+    @Test
+    @DisplayName("테스트2 회원이 테스트1 회원에게 메세지를 전송해야한다")
+    void sendMessageTest() {
+
+        // given
+
+        UserEntity user1 = userRepository.findByUserEmail("test@naver.com");
+        UserEntity user2 = userRepository.findByUserEmail("test2@naver.com");
 
         MessageEntity message = MessageEntity.builder()
                 .messageTitle("보내기 테스트 제목입니다.")
@@ -72,21 +89,29 @@ class MessageRepositoryTest {
     }
 
     @Test
-    @DisplayName("테스트2 회원이 받은 메세지 리스트의 길이는 2이다")
+    @DisplayName("테스트2 회원이 받은 메세지 리스트의 길이는 1이다")
     void findReceivedMessage() {
 
         // given
+        UserEntity user1 = userRepository.findByUserEmail("test@naver.com");
         UserEntity receiver = userRepository.findByUserEmail("test2@naver.com");
+
+        MessageEntity message = MessageEntity.builder()
+                .messageTitle("보내기 테스트 제목입니다.")
+                .messageContent("보내기 테스트 내용입니다.")
+                .messageSender(user1.getUserName())
+                .messageReceiver(receiver.getUserName())
+                .sender(user1)
+                .receiver(receiver)
+                .build();
 
         // when
         List<MessageEntity> receivedMessage = messageRepository.findByReceiverId(receiver.getUserId());
 
         // then
-        Assertions.assertEquals(2, receivedMessage.size());
+        Assertions.assertEquals(1, receivedMessage.size());
         Assertions.assertEquals("테스트2", receivedMessage.get(0).getMessageReceiver());
         Assertions.assertEquals("테스트", receivedMessage.get(0).getMessageSender());
-        Assertions.assertEquals("테스트2", receivedMessage.get(1).getMessageReceiver());
-        Assertions.assertEquals("테스트", receivedMessage.get(1).getMessageSender());
     }
 
     @Test
@@ -94,14 +119,7 @@ class MessageRepositoryTest {
     void SendMessageToUsersTest() {
 
         // given
-        UserEntity user3 = UserEntity.builder()
-                .userEmail("test3@naver.com")
-                .userPassword("1234")
-                .userName("테스트3")
-                .userRole(UserRole.MEMBER)
-                .build();
 
-        userRepository.save(user3);
 
         UserEntity sendUser = userRepository.findByUserEmail("test@naver.com");
         UserEntity targetUser1 = userRepository.findByUserEmail("test2@naver.com");
@@ -141,10 +159,25 @@ class MessageRepositoryTest {
     void findSendMessage() {
 
         // given
-        UserEntity targetUser = userRepository.findByUserEmail("test@naver.com");
+
+        UserEntity sendUser = userRepository.findByUserEmail("test@naver.com");
+        UserEntity targetUser = userRepository.findByUserEmail("test2@naver.com");
+
+        for(int i=0; i<3; i++) {
+            MessageEntity message = MessageEntity.builder()
+                    .messageTitle("단체 메세지 테스트 제목입니다.")
+                    .messageContent("단체 메세지 테스트 내용입니다.")
+                    .messageSender(sendUser.getUserName())
+                    .messageReceiver(targetUser.getUserName())
+                    .sender(sendUser)
+                    .receiver(targetUser)
+                    .build();
+
+            messageRepository.save(message);
+        }
 
         // when
-        List<MessageEntity> sendMessageList = messageRepository.findBySenderId(targetUser.getUserId());
+        List<MessageEntity> sendMessageList = messageRepository.findBySenderId(sendUser.getUserId());
 
         // then
         Assertions.assertEquals(3, sendMessageList.size());
@@ -157,22 +190,37 @@ class MessageRepositoryTest {
 
     @Test
     @DisplayName("테스트2 회원이 받은 메세지중 첫번째 메세지만 삭제한다")
-    @Transactional
-    @Commit
     void deleteFirstReceivedMessage() {
 
         // given
-        String targetUserId = userRepository.findByUserEmail("test2@naver.com").getUserId();
-        List<MessageEntity> receivedMessageList = messageRepository.findByReceiverId(targetUserId);
+
+        UserEntity sendUser = userRepository.findByUserEmail("test@naver.com");
+        UserEntity targetUser = userRepository.findByUserEmail("test2@naver.com");
+
+        for(int i=0; i<3; i++) {
+            MessageEntity message = MessageEntity.builder()
+                    .messageTitle("삭제 메세지 테스트 제목입니다.")
+                    .messageContent("삭제 메세지 테스트 내용입니다.")
+                    .messageSender(sendUser.getUserName())
+                    .messageReceiver(targetUser.getUserName())
+                    .sender(sendUser)
+                    .receiver(targetUser)
+                    .build();
+
+            messageRepository.save(message);
+        }
+
+
+        List<MessageEntity> receivedMessageList = messageRepository.findByReceiverId(targetUser.getUserId());
 
         // when
         long targetMessageId = receivedMessageList.get(0).getMessageId();
         messageRepository.deleteByMessageId(targetMessageId);
 
-        List<MessageEntity> newReceivedMessageList = messageRepository.findByReceiverId(targetUserId);
+        List<MessageEntity> newReceivedMessageList = messageRepository.findByReceiverId(targetUser.getUserId());
 
         // then
-        Assertions.assertEquals(1, newReceivedMessageList.size());
+        Assertions.assertEquals(2, newReceivedMessageList.size());
         Assertions.assertEquals("테스트2", newReceivedMessageList.get(0).getMessageReceiver());
 
 
