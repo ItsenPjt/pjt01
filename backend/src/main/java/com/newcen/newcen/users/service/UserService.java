@@ -4,6 +4,7 @@ import com.newcen.newcen.common.config.security.TokenProvider;
 import com.newcen.newcen.common.entity.UserEntity;
 import com.newcen.newcen.common.entity.ValidUserEntity;
 import com.newcen.newcen.common.repository.ValidUserRepository;
+import com.newcen.newcen.users.dto.request.UserModifyRequestDTO;
 import com.newcen.newcen.users.dto.request.UserSignUpRequestDTO;
 import com.newcen.newcen.users.dto.response.LoginResponseDTO;
 import com.newcen.newcen.users.dto.response.UserModifyResponseDTO;
@@ -93,8 +94,8 @@ public class UserService {
     }
 
     // 내정보 수정
-//    public UserModifyResponseDTO update() {
-//
-//    }
+    public UserModifyResponseDTO update(final UserModifyRequestDTO userModifyRequestDTO) {
+
+    }
 
 }
