@@ -2,6 +2,7 @@ package com.newcen.newcen.users.service;
 
 import com.newcen.newcen.common.config.security.TokenProvider;
 import com.newcen.newcen.common.entity.UserEntity;
+import com.newcen.newcen.common.entity.ValidUserEntity;
 import com.newcen.newcen.common.repository.ValidUserRepository;
 import com.newcen.newcen.users.dto.request.UserSignUpRequestDTO;
 import com.newcen.newcen.users.dto.response.UserSignUpResponseDTO;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
@@ -24,6 +26,7 @@ public class UserService {
 
 
     // 회원가입 처리
+    @Transactional
     public UserSignUpResponseDTO create(final UserSignUpRequestDTO userSignUpRequestDTO) {
         if (userSignUpRequestDTO == null) {
             throw new NoRegisteredArgumentsException("Nonexistent UserInfo - 가입 정보가 없습니다.");
@@ -31,14 +34,15 @@ public class UserService {
 
         final String email = userSignUpRequestDTO.getUserEmail();
         final String code = userSignUpRequestDTO.getValidCode();
-        final boolean compareResult = validUserRepository.existsByValidUserEmailAndValidCode(email, code);
+        final boolean compareResult =
+                validUserRepository.existsByValidUserEmailAndValidCodeAndValidActive(email, code, 1);
 
-        if (compareResult) {
-            log.warn("********** - UserInfo already exists - {}", compareResult);
-        } else {
+        if (!compareResult) {
             log.warn("********** - UserInfo unprepared - {}", compareResult);
             throw new NoRegisteredArgumentsException("Nonexistent UserInfo - 등록되지 않은 회원정보입니다.");
         }
+
+        log.info("********** - UserInfo available to use - {}", compareResult);
 
         // 패스워드 인코딩
         String rawPassword = userSignUpRequestDTO.getUserPassword();   // 평문 암호
@@ -48,6 +52,13 @@ public class UserService {
         UserEntity savedUser = userRepository.save(userSignUpRequestDTO.toEntity());
 
         log.info("********** - 회원가입 성공..!!! - user_id : {}", savedUser.getUserId());
+
+        validUserRepository.updateSetActive(email, code);
+
+        ValidUserEntity updatedActive =
+                validUserRepository.findByValidUserEmailAndValidCode(email, code);
+
+        log.info("********** - User ActiveValue Change Complete - valid_user_active : {}", updatedActive);
 
         return new UserSignUpResponseDTO(savedUser);
 

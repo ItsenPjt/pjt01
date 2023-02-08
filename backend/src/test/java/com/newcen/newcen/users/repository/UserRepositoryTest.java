@@ -52,6 +52,7 @@ class UserRepositoryTest {
 
         // then
         assertEquals("강감찬", foundUser.getUserName());
+
     }
 
     @Test

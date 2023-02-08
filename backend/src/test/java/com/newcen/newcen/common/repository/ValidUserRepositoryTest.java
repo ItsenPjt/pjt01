@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -59,18 +60,43 @@ class ValidUserRepositoryTest {
 
     @Test
     @DisplayName("기존에 등록되지 않은 이메일과 인증코드를 비교해서 false면 성공해야 한다.")
-    void findByUserEmailAndValidCodeTest() {
+    void existsByValidUserEmailAndValidCodeAndValidActiveTest() {
         // given
         String email = "dagil2@naver.com";
         String code = "PA23VLK";
 
         //when
 //        ValidUserEntity flag = validUserRepository.findByValidUserEmailAndValidCode(email, code);
-        boolean flag = validUserRepository.existsByValidUserEmailAndValidCode(email, code);
+        boolean flag = validUserRepository.existsByValidUserEmailAndValidCodeAndValidActive(email, code, 1);
 
         //then
 //        assertNotNull(flag);
         assertFalse(flag);
+
+    }
+
+    @Test
+    @DisplayName("가입 시 active 값이 1인 계정에 대해 active 값을 2로 변경해야 한다.")
+    @Transactional
+    void updateSetActiveTest() {
+        // given
+        String email = "postman@naver.com";
+        String code = "XY2baJQ";
+        int active = 1;
+
+        // when
+        validUserRepository.updateSetActive(email, code);
+
+        ValidUserEntity updatedActive =
+                validUserRepository.findByValidUserEmailAndValidCode(email, code);
+
+        // then
+        assertEquals(2, updatedActive.getValidActive());
+
+        System.out.println("====================");
+        System.out.println("updatedActive = " + updatedActive);
+        System.out.println("====================");
+
     }
 
 }
