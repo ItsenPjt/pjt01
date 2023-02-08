@@ -57,4 +57,20 @@ class ValidUserRepositoryTest {
         assertFalse(flag);
     }
 
+    @Test
+    @DisplayName("기존에 등록되지 않은 이메일과 인증코드를 비교해서 false면 성공해야 한다.")
+    void findByUserEmailAndValidCodeTest() {
+        // given
+        String email = "dagil2@naver.com";
+        String code = "PA23VLK";
+
+        //when
+//        ValidUserEntity flag = validUserRepository.findByValidUserEmailAndValidCode(email, code);
+        boolean flag = validUserRepository.existsByValidUserEmailAndValidCode(email, code);
+
+        //then
+//        assertNotNull(flag);
+        assertFalse(flag);
+    }
+
 }

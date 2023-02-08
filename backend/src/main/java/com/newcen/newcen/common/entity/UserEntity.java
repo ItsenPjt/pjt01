@@ -1,6 +1,7 @@
 package com.newcen.newcen.common.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import org.hibernate.annotations.*;
 
@@ -48,8 +49,6 @@ public class UserEntity {
 
     @OneToMany(orphanRemoval = true, mappedBy = "user")
     private final List<BoardEntity> boardList = new ArrayList<>();
-
-
 
 
 }

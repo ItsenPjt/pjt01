@@ -29,7 +29,7 @@ class UserRepositoryTest {
         // given
         UserEntity user = UserEntity.builder()
                 .userEmail("postman@naver.com")
-                .userPassword("1234")
+                .userPassword("abc1234")
                 .userName("강감찬")
                 .build();
 

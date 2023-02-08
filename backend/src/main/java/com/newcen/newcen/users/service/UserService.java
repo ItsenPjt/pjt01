@@ -1,6 +1,7 @@
 package com.newcen.newcen.users.service;
 
 import com.newcen.newcen.common.config.security.TokenProvider;
+import com.newcen.newcen.common.entity.UserEntity;
 import com.newcen.newcen.common.repository.ValidUserRepository;
 import com.newcen.newcen.users.dto.request.UserSignUpRequestDTO;
 import com.newcen.newcen.users.dto.response.UserSignUpResponseDTO;
@@ -23,12 +24,34 @@ public class UserService {
 
 
     // 회원가입 처리
-//    public UserSignUpResponseDTO create(final UserSignUpRequestDTO userSignUpRequestDTO) {
-//        if (userSignUpRequestDTO == null) {
-//            throw new NoRegisteredArgumentsException("가입 정보가 없습니다.");
-//        }
-//
-//    }
+    public UserSignUpResponseDTO create(final UserSignUpRequestDTO userSignUpRequestDTO) {
+        if (userSignUpRequestDTO == null) {
+            throw new NoRegisteredArgumentsException("Nonexistent UserInfo - 가입 정보가 없습니다.");
+        }
+
+        final String email = userSignUpRequestDTO.getUserEmail();
+        final String code = userSignUpRequestDTO.getValidCode();
+        final boolean compareResult = validUserRepository.existsByValidUserEmailAndValidCode(email, code);
+
+        if (compareResult) {
+            log.warn("********** - UserInfo already exists - {}", compareResult);
+        } else {
+            log.warn("********** - UserInfo unprepared - {}", compareResult);
+            throw new NoRegisteredArgumentsException("Nonexistent UserInfo - 등록되지 않은 회원정보입니다.");
+        }
+
+        // 패스워드 인코딩
+        String rawPassword = userSignUpRequestDTO.getUserPassword();   // 평문 암호
+        String encodePassword = passwordEncoder.encode(rawPassword);    // 암호화 처리
+        userSignUpRequestDTO.setUserPassword(encodePassword);
+
+        UserEntity savedUser = userRepository.save(userSignUpRequestDTO.toEntity());
+
+        log.info("********** - 회원가입 성공..!!! - user_id : {}", savedUser.getUserId());
+
+        return new UserSignUpResponseDTO(savedUser);
+
+    }
 
 
 }
