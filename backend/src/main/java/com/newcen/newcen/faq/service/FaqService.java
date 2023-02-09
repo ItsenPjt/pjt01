@@ -32,7 +32,7 @@ public class FaqService {
 
         List<BoardEntity> entityList = faqRepository.findByBoardType(BoardType.FAQ);
 
-        if(entityList.size() == 0 ) {
+        if(entityList.isEmpty() ) {
             throw new RuntimeException("FAQ list is Empty");
         }
 
