@@ -25,4 +25,7 @@ public interface ValidUserRepository extends JpaRepository<ValidUserEntity, Stri
     @Query("update ValidUserEntity u set u.validActive = 2 where u.validUserEmail = :validUserEmail And u.validCode = :validCode")
     void updateSetActive(@Param("validUserEmail") String email, @Param("validCode") String validCode);
 
+    // 익명 사용자 비밀번호 찾기 시 인증코드 존재 여부 조회
+    boolean existsByValidCode(String validCode);
+
 }

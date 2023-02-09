@@ -99,4 +99,19 @@ class ValidUserRepositoryTest {
 
     }
 
+    @Test
+    @DisplayName("기존에 가입되어있는 회원의 인증코드를 조회하면 true를 반환해야 한다.")
+    void existsByUserEmailAndUserNameTest() {
+        // given
+        String validCode = "XY2baJQ";
+
+        // when
+        boolean userCode = validUserRepository.existsByValidCode(validCode);
+
+        // then
+        assertTrue(userCode);
+
+    }
+
+
 }
