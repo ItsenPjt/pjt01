@@ -34,16 +34,4 @@ public class BoardFileEntity {
         this.boardFilePath = boardFilePath;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        BoardFileEntity boardFile = (BoardFileEntity) o;
-        return boardFileId != null && Objects.equals(boardFileId, boardFile.boardFileId);
-    }
-
-
-//    public BoardFileEntity() {
-//        this.boardFileId = UUID.randomUUID().toString();
-//    }
 }

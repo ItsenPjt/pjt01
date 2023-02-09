@@ -1,7 +1,12 @@
 package com.newcen.newcen.question.service;
 
+import com.newcen.newcen.common.entity.BoardEntity;
+import com.newcen.newcen.common.entity.BoardFileEntity;
 import com.newcen.newcen.common.entity.BoardType;
 import com.newcen.newcen.common.entity.UserEntity;
+import com.newcen.newcen.question.repository.QuestionsFileRepository;
+import com.newcen.newcen.question.repository.QuestionsRepository;
+import com.newcen.newcen.question.repository.QuestionsRepositorySupport;
 import com.newcen.newcen.question.request.QuestionCreateRequestDTO;
 import com.newcen.newcen.question.request.QuestionUpdateRequestDTO;
 import com.newcen.newcen.question.response.QuestionListResponseDTO;
@@ -11,6 +16,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -20,10 +26,12 @@ class QuestionServiceTest {
 
     @Autowired
     QuestionService questionService;
-
+    @Autowired
+    QuestionsRepository questionsRepository;
     @Autowired
     private UserRepository userRepository;
-
+    @Autowired
+    QuestionsRepositorySupport questionsRepositorySupport;
 
     @Test
     @DisplayName("문의사항 목록을 조회해야 한다.")
@@ -38,9 +46,9 @@ class QuestionServiceTest {
     }
 
     @Test
-    @DisplayName("문의사항 목록을 생성한다.")
+    @DisplayName("문의사항을 생성한다.")
     void create(){
-        UserEntity user = userRepository.findById("402880c3862a5a4e01862a5a5a4c0000").get();
+        UserEntity user = userRepository.findById("402880c3862a5ba301862a5badf20000").get();
         QuestionCreateRequestDTO newQuestion = QuestionCreateRequestDTO
                 .builder()
                 .boardContent("안녕하세요")
@@ -84,5 +92,22 @@ class QuestionServiceTest {
         Boolean std = questionService.deleteQuestion(userId,boardId);
         assertEquals(true,std);
     }
+    @Test
+    @Transactional
+    @DisplayName("문의사항 파일을 등록한다.")
+    @Rollback(value = false)
+    void save(){
+        BoardFileEntity boardFile = BoardFileEntity.builder()
+                .boardId(12L)
+                .boardFilePath("www")
+                .build();
+        String userId = "402880c3862a5ba301862a5badf20000";
+        Long boardId = 12L;
+        String boardPath = "www";
+        BoardEntity board = questionsRepositorySupport.findBoardByUserIdAndBoardId(userId,boardId);
+        board.getBoardFileEntityList().add(boardFile);
+        BoardEntity save1 = questionsRepository.save(board);
+        System.out.println(save1.getBoardFileEntityList());
 
+    }
 }

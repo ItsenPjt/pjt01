@@ -105,7 +105,7 @@ public class QuestionsController {
             @AuthenticationPrincipal String userId, @PathVariable Long boardId, @Validated @RequestBody QuestionFileRequestDTO questionFileRequestDTO
             , BindingResult result
     ){
-        userId = "402880c3862a5ba301862a5badf20000";
+        userId = "402880c3862ae9ac01862ae9b6610000";
         if (result.hasErrors()){
             log.warn("DTO 검증 에러 발생 : {} ", result.getFieldError());
             return ResponseEntity

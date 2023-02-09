@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -86,7 +87,12 @@ public class QuestionService {
         if (user == null){
             throw new RuntimeException("해당 유저가 없습니다.");
         }
-        
+        System.out.println(board.getUserId());
+        System.out.println(userId);
+        if (board.getUserId() == user.getUserId()){
+            throw new RuntimeException("본인 작성글이 아닙니다.");
+        }
+
         BoardFileEntity boardFileEntity = BoardFileEntity.builder()
                 .boardFilePath(boardFilePath)
                 .boardId(boardId)
