@@ -1,8 +1,10 @@
 package com.newcen.newcen.users.service;
 
 import com.newcen.newcen.common.entity.UserEntity;
+import com.newcen.newcen.users.dto.request.UserModifyRequestDTO;
 import com.newcen.newcen.users.dto.request.UserSignUpRequestDTO;
 import com.newcen.newcen.users.dto.response.LoginResponseDTO;
+import com.newcen.newcen.users.dto.response.UserModifyResponseDTO;
 import com.newcen.newcen.users.dto.response.UserSignUpResponseDTO;
 import com.newcen.newcen.users.repository.UserRepository;
 import org.junit.jupiter.api.*;
@@ -97,6 +99,25 @@ class UserServiceTest {
 
         // then
         assertEquals("암호맨", loginUser.getUserName());
+
+    }
+
+    @Test
+    @Order(5)
+    @DisplayName("회원 테이블에 존재하는 userId값이면 비밀번호를 암호화한 후 수정해야 한다.")
+    void passwordModifyTest() {
+        // given
+        UserModifyRequestDTO dto = UserModifyRequestDTO.builder()
+                .userPassword("abc1234")
+                .build();
+
+        String userId = "402880b6862ff68b01862ff696530000";
+
+        // when
+        UserModifyResponseDTO modifyUser = userService.update(userId, dto);
+
+        // then
+        assertEquals("암호맨", modifyUser.getUserName());
 
     }
 
