@@ -72,4 +72,15 @@ public class BoardEntity {
         this.boardTitle = boardTitle;
     }
 
+    public BoardEntity(long boardId, BoardType boardType, String boardTitle, String boardWriter, String boardContent, LocalDateTime createDate, LocalDateTime boardUpdateDate, BoardCommentIs boardCommentIs, String userId) {
+        this.boardId = boardId;
+        this.boardType = boardType;
+        this.boardTitle = boardTitle;
+        this.boardWriter = boardWriter;
+        this.boardContent = boardContent;
+        this.createDate = createDate;
+        this.boardUpdateDate = boardUpdateDate;
+        this.boardCommentIs = boardCommentIs;
+        this.userId = userId;
+    }
 }
