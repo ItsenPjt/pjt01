@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 public interface QuestionsRepository extends JpaRepository<BoardEntity, Long> {
 
 
-
+    BoardEntity findByUserIdAndBoardId(String userId,Long boardId);
 }

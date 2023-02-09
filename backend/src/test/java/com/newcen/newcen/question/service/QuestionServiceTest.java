@@ -32,6 +32,8 @@ class QuestionServiceTest {
     private UserRepository userRepository;
     @Autowired
     QuestionsRepositorySupport questionsRepositorySupport;
+    @Autowired
+    private QuestionsFileRepository questionsFileRepository;
 
     @Test
     @DisplayName("문의사항 목록을 조회해야 한다.")
@@ -108,6 +110,16 @@ class QuestionServiceTest {
         board.getBoardFileEntityList().add(boardFile);
         BoardEntity save1 = questionsRepository.save(board);
         System.out.println(save1.getBoardFileEntityList());
+
+    }
+    @Test
+    @DisplayName("문의사항 파일을 삭제한다.")
+    void deleteFile(){
+        String id = "402880c38633ea64018633f00b5a0001";
+
+        questionsFileRepository.deleteById(id);
+
+
 
     }
 }

@@ -102,7 +102,7 @@ public class QuestionsController {
 
     //문의사항 파일 등록
     @PostMapping("/{boardId}")
-    private ResponseEntity<?> createQuestions(
+    private ResponseEntity<?> createQuestionsFile(
             @AuthenticationPrincipal String userId, @PathVariable Long boardId, @Validated @RequestBody QuestionFileRequestDTO questionFileRequestDTO
             , BindingResult result
     ){
@@ -127,12 +127,11 @@ public class QuestionsController {
     }
     //문의사항 파일 수정
     @PatchMapping("/{boardId}/{boardFileId}")
-    private ResponseEntity<?> createQuestions(
+    private ResponseEntity<?> updateQuestionsFile(
             @AuthenticationPrincipal String userId, @PathVariable("boardId") Long boardId,@PathVariable("boardFileId") String boardFileId,
             @Validated @RequestBody QuestionFileRequestDTO questionFileRequestDTO
             , BindingResult result
     ){
-//        String  boardFileId1= boardFileId.toString();
         if (result.hasErrors()){
             log.warn("DTO 검증 에러 발생 : {} ", result.getFieldError());
             return ResponseEntity
@@ -153,13 +152,10 @@ public class QuestionsController {
     }
     //문의사항 파일 삭제
     @DeleteMapping("/{boardId}/{boardFileId}")
-    private ResponseEntity<?> deleteQuestionFile(@AuthenticationPrincipal String userId, @PathVariable Long boardId,@PathVariable String boardFileId){
-
-
-
+    private ResponseEntity<?> deleteQuestionFile(@AuthenticationPrincipal String userId, @PathVariable("boardId") Long boardId,@PathVariable("boardFileId") String boardFileId){
         QuestionResponseDTO deleted = questionService.deleteFile(userId, boardId,boardFileId);
         if (deleted==null){
-            return ResponseEntity.internalServerError().body("게시글 삭제에 실패했습니다..");
+            return ResponseEntity.internalServerError().body("파일 삭제에 실패했습니다..");
         }else {
             return ResponseEntity.ok().body(deleted);
         }
