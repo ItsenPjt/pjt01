@@ -1,5 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
 import Header from './components/Header';
+import NoticeInsert from './components/notice/NoticeInsert';
 import NoticeTemplate from './components/notice/NoticeTemplate';
 
 function App() {
@@ -9,6 +10,7 @@ function App() {
 
       <Routes>
         <Route path="/notice" element={<NoticeTemplate />} />
+        <Route path="/notice/insert" element={<NoticeInsert />} />
       </Routes>
     </>
   );
