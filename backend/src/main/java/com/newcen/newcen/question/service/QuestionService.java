@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,6 +46,7 @@ public class QuestionService {
     //문의사항 상세조회
     public QuestionResponseDTO questionDetail(Long boardId){
         BoardEntity boardGet = questionsRepository.getById(boardId);
+//        BoardEntity boardGet = questionsRepository.getById(boardId);
         return new QuestionResponseDTO(boardGet);
     }
 
@@ -147,8 +149,21 @@ public class QuestionService {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        BoardEntity res = BoardEntity.builder()
+                .boardTitle(board.getBoardTitle())
+                .boardContent(board.getBoardContent())
+                .boardType(board.getBoardType())
+                .boardWriter(board.getBoardWriter())
+                .boardCommentIs(board.getBoardCommentIs())
+                .boardId(board.getBoardId())
+                .boardTitle(board.getBoardTitle())
+                .boardUpdateDate(board.getBoardUpdateDate())
+                .userId(userId)
+                .user(user)
+                .build();
 
-        return questionDetail(boardId);
+        System.out.println(res.getUser());
+        return new QuestionResponseDTO(res);
     }
 
 

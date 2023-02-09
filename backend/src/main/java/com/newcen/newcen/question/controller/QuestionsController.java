@@ -101,7 +101,7 @@ public class QuestionsController {
     }
 
     //문의사항 파일 등록
-    @PostMapping("/{boardId}")
+    @PostMapping("/{boardId}/files")
     private ResponseEntity<?> createQuestionsFile(
             @AuthenticationPrincipal String userId, @PathVariable Long boardId, @Validated @RequestBody QuestionFileRequestDTO questionFileRequestDTO
             , BindingResult result
@@ -126,7 +126,7 @@ public class QuestionsController {
         }
     }
     //문의사항 파일 수정
-    @PatchMapping("/{boardId}/{boardFileId}")
+    @PatchMapping("/{boardId}/files/{boardFileId}")
     private ResponseEntity<?> updateQuestionsFile(
             @AuthenticationPrincipal String userId, @PathVariable("boardId") Long boardId,@PathVariable("boardFileId") String boardFileId,
             @Validated @RequestBody QuestionFileRequestDTO questionFileRequestDTO
@@ -151,7 +151,7 @@ public class QuestionsController {
         }
     }
     //문의사항 파일 삭제
-    @DeleteMapping("/{boardId}/{boardFileId}")
+    @DeleteMapping("/{boardId}/files/{boardFileId}")
     private ResponseEntity<?> deleteQuestionFile(@AuthenticationPrincipal String userId, @PathVariable("boardId") Long boardId,@PathVariable("boardFileId") String boardFileId){
         QuestionResponseDTO deleted = questionService.deleteFile(userId, boardId,boardFileId);
         if (deleted==null){
