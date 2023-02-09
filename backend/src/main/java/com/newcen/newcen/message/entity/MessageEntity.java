@@ -19,7 +19,7 @@ public class MessageEntity {
     @Id
     @Column(name = "message_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long messageId;
+    private Long messageId;
 
     @Column(name = "message_title", nullable = false)
     private String messageTitle;
