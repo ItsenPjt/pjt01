@@ -16,8 +16,6 @@ class ValidUserRepositoryTest {
     @Autowired
     ValidUserRepository validUserRepository;
 
-    @Autowired
-    UserEntity userEntity;
 
     @Test
     @DisplayName("회원 이메일, 유저코드를 삽입해야한다.")
@@ -118,17 +116,20 @@ class ValidUserRepositoryTest {
     }
 
 //    @Test
-//    @DisplayName("등록되어있는 email이라면 회원정보를 삭제해야하고," +
-//            " 삭제된 계정을 조회하면 False를 반환해야 한다.")
+//    @DisplayName("삭제하려는 회원의 Email로 validUserId를 조회해야한다.")
+////    @Transactional
 //    void deleteByEmailTest() {
 //        // given
 //        String email = "postman@naver.com";
 //
 //        // when
-//        ValidUserEntity deleteUser = validUserRepository.deleteByValidUserEmail(email);
+//        ValidUserEntity delID = validUserRepository.selectValidUserId(email);
+//
+//        System.out.println("delID = " + delID);
 //
 //        // then
-//        assertNotEquals("postman@naver.com", email);
+//        assertEquals("40288a81863665e101863665ec3b0000", delID.getValidUserId());
+//
 //
 //    }
 

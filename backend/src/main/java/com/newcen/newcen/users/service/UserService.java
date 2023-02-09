@@ -177,28 +177,28 @@ public class UserService {
     }
 
     // 회원 탈퇴 (회원정보 삭제)
-    public UserDeleteResponseDTO delete(
-            final String userId,
-            final UserDeleteRequestDTO userDeleteRequestDTO) {
-
-        try {
-
-            userRepository.deleteById(userId);
-
-//            UserEntity email = userRepository.findByUserEmail(userDeleteRequestDTO.getUserEmail());
-
-            validUserRepository.deleteByValidUserEmail(userDeleteRequestDTO.getUserEmail());
-
-        } catch (Exception e) {
-            log.error("userId가 존재하지 않아 삭제에 실패했습니다. - ID: {}, err: {}"
-                    , userId, e.getMessage());
-
-            throw new RuntimeException("userId가 존재하지 않아 삭제에 실패했습니다.");
-
-        }
-
-        return new UserDeleteResponseDTO();
-
-    }
+//    public UserDeleteResponseDTO delete(
+//            final String userId,
+//            final UserDeleteRequestDTO userDeleteRequestDTO) {
+//
+//        try {
+//
+//            userRepository.deleteById(userId);
+//
+////            UserEntity email = userRepository.findByUserEmail(userDeleteRequestDTO.getUserEmail());
+//
+//            validUserRepository.findByValidUserEmail(userDeleteRequestDTO.getUserEmail());
+//
+//        } catch (Exception e) {
+//            log.error("userId가 존재하지 않아 삭제에 실패했습니다. - ID: {}, err: {}"
+//                    , userId, e.getMessage());
+//
+//            throw new RuntimeException("userId가 존재하지 않아 삭제에 실패했습니다.");
+//
+//        }
+//
+//        return new UserDeleteResponseDTO();
+//
+//    }
 
 }

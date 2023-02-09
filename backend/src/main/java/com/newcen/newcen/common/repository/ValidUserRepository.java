@@ -29,7 +29,17 @@ public interface ValidUserRepository extends JpaRepository<ValidUserEntity, Stri
     // 익명 사용자 비밀번호 찾기 시 인증코드 존재 여부 조회
     boolean existsByValidCode(String validCode);
 
-    // 회원 탈퇴 시 등록되어있는 회원정보 삭제
-    ValidUserEntity deleteByValidUserEmail(String email);
+    // 회원 삭제를 위해 email 로 회원 id 조회
+//    ValidUserEntity findByValidUserId(String email);
+//    @Modifying
+//    @Query("SELECT u.validUserId FROM ValidUserEntity u WHERE u.validUserEmail = :validUserEmail")
+//    ValidUserEntity selectValidUserId(@Param("validUserEmail") String email);
+//
+//    // 삭제하려는 회원 id가 존재하는지 여부 확인
+//    boolean existsByValidUserId(ValidUserEntity validUserId);
+
+
+
+
 
 }
