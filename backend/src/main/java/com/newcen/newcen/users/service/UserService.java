@@ -5,12 +5,10 @@ import com.newcen.newcen.common.entity.UserEntity;
 import com.newcen.newcen.common.entity.ValidUserEntity;
 import com.newcen.newcen.common.repository.ValidUserRepository;
 import com.newcen.newcen.users.dto.request.AnonymousReviseRequestDTO;
+import com.newcen.newcen.users.dto.request.UserDeleteRequestDTO;
 import com.newcen.newcen.users.dto.request.UserModifyRequestDTO;
 import com.newcen.newcen.users.dto.request.UserSignUpRequestDTO;
-import com.newcen.newcen.users.dto.response.AnonymousReviseResponseDTO;
-import com.newcen.newcen.users.dto.response.LoginResponseDTO;
-import com.newcen.newcen.users.dto.response.UserModifyResponseDTO;
-import com.newcen.newcen.users.dto.response.UserSignUpResponseDTO;
+import com.newcen.newcen.users.dto.response.*;
 import com.newcen.newcen.users.exception.NoRegisteredArgumentsException;
 import com.newcen.newcen.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -178,5 +176,29 @@ public class UserService {
 
     }
 
+    // 회원 탈퇴 (회원정보 삭제)
+    public UserDeleteResponseDTO delete(
+            final String userId,
+            final UserDeleteRequestDTO userDeleteRequestDTO) {
+
+        try {
+
+            userRepository.deleteById(userId);
+
+//            UserEntity email = userRepository.findByUserEmail(userDeleteRequestDTO.getUserEmail());
+
+            validUserRepository.deleteByValidUserEmail(userDeleteRequestDTO.getUserEmail());
+
+        } catch (Exception e) {
+            log.error("userId가 존재하지 않아 삭제에 실패했습니다. - ID: {}, err: {}"
+                    , userId, e.getMessage());
+
+            throw new RuntimeException("userId가 존재하지 않아 삭제에 실패했습니다.");
+
+        }
+
+        return new UserDeleteResponseDTO();
+
+    }
 
 }

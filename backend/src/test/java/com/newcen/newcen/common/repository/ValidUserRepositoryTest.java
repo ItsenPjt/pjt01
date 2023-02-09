@@ -1,5 +1,6 @@
 package com.newcen.newcen.common.repository;
 
+import com.newcen.newcen.common.entity.UserEntity;
 import com.newcen.newcen.common.entity.ValidUserEntity;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,9 @@ class ValidUserRepositoryTest {
 
     @Autowired
     ValidUserRepository validUserRepository;
+
+    @Autowired
+    UserEntity userEntity;
 
     @Test
     @DisplayName("회원 이메일, 유저코드를 삽입해야한다.")
@@ -112,6 +116,21 @@ class ValidUserRepositoryTest {
         assertTrue(userCode);
 
     }
+
+//    @Test
+//    @DisplayName("등록되어있는 email이라면 회원정보를 삭제해야하고," +
+//            " 삭제된 계정을 조회하면 False를 반환해야 한다.")
+//    void deleteByEmailTest() {
+//        // given
+//        String email = "postman@naver.com";
+//
+//        // when
+//        ValidUserEntity deleteUser = validUserRepository.deleteByValidUserEmail(email);
+//
+//        // then
+//        assertNotEquals("postman@naver.com", email);
+//
+//    }
 
 
 }
