@@ -60,8 +60,10 @@ public class NoticeService {
     }
 
     // 공지사항 등록
-    public NoticeOneResponseDTO create(final NoticeCreateRequestDTO createRequestDTO, final String userId) {
-
+    public NoticeOneResponseDTO create(
+            final NoticeCreateRequestDTO createRequestDTO,
+            final String userId
+    ) {
         UserEntity userEntity = userRepository.findById(userId).get();
 
         // UserRole 이 ADMIN 이 아닐 경우 exception
@@ -112,7 +114,7 @@ public class NoticeService {
     }
 
     // 공지사항 삭제
-    public NoticeListResponseDTO delete (final Long boardId) {
+    public NoticeListResponseDTO delete (final Long boardId, final String userId) {
         try {
             noticeRepository.deleteById(boardId);
         } catch (Exception e) {

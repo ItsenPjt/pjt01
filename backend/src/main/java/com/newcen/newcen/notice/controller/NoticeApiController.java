@@ -109,7 +109,10 @@ public class NoticeApiController {
 
     // 공지사항 삭제 (DELETE)
     @DeleteMapping("/{board_id}")
-    public ResponseEntity<?> deleteNotice(@PathVariable("board_id") Long boardId) {
+    public ResponseEntity<?> deleteNotice(
+            @AuthenticationPrincipal String userId,
+            @PathVariable("board_id") Long boardId
+    ) {
         log.info("/api/notices/{} DELETE request", boardId);
 
         if (boardId == null || boardId.equals("")) {
@@ -120,7 +123,7 @@ public class NoticeApiController {
         }
 
         try {
-            NoticeListResponseDTO responseDTO = noticeService.delete(boardId);
+            NoticeListResponseDTO responseDTO = noticeService.delete(boardId, userId);
             return ResponseEntity
                     .ok()
                     .body(responseDTO);
