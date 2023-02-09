@@ -64,7 +64,7 @@ public class BoardEntity {
     private final List<CommentEntity> commentEntityList = new ArrayList<>();
 
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name="board_id")
     private final List<BoardFileEntity> boardFileEntityList = new ArrayList<>();
 

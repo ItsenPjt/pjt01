@@ -98,10 +98,9 @@ public class QuestionService {
         UserEntity user = null;
         user = userRepository.findById(userId).get();
         BoardEntity board = questionsRepositorySupport.findBoardByUserIdAndBoardId(userId,boardId);
-        if (user == null){
-            throw new RuntimeException("해당 유저가 없습니다.");
+        if (!Objects.equals(board.getUserId(), user.getUserId())){
+            throw new RuntimeException("본인이 작성한 글이 아닙니다.");
         }
-
         if (!board.getUserId().equals(userId)){
             throw new RuntimeException("본인 작성글이 아닙니다.");
         }
@@ -120,9 +119,6 @@ public class QuestionService {
         UserEntity user = null;
         BoardEntity board = questionsRepositorySupport.findBoardByUserIdAndBoardId(userId,boardId);
         user = userRepository.findById(userId).get();
-//        if (user == null){
-//            throw new RuntimeException("해당 유저가 없습니다.");
-//        }
         if (!Objects.equals(board.getUserId(), user.getUserId())){
             throw new RuntimeException("본인이 작성한 글이 아닙니다.");
         }
@@ -130,8 +126,8 @@ public class QuestionService {
         BoardFileEntity boardFileGetById = questionsFileRepository.getById(boardFileId);
         boardFileGetById.setBoardFilePath(boardFilePath);
         BoardFileEntity savedBoardFile = questionsFileRepository.save(boardFileGetById);
-
-        return new QuestionResponseDTO(board);
+        BoardEntity savedBoard = questionsRepository.save(board);
+        return new QuestionResponseDTO(savedBoard);
     }
     //게시물 파일 삭제
     public QuestionResponseDTO deleteFile(String userId, Long boardId, String boardFileId){

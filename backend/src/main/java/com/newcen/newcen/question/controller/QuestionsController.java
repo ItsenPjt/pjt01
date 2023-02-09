@@ -15,6 +15,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.websocket.server.PathParam;
+import java.util.UUID;
+
 @RestController
 @RequiredArgsConstructor
 @Slf4j
@@ -125,11 +128,11 @@ public class QuestionsController {
     //문의사항 파일 수정
     @PatchMapping("/{boardId}/{boardFileId}")
     private ResponseEntity<?> createQuestions(
-            @AuthenticationPrincipal String userId, @PathVariable Long boardId,@PathVariable String boardFileId,
+            @AuthenticationPrincipal String userId, @PathVariable("boardId") Long boardId,@PathVariable("boardFileId") String boardFileId,
             @Validated @RequestBody QuestionFileRequestDTO questionFileRequestDTO
             , BindingResult result
     ){
-
+//        String  boardFileId1= boardFileId.toString();
         if (result.hasErrors()){
             log.warn("DTO 검증 에러 발생 : {} ", result.getFieldError());
             return ResponseEntity
