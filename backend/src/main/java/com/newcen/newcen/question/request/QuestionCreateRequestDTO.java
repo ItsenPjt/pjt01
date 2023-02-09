@@ -24,6 +24,7 @@ public class QuestionCreateRequestDTO {
 
     private BoardCommentIs boardCommentIs;
 
+    private BoardType boardType;
     public BoardEntity toEntity(UserEntity user){
 
         return BoardEntity.builder()
@@ -31,7 +32,7 @@ public class QuestionCreateRequestDTO {
                 .boardTitle(this.boardTitle)
                 .boardContent(this.boardContent)
                 .boardCommentIs(this.boardCommentIs)
-                .boardType(BoardType.QUESTION)
+                .boardType(this.boardType)
                 .user(user)
                 .userId(user.getUserId())
                 .build();

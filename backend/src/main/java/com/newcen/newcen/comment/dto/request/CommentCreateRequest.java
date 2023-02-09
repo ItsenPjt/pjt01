@@ -2,6 +2,7 @@ package com.newcen.newcen.comment.dto.request;
 
 import com.newcen.newcen.common.entity.BoardEntity;
 import com.newcen.newcen.common.entity.CommentEntity;
+import com.newcen.newcen.common.entity.UserEntity;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
@@ -17,14 +18,14 @@ public class CommentCreateRequest {
 
     private String commentContent;
 
-    private String comment_writer;
+    private String commentWriter;
 
-    public CommentEntity toEntity(BoardEntity board){
+    public CommentEntity toEntity(BoardEntity board, UserEntity user){
         return CommentEntity.builder()
                 .board(board)
                 .boardId(board.getBoardId())
                 .commentContent(this.commentContent)
-                .commentWriter(this.comment_writer)
+                .commentWriter(user.getUserName())
                 .build();
     }
 }

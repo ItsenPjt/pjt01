@@ -55,4 +55,7 @@ public class CommentEntity {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE,orphanRemoval = true)
     private final List<CommentReplyEntity> commentReplyList = new ArrayList<>();
 
+    public void updateComment(String commentContent){
+        this.commentContent= commentContent;
+    }
 }

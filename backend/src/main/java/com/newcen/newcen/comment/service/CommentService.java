@@ -1,11 +1,26 @@
 package com.newcen.newcen.comment.service;
 
+import com.newcen.newcen.comment.dto.request.CommentCreateRequest;
+import com.newcen.newcen.comment.dto.request.CommentUpdateRequest;
+import com.newcen.newcen.comment.dto.response.CommentListResponseDTO;
+import com.newcen.newcen.comment.dto.response.CommentResponseDTO;
+import com.newcen.newcen.comment.dto.response.CommnetListResponseDTO;
+import com.newcen.newcen.comment.repository.CommentRepository;
+import com.newcen.newcen.common.entity.BoardEntity;
+import com.newcen.newcen.common.entity.CommentEntity;
+import com.newcen.newcen.common.entity.UserEntity;
 import com.newcen.newcen.notice.repository.NoticeRepository;
 import com.newcen.newcen.question.repository.QuestionsRepository;
+import com.newcen.newcen.question.repository.QuestionsRepositorySupport;
+import com.newcen.newcen.question.response.QuestionListResponseDTO;
 import com.newcen.newcen.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -19,13 +34,71 @@ public class CommentService {
 
     private final QuestionsRepository questionsRepository;
 
-    //댓글 생성
-    public void createComment(){
+    private final QuestionsRepositorySupport questionsRepositorySupport;
+
+    private final CommentRepository commentRepository;
+
+    //댓글 목록 조회
+    public CommentListResponseDTO retrive() {
+        List<CommentEntity> commentList = commentRepository.findAll();
+        List<CommentResponseDTO> responseDTO = commentList.stream()
+                .map(CommentResponseDTO::new)
+                .collect(Collectors.toList());
+        return CommentListResponseDTO.builder()
+                .data(responseDTO)
+                .build();
 
     }
+
+    //댓글 생성
+    public CommentListResponseDTO createComment(final CommentCreateRequest dto, String userId, Long BoardId) {
+        UserEntity user = null;
+        user = userRepository.findById(userId).get();
+        BoardEntity board = questionsRepository.findById(BoardId).get();
+        if (user == null) {
+            throw new RuntimeException("해당 유저가 없습니다.");
+        }
+        if (board == null) {
+            throw new RuntimeException("해당 게시글이 없습니다.");
+        }
+        CommentEntity comment = dto.toEntity(board, user);
+        CommentEntity savedComment = commentRepository.save(comment);
+
+        return retrive();
+
+
+    }
+
     //댓글 수정
+    public CommentListResponseDTO updateComment(final CommentUpdateRequest dto, String userId, Long boardId, Long commentId) {
+        CommentEntity getComment = commentRepository.findById(commentId).get();
+        UserEntity user = userRepository.findByUserId(userId).get();
+        if (!Objects.equals(getComment.getCommentWriter(), user.getUserName())) {
+            throw new RuntimeException("본인이 작성한 댓글이 아닙니다.");
+        }
+        String commentContent = null;
+        if (dto.getCommentContent() == null || dto.getCommentContent() == "") {
+            commentContent = getComment.getCommentContent();
+        } else {
+            commentContent = dto.getCommentContent();
+        }
+        getComment.updateComment(commentContent);
+        CommentEntity savedComment = commentRepository.save(getComment);
+
+        return retrive();
+
+
+    }
 
     //댓글 삭제
-
-
+    public boolean deleteComment(String userId, Long commentId) {
+        BoardEntity boardGet = questionsRepositorySupport.findBoardByUserIdAndBoardId(userId, boardId);
+        CommentEntity getComment = commentRepository.findById(commentId).get();
+        UserEntity user = userRepository.findById(userId).get();
+        if (!Objects.equals(getComment.getCommentWriter(), user.getUserName())) {
+            throw new RuntimeException("본인이 작성한 댓글이 아닙니다.");
+        }
+        commentRepository.delete(getComment);
+        return true;
+    }
 }
