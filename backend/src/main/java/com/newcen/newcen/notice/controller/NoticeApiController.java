@@ -1,6 +1,5 @@
 package com.newcen.newcen.notice.controller;
 
-import com.newcen.newcen.common.entity.BoardEntity;
 import com.newcen.newcen.notice.dto.request.NoticeCreateRequestDTO;
 import com.newcen.newcen.notice.dto.request.NoticeUpdateRequestDTO;
 import com.newcen.newcen.notice.dto.response.NoticeListResponseDTO;
@@ -65,6 +64,7 @@ public class NoticeApiController {
 
         try {
             NoticeOneResponseDTO responseDTO = noticeService.create(requestDTO, userId);
+
             return ResponseEntity
                     .ok()
                     .body(responseDTO);
@@ -109,7 +109,10 @@ public class NoticeApiController {
 
     // 공지사항 삭제 (DELETE)
     @DeleteMapping("/{board_id}")
-    public ResponseEntity<?> deleteNotice(@PathVariable("board_id") Long boardId) {
+    public ResponseEntity<?> deleteNotice(
+            @AuthenticationPrincipal String userId,
+            @PathVariable("board_id") Long boardId
+    ) {
         log.info("/api/notices/{} DELETE request", boardId);
 
         if (boardId == null || boardId.equals("")) {
@@ -120,7 +123,7 @@ public class NoticeApiController {
         }
 
         try {
-            NoticeListResponseDTO responseDTO = noticeService.delete(boardId);
+            NoticeListResponseDTO responseDTO = noticeService.delete(boardId, userId);
             return ResponseEntity
                     .ok()
                     .body(responseDTO);

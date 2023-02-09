@@ -101,14 +101,11 @@ class NoticeServiceTest {
                 .boardCommentIs(BoardCommentIs.ON)
                 .build();
 
-        // when
-        NoticeOneResponseDTO noticeOneResponseDTO = noticeService.create(newNotice, user.getUserId());
-
         // then
-        List<NoticeDetailResponseDTO> notices = noticeOneResponseDTO.getNoticeDetails();
-
-        System.out.println("========================");
-        notices.forEach(System.out::println);
+        assertThrows(RuntimeException.class, () -> {
+            // when
+            NoticeOneResponseDTO noticeOneResponseDTO = noticeService.create(newNotice, user.getUserId());
+        });
     }
 
     @Test
@@ -157,18 +154,12 @@ class NoticeServiceTest {
                 .boardCommentIs(BoardCommentIs.ON)
                 .build();
 
-        // when
-        NoticeDetailResponseDTO targetNotice = noticeService.retrieve().getNotices().get(0);        // 0번 index : 1번째 data get
-        System.out.println("targetNotice = " + targetNotice);
-
-        NoticeOneResponseDTO responseDTO = noticeService.update(targetNotice.getBoardId(), updateRequestDTO, user.getUserId());
-        System.out.println("responseDTO = " + responseDTO);
-
         // then
-        List<NoticeDetailResponseDTO> notices = responseDTO.getNoticeDetails();
-
-        System.out.println("========================");
-        notices.forEach(System.out::println);
+        assertThrows(RuntimeException.class, () -> {
+            // when
+            NoticeDetailResponseDTO targetNotice = noticeService.retrieve().getNotices().get(0);        // 0번 index : 1번째 data get
+            noticeService.update(targetNotice.getBoardId(), updateRequestDTO, user.getUserId());
+        });
     }
 
     @Test
@@ -176,11 +167,12 @@ class NoticeServiceTest {
     void deleteTest() {
         // given
         int index = 0;
+        String userId = "402880e7862e5d3201862e5d3ab20000";
 
         // when
         Long deleteId = noticeService.retrieve().getNotices().get(index).getBoardId();  // 2번 index : 3번째 data get
 
-        NoticeListResponseDTO deleteDTO = noticeService.delete(deleteId);
+        NoticeListResponseDTO deleteDTO = noticeService.delete(deleteId, userId);
 
         // then
         List<NoticeDetailResponseDTO> notices = deleteDTO.getNotices();
