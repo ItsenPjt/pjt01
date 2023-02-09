@@ -1,9 +1,17 @@
 .header_nav_bar {
-    background: #353131;
+    background: #5D5A5A;
 }
 
 .header_title {
     color: white;
+    font-weight: 650;
+    font-size: 25px;
+    margin-left: 5%;
+}
+
+.header_title_eng {
+    color: white;
+    font-size: 15px;
     margin-left: 5%;
 }
 
