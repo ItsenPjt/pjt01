@@ -14,7 +14,7 @@ const Header = () => {
             <Container>
                 <Navbar.Brand href="/">
                     <img className='cen_logo' alt='logo' src="img/logo.png"/>
-                    <span className='header_title'>아이티센그룹</span>
+                    <span className='header_title'>아이티센그룹 </span>
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
 
