@@ -1,6 +1,7 @@
 package com.newcen.newcen.faq.service;
 
 import com.newcen.newcen.common.entity.BoardEntity;
+import com.newcen.newcen.common.entity.BoardType;
 import com.newcen.newcen.common.entity.UserEntity;
 import com.newcen.newcen.common.entity.UserRole;
 import com.newcen.newcen.faq.dto.request.FaqSaveRequestDTO;
@@ -29,7 +30,7 @@ public class FaqService {
     // FAQ 목록 조회
     public List<FaqResponseDTO> faqList() {
 
-        List<BoardEntity> entityList = faqRepository.findByBoardType("FAQ");
+        List<BoardEntity> entityList = faqRepository.findByBoardType(BoardType.FAQ);
 
         if(entityList.size() == 0 ) {
             throw new RuntimeException("FAQ list is Empty");
@@ -86,9 +87,26 @@ public class FaqService {
             throw new RuntimeException("FAQ Does Not Exist With Given ID");
         });
 
-        faq.updateQuestion(faqUpdateRequestDTO.getBoardTitle(), faqUpdateRequestDTO.getBoardContent());
-        faqRepository.save(faq);
-        return faqDetail(faq.getBoardId());
+        faq.updateBoard(faqUpdateRequestDTO.getBoardTitle(), faqUpdateRequestDTO.getBoardContent());
+        Long newFaqId = faqRepository.save(faq).getBoardId();
+
+        return faqDetail(newFaqId);
+    }
+
+    // FAQ 삭제
+    public List<FaqResponseDTO> faqDelete(final String userId, final Long boardId) {
+
+        UserEntity user = userRepository.findByUserId(userId).orElseThrow(() -> {
+            throw new RuntimeException("User Does Not Exist");
+        });
+
+        if(!user.getUserRole().equals(UserRole.ADMIN)) {
+            throw new RuntimeException("No Authority to Write FAQ");
+        }
+
+        faqRepository.deleteById(boardId);
+
+        return faqList();
     }
 
 

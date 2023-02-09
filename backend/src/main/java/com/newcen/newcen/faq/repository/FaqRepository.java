@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface FaqRepository extends JpaRepository<BoardEntity, Long> {
 
-    List<BoardEntity> findByBoardType(String type);
+    List<BoardEntity> findByBoardType(BoardType type);
 
 
 }
