@@ -92,7 +92,6 @@ public class CommentService {
 
     //댓글 삭제
     public boolean deleteComment(String userId, Long commentId) {
-        BoardEntity boardGet = questionsRepositorySupport.findBoardByUserIdAndBoardId(userId, boardId);
         CommentEntity getComment = commentRepository.findById(commentId).get();
         UserEntity user = userRepository.findById(userId).get();
         if (!Objects.equals(getComment.getCommentWriter(), user.getUserName())) {
