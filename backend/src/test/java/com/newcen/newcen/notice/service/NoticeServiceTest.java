@@ -3,6 +3,7 @@ package com.newcen.newcen.notice.service;
 import com.newcen.newcen.common.entity.BoardCommentIs;
 import com.newcen.newcen.common.entity.BoardType;
 import com.newcen.newcen.common.entity.UserEntity;
+import com.newcen.newcen.notice.dto.request.NoticeCreateFileRequestDTO;
 import com.newcen.newcen.notice.dto.request.NoticeCreateRequestDTO;
 import com.newcen.newcen.notice.dto.request.NoticeUpdateRequestDTO;
 import com.newcen.newcen.notice.dto.response.NoticeDetailResponseDTO;
@@ -180,5 +181,52 @@ class NoticeServiceTest {
 
         System.out.println("==========================");
         deleteDTO.getNotices().forEach(System.out::println);
+    }
+
+    // --- File Test --- //
+    @Test
+    @DisplayName("관리자가 2번째 공지사항에 파일 등록이 가능하다.")
+    void createFileTest() {
+
+        // given
+        UserEntity user = userRepository.findById("402880e7862e5d3201862e5d3ab20000").get();   // 인사팀 user_id (ADMIN)
+
+        String filePath = "test.md";
+
+        Long boardId = noticeService.retrieve().getNotices().get(1).getBoardId();        // 2번째 공지사항 boardId
+
+        NoticeCreateFileRequestDTO newFile = NoticeCreateFileRequestDTO.builder()
+                .boardFilePath(filePath)
+                .build();
+
+        // when
+        NoticeOneResponseDTO noticeOneResponseDTO = noticeService.createFile(boardId, newFile, user.getUserId());
+
+        // then
+        List<NoticeDetailResponseDTO> notices = noticeOneResponseDTO.getNoticeDetails();
+
+        System.out.println("========================");
+        notices.forEach(System.out::println);
+    }
+
+    @Test
+    @DisplayName("사용자가 2번째 공지사항에 파일을 등록하면 오류가 발생해야 한다.")
+    void createFileErrorTest() {
+
+        // given
+        UserEntity user = userRepository.findById("402880e7862e5d3201862e5d3ae30002").get();   // 이오이 user_id (MEMBER)
+        String filePath = "error.md";
+
+        Long boardId = noticeService.retrieve().getNotices().get(1).getBoardId();        // 2번째 공지사항 boardId
+
+        NoticeCreateFileRequestDTO newFile = NoticeCreateFileRequestDTO.builder()
+                .boardFilePath(filePath)
+                .build();
+
+        // then
+        assertThrows(RuntimeException.class, () -> {
+            // when
+            noticeService.createFile(boardId, newFile, user.getUserId());
+        });
     }
 }
