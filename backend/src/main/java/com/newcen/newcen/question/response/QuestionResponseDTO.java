@@ -25,15 +25,15 @@ public class QuestionResponseDTO {
     private LocalDateTime createDate;
 
     private String boardContent;
-
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime boardUpdateDate;
 
     private BoardCommentIs boardCommentIs;
 
     private String boardWriter;
 
-    private List<BoardFileEntity> boardFileList = new ArrayList<>();
-    private List<CommentEntity> commentList = new ArrayList<>();
+    private List<BoardFileEntity> boardFileList;
+    private List<CommentEntity> commentList;
     public QuestionResponseDTO(BoardEntity boardEntity){
         this.boardId = boardEntity.getBoardId();
         this.boardCommentIs= boardEntity.getBoardCommentIs();

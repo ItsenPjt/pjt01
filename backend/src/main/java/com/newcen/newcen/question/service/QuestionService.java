@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -100,10 +101,7 @@ public class QuestionService {
         if (user == null){
             throw new RuntimeException("해당 유저가 없습니다.");
         }
-        System.out.println(board.getUserId());
-        System.out.println(userId);
-        System.out.println(board.getUserId().getClass().getName());
-        System.out.println(userId.getClass().getName());
+
         if (!board.getUserId().equals(userId)){
             throw new RuntimeException("본인 작성글이 아닙니다.");
         }
@@ -112,7 +110,8 @@ public class QuestionService {
                 .boardFilePath(boardFilePath)
                 .boardId(boardId)
                 .build();
-        board.getBoardFileEntityList().add(boardFileEntity);
+        BoardFileEntity savedFileEntity = questionsFileRepository.save(boardFileEntity);
+        board.getBoardFileEntityList().add(savedFileEntity);
         BoardEntity savedBoard = questionsRepository.save(board);
         return new QuestionResponseDTO(savedBoard);
     }
@@ -121,10 +120,10 @@ public class QuestionService {
         UserEntity user = null;
         BoardEntity board = questionsRepositorySupport.findBoardByUserIdAndBoardId(userId,boardId);
         user = userRepository.findById(userId).get();
-        if (user == null){
-            throw new RuntimeException("해당 유저가 없습니다.");
-        }
-        if (board.getUserId()!=userId){
+//        if (user == null){
+//            throw new RuntimeException("해당 유저가 없습니다.");
+//        }
+        if (!Objects.equals(board.getUserId(), user.getUserId())){
             throw new RuntimeException("본인이 작성한 글이 아닙니다.");
         }
 

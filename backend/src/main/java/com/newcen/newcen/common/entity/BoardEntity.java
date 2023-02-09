@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -64,7 +65,7 @@ public class BoardEntity {
 
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name="board_file_id")
+    @JoinColumn(name="board_id")
     private final List<BoardFileEntity> boardFileEntityList = new ArrayList<>();
 
     public void updateQuestion(String boardTitle, String boardContent){

@@ -33,5 +33,9 @@ public class BoardFileEntity {
     public  void setBoardFilePath(String boardFilePath){
         this.boardFilePath = boardFilePath;
     }
+    public void createBoardFile(
+            Long boardId
+    ){
 
+    }
 }

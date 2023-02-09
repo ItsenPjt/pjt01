@@ -87,7 +87,7 @@ public class UserService {
 
         // 토큰 발급
         String token = tokenProvider.createToken(originalUser);
-
+        log.info(token);
         return new LoginResponseDTO(originalUser, token);
 
     }
