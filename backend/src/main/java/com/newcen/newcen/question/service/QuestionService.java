@@ -67,7 +67,20 @@ public class QuestionService {
     public QuestionResponseDTO updateQuestion(QuestionUpdateRequestDTO dto, String userId, Long boardId){
         UserEntity user = userRepository.getById(userId);
         BoardEntity boardGet = questionsRepositorySupport.findBoardByUserIdAndBoardId(userId,boardId);
-        boardGet.updateQuestion(dto.getBoardTitle(),dto.getBoardContent());
+        String content =null;
+        String title = null;
+        if (dto.getBoardContent()==null || dto.getBoardContent()==""){
+            content = boardGet.getBoardContent();
+        }else {
+            content = dto.getBoardContent();
+        }
+        if (dto.getBoardTitle()==null || dto.getBoardTitle()==""){
+            title = boardGet.getBoardContent();
+        }else {
+            title = dto.getBoardTitle();
+        }
+
+        boardGet.updateQuestion(title,content);
         BoardEntity savedBoard = questionsRepository.save(boardGet);
         return new QuestionResponseDTO(savedBoard);
     }
@@ -89,7 +102,9 @@ public class QuestionService {
         }
         System.out.println(board.getUserId());
         System.out.println(userId);
-        if (board.getUserId() == user.getUserId()){
+        System.out.println(board.getUserId().getClass().getName());
+        System.out.println(userId.getClass().getName());
+        if (!board.getUserId().equals(userId)){
             throw new RuntimeException("본인 작성글이 아닙니다.");
         }
 

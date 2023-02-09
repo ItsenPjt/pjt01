@@ -2,6 +2,7 @@ package com.newcen.newcen.question.controller;
 
 import com.newcen.newcen.question.request.QuestionCreateRequestDTO;
 import com.newcen.newcen.question.request.QuestionFileRequestDTO;
+import com.newcen.newcen.question.request.QuestionUpdateRequestDTO;
 import com.newcen.newcen.question.response.QuestionListResponseDTO;
 import com.newcen.newcen.question.response.QuestionResponseDTO;
 import com.newcen.newcen.question.service.QuestionService;
@@ -69,11 +70,11 @@ public class QuestionsController {
     //문의 사항 수정
     @PatchMapping("/{boardId}")
     private ResponseEntity<?> createQuestions(
-            @AuthenticationPrincipal String userId, @Validated @RequestBody QuestionCreateRequestDTO questionCreateRequestDTO
+            @AuthenticationPrincipal String userId, @Validated @RequestBody QuestionUpdateRequestDTO questionCreateRequestDTO,@PathVariable Long boardId
     ){
         userId = "402880c3862a5ba301862a5badf20000";
         try {
-            QuestionResponseDTO questionResponseDTO = questionService.create(questionCreateRequestDTO, userId);
+            QuestionResponseDTO questionResponseDTO = questionService.updateQuestion(questionCreateRequestDTO, userId, boardId);
 
             return ResponseEntity
                     .ok()
@@ -105,7 +106,7 @@ public class QuestionsController {
             @AuthenticationPrincipal String userId, @PathVariable Long boardId, @Validated @RequestBody QuestionFileRequestDTO questionFileRequestDTO
             , BindingResult result
     ){
-        userId = "402880c3862ae9ac01862ae9b6610000";
+        userId = "402880c3862a5ba301862a5badf20000";
         if (result.hasErrors()){
             log.warn("DTO 검증 에러 발생 : {} ", result.getFieldError());
             return ResponseEntity
