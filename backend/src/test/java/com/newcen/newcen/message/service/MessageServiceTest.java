@@ -72,7 +72,6 @@ class MessageServiceTest {
         MessageSendRequestDTO message = MessageSendRequestDTO.builder()
                 .messageTitle("메세지 보내기 테스트")
                 .messageContent("한번에 성공하겠지?!")
-                .messageSender(sender.getUserName())
                 .build();
 
         // when
@@ -109,7 +108,6 @@ class MessageServiceTest {
         MessageSendRequestDTO message = MessageSendRequestDTO.builder()
                 .messageTitle("보낸 메세지 조회 테스트")
                 .messageContent("한번에 성공하겠지?!?!")
-                .messageSender(sender.getUserName())
                 .build();
 
 
