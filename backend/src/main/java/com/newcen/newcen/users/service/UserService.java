@@ -4,6 +4,8 @@ import com.newcen.newcen.common.config.security.TokenProvider;
 import com.newcen.newcen.common.entity.UserEntity;
 import com.newcen.newcen.common.entity.ValidUserEntity;
 import com.newcen.newcen.common.repository.ValidUserRepository;
+import com.newcen.newcen.users.dto.request.AnonymousReviseRequestDTO;
+import com.newcen.newcen.users.dto.request.UserModifyRequestDTO;
 import com.newcen.newcen.users.dto.request.UserSignUpRequestDTO;
 import com.newcen.newcen.users.dto.response.LoginResponseDTO;
 import com.newcen.newcen.users.dto.response.UserModifyResponseDTO;
@@ -15,6 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -93,7 +97,48 @@ public class UserService {
     }
 
     // 내정보 수정
-//    public UserModifyResponseDTO update() {
+    public UserModifyResponseDTO update(
+            final String userId,
+            final UserModifyRequestDTO userModifyRequestDTO) {
+
+        Optional<UserEntity> targetEntity = userRepository.findByUserId(userId);
+
+        targetEntity.ifPresent(entity -> {
+
+            // 패스워드 인코딩
+            String rawPassword = userModifyRequestDTO.getUserPassword();   // 새로운 수정된 평문 암호
+            String encodePassword = passwordEncoder.encode(rawPassword);    // 암호화 처리
+            entity.setUserPassword(encodePassword);
+
+            UserEntity savedUser = userRepository.save(entity);
+
+            log.info(
+                    "내정보 수정 성공..!!! - user_id : {}", savedUser.getUserId());
+            log.info("변경된 계정 - user_Email : {}", savedUser.getUserEmail());
+
+        });
+
+        Optional<UserEntity> result = userRepository.findByUserId(userId);
+
+        return new UserModifyResponseDTO(result.get());
+
+    }
+
+    // 익명 사용자 비밀번호 찾기 시 수정
+//    public AnonymousReviseRequestDTO update(
+//            AnonymousReviseRequestDTO anonymousReviseRequestDTO) {
+//        if (anonymousReviseRequestDTO == null) {
+//            throw new NoRegisteredArgumentsException("mysterious UserInfo - 알 수 없는 회원정보 입니다.");
+//        }
+//
+//        final String userEmail = anonymousReviseRequestDTO.getUserEmail();
+//        final String userName = anonymousReviseRequestDTO.getUserName();
+//        final String userPassword = anonymousReviseRequestDTO.getUserPassword();
+//
+//        final String validCode = anonymousReviseRequestDTO.getValidCode();
+//
+//        final boolean authorizedUser =
+//                validUserRepository.existsByValidUserEmailAndValidCodeAndValidActive(email, code, 1);
 //
 //    }
 

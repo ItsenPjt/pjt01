@@ -27,12 +27,12 @@ public class UserModifyResponseDTO {
 
 
     // 엔터티를 DTO로 변경
-    public UserModifyResponseDTO(UserEntity entity, String token) {
+    public UserModifyResponseDTO(UserEntity entity) {
 
         this.userEmail = entity.getUserEmail();
         this.userName = entity.getUserName();
         this.userRegdate = entity.getUserRegdate();
-        this.token = token;
+        this.token = getToken();
 
     }
 

@@ -44,7 +44,7 @@ public class MessageService {
         List<MessageReceivedResponseDTO> receivedMessageList = receivedMessageEntityList.stream()
                 .map(MessageReceivedResponseDTO::new)
                 .collect(Collectors.toList());
-        
+
         log.info("받은 메세지 목록 조회 - 받은 메세지 수: {}", receivedMessageList.size() );
 
         return MessageReceivedListResponseDTO.builder()
