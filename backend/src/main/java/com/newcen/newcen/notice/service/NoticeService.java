@@ -3,6 +3,7 @@ package com.newcen.newcen.notice.service;
 import com.newcen.newcen.common.entity.*;
 import com.newcen.newcen.notice.dto.request.NoticeCreateFileRequestDTO;
 import com.newcen.newcen.notice.dto.request.NoticeCreateRequestDTO;
+import com.newcen.newcen.notice.dto.request.NoticeUpdateFileRequestDTO;
 import com.newcen.newcen.notice.dto.request.NoticeUpdateRequestDTO;
 import com.newcen.newcen.notice.dto.response.NoticeDetailResponseDTO;
 import com.newcen.newcen.notice.dto.response.NoticeListResponseDTO;
@@ -127,9 +128,9 @@ public class NoticeService {
         try {
             noticeRepository.deleteById(boardId);
         } catch (Exception e) {
-            log.error("id가 존재하지 않아 삭제에 실패했습니다. - ID: {}, error: {}", boardId, e.getMessage());   // [서버에 기록할 메세지]
+            log.error("삭제할 공지사항이 존재하지 않아 삭제에 실패했습니다. - ID: {}, error: {}", boardId, e.getMessage());   // [서버에 기록할 메세지]
 
-            throw new RuntimeException("id가 존재하지 않아 삭제에 실패했습니다.");      // [클라이언트에게 전달할 메세지]
+            throw new RuntimeException("삭제할 공지사항이 존재하지 않아 삭제에 실패했습니다.");      // [클라이언트에게 전달할 메세지]
         }
         return retrieve();      // 공지사항 목록으로
     }
@@ -159,6 +160,66 @@ public class NoticeService {
     }
 
     // 공지사항 파일 수정
-    
+    public NoticeOneResponseDTO updateFile (
+            final Long boardId,         // boardId : 수정 대상의 공지사항 id
+            final String boardFileId,   // boardFileId : 수정 대상의 공지사항 파일 id
+            final NoticeUpdateFileRequestDTO updateFileRequestDTO,
+            final String userId
+    ) {
+
+        Optional<BoardEntity> targetBoard = noticeRepository.findById(boardId);     // 수정 대상의 공지사항
+        Optional<BoardFileEntity> targetBoardFile = noticeFileRepository.findById(boardFileId);     // 수정 대상의 공지사항 파일
+        Optional<UserEntity> userEntity = userRepository.findById(userId);
+
+        if (!userEntity.get().getUserRole().equals(UserRole.ADMIN)) {
+            throw new RuntimeException("관리자가 아닙니다.");
+        }
+
+        // 게시물을 작성한 사람과 userId 가 일치해야 함
+        if (!targetBoard.get().getUserId().equals(userId)) {    // 일치하지 않으면
+            throw new RuntimeException("본인이 작성한 글이 아닙니다.");
+        }
+
+        // 파일이 존재하면
+        if (targetBoardFile.isPresent()) {
+            // 생성자로 변경 (BoardFileEntity.java 의 @AllArgsConstructor 이용)
+            BoardFileEntity fileEntity =
+                    new BoardFileEntity(
+                            targetBoardFile.get().getBoardFileId(),
+                            updateFileRequestDTO.getBoardFilePath(),
+                            targetBoard.get().getBoardId());
+
+            noticeFileRepository.save(fileEntity);
+        }
+        return retrieveOne(boardId);
+    }
+
     // 공지사항 파일 삭제
+    public NoticeOneResponseDTO deleteFile (
+            final Long boardId,         // boardId : 수정 대상의 공지사항 id
+            final String boardFileId,   // boardFileId : 수정 대상의 공지사항 파일 id
+            final String userId
+    ) {
+        Optional<BoardEntity> targetBoard = noticeRepository.findById(boardId);     // 수정 대상의 공지사항
+
+        Optional<UserEntity> userEntity = userRepository.findById(userId);
+        if (!userEntity.get().getUserRole().equals(UserRole.ADMIN)) {
+            throw new RuntimeException("관리자가 아닙니다.");
+        }
+
+        // 게시물을 작성한 사람과 userId 가 일치해야 함
+        if (!targetBoard.get().getUserId().equals(userId)) {    // 일치하지 않으면
+            throw new RuntimeException("본인이 작성한 글이 아닙니다.");
+        }
+
+        try {
+            noticeFileRepository.deleteById(boardFileId);
+        } catch (Exception e) {
+            log.error("삭제할 파일이 존재하지 않아 삭제에 실패했습니다. - fileID: {}, error: {}", boardFileId, e.getMessage());   // [서버에 기록할 메세지]
+
+            throw new RuntimeException("삭제할 파일이 존재하지 않아 삭제에 실패했습니다.");      // [클라이언트에게 전달할 메세지]
+        }
+
+        return retrieveOne(boardId);
+    }
 }
