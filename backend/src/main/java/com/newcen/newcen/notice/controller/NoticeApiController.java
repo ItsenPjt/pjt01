@@ -141,7 +141,7 @@ public class NoticeApiController {
     }
 
     // 공지사항 파일첨부 (POST)
-    @PostMapping("/{board_id}/file")
+    @PostMapping("/{board_id}/files")
     public ResponseEntity<?> createFileNotice (
             @AuthenticationPrincipal String userId,
             @PathVariable("board_id") Long boardId,
@@ -175,7 +175,7 @@ public class NoticeApiController {
     }
 
     // 공지사항 파일 수정 (PUT)
-    @RequestMapping("/{board_id}/file/{board_file_id}")
+    @RequestMapping("/{board_id}/files/{board_file_id}")
     public ResponseEntity<?> updateFileNotice(
             @AuthenticationPrincipal String userId,
             @PathVariable("board_id") Long boardId,
@@ -206,7 +206,7 @@ public class NoticeApiController {
     }
 
     // 공지사항 파일 삭제 (DELETE)
-    @DeleteMapping("/{board_id}/file/{board_file_id}")
+    @DeleteMapping("/{board_id}/files/{board_file_id}")
     public ResponseEntity<?> deleteFileNotice(
             @AuthenticationPrincipal String userId,
             @PathVariable("board_id") Long boardId,
