@@ -7,10 +7,13 @@ import org.springframework.beans.factory.annotation.Required;
 
 import javax.swing.*;
 @Getter
-@RequiredArgsConstructor
 public class MessageCustomException extends RuntimeException {
 
     private final MessageExceptionEnum messageExceptionEnum;
+
+    public MessageCustomException(MessageExceptionEnum messageExceptionEnum) {
+        this.messageExceptionEnum = messageExceptionEnum;
+    }
 
 
 

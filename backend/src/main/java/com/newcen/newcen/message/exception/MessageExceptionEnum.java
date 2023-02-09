@@ -8,6 +8,7 @@ public enum MessageExceptionEnum {
 
     INVALID_PARAMETER(HttpStatus.BAD_REQUEST, "400", "Invalid Parameter Values Or Duplicated Key Values"),
     MESSAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "Unable to Find Message By Given Message ID"),
+    USER_NOT_EXIST(HttpStatus.NOT_FOUND, "404", "User Does Not Exist With Given User ID"),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "500", "Internal Server Error Occurred")
     ;
 
