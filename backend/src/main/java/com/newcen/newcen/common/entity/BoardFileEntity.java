@@ -35,6 +35,4 @@ public class BoardFileEntity {
         this.boardFilePath = boardFilePath;
     }
 
-
-
 }
