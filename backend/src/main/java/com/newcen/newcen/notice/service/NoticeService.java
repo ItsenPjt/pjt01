@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -60,10 +61,11 @@ public class NoticeService {
     }
 
     // 공지사항 등록
-    public NoticeOneResponseDTO create(
+    public NoticeOneResponseDTO create (
             final NoticeCreateRequestDTO createRequestDTO,
             final String userId
-    ) {
+    ) throws RuntimeException {
+
         UserEntity userEntity = userRepository.findById(userId).get();
 
         // UserRole 이 ADMIN 이 아닐 경우 exception
@@ -72,6 +74,8 @@ public class NoticeService {
         }
 
         BoardEntity board = createRequestDTO.toEntity(userEntity);      // 이 DTO 를 entity 로 변환해서 save 메서드 안에 넣기
+        board.setUserId(userId);       // user 정보 직접 추가
+
         noticeRepository.save(board);
 
         log.info("공지사항이 저장되었습니다. - 제목: {}, 내용: {}, 댓글 허용 여부: {}",
@@ -81,7 +85,7 @@ public class NoticeService {
     }
 
     // 공지사항 수정
-    public NoticeOneResponseDTO update(
+    public NoticeOneResponseDTO update (
             final Long boardId,     // boardId : 수정 대상의 공지사항 id
             final NoticeUpdateRequestDTO updateRequestDTO,
             final String userId
@@ -101,11 +105,9 @@ public class NoticeService {
                                     userEntity.get().getUserName(),
                                     updateRequestDTO.getBoardContent(),
                                     targetEntity.get().getCreateDate(),
-                                    targetEntity.get().getBoardUpdateDate(),
+                                    LocalDateTime.now(),
                                     updateRequestDTO.getBoardCommentIs(),
                                     userEntity.get().getUserId());
-
-            System.out.println("boardEntity = " + boardEntity);
 
             noticeRepository.save(boardEntity);
         }
@@ -115,6 +117,12 @@ public class NoticeService {
 
     // 공지사항 삭제
     public NoticeListResponseDTO delete (final Long boardId, final String userId) {
+
+        Optional<UserEntity> userEntity = userRepository.findById(userId);
+        if (!userEntity.get().getUserRole().equals(UserRole.ADMIN)) {
+            throw new RuntimeException("관리자가 아닙니다.");
+        }
+
         try {
             noticeRepository.deleteById(boardId);
         } catch (Exception e) {
@@ -125,9 +133,9 @@ public class NoticeService {
         return retrieve();      // 공지사항 목록으로
     }
 
-    // 게시물 파일 등록
+    // 공지사항 파일 등록
 
-    // 게시물 파일 수정
+    // 공지사항 파일 수정
 
-    // 게시물 파일 삭제
+    // 공지사항 파일 삭제
 }

@@ -57,6 +57,7 @@ public class BoardEntity {
 
     @Column(name="user_id")
     private String userId;
+
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name="comment_id")
@@ -70,6 +71,10 @@ public class BoardEntity {
     public void updateQuestion(String boardTitle, String boardContent){
         this.boardContent = boardContent;
         this.boardTitle = boardTitle;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public BoardEntity(long boardId, BoardType boardType, String boardTitle, String boardWriter, String boardContent, LocalDateTime createDate, LocalDateTime boardUpdateDate, BoardCommentIs boardCommentIs, String userId) {

@@ -1,6 +1,5 @@
 package com.newcen.newcen.notice.controller;
 
-import com.newcen.newcen.common.entity.BoardEntity;
 import com.newcen.newcen.notice.dto.request.NoticeCreateRequestDTO;
 import com.newcen.newcen.notice.dto.request.NoticeUpdateRequestDTO;
 import com.newcen.newcen.notice.dto.response.NoticeListResponseDTO;
@@ -65,6 +64,7 @@ public class NoticeApiController {
 
         try {
             NoticeOneResponseDTO responseDTO = noticeService.create(requestDTO, userId);
+
             return ResponseEntity
                     .ok()
                     .body(responseDTO);
