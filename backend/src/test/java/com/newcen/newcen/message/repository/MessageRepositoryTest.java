@@ -105,6 +105,8 @@ class MessageRepositoryTest {
                 .receiver(receiver)
                 .build();
 
+        messageRepository.save(message);
+
         // when
         List<MessageEntity> receivedMessage = messageRepository.findByReceiverId(receiver.getUserId());
 

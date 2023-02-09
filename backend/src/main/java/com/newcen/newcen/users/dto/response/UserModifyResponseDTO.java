@@ -2,38 +2,37 @@ package com.newcen.newcen.users.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.newcen.newcen.common.entity.UserEntity;
-import com.newcen.newcen.common.entity.UserRole;
 import lombok.*;
 
 import java.time.LocalDate;
 
-@Getter
 @Setter
+@Getter
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = "userEmail")    // email로만 비교
 @Builder
-
-public class UserSignUpResponseDTO {
+@EqualsAndHashCode
+public class UserModifyResponseDTO {
 
     private String userEmail;
-
     private String userName;
 
-    private UserRole userRole;
-
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy년 MM월 dd일")
     private LocalDate userRegdate;
 
+    private String token;   // 인증 토큰
 
-    // UserEntity 를 UserSignUpResponseDTO 로 변경하는 생성자
-    public UserSignUpResponseDTO(UserEntity entity) {
+    private String message; // 응답 메세지
+
+
+    // 엔터티를 DTO로 변경
+    public UserModifyResponseDTO(UserEntity entity, String token) {
 
         this.userEmail = entity.getUserEmail();
         this.userName = entity.getUserName();
-        this.userRole = entity.getUserRole();
         this.userRegdate = entity.getUserRegdate();
+        this.token = token;
 
     }
 
