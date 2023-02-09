@@ -21,7 +21,7 @@ public class CommentReplyEntity {
     @Id
     @Column(name = "comment_reply_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long commentReplyId;
+    private Long commentReplyId;
 
     @Column(name = "comment_reply_content", nullable = false)
     private String commentReplyContent;
