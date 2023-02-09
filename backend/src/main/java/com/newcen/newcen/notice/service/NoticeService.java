@@ -1,6 +1,7 @@
 package com.newcen.newcen.notice.service;
 
 import com.newcen.newcen.common.entity.*;
+import com.newcen.newcen.notice.dto.request.NoticeCreateFileRequestDTO;
 import com.newcen.newcen.notice.dto.request.NoticeCreateRequestDTO;
 import com.newcen.newcen.notice.dto.request.NoticeUpdateRequestDTO;
 import com.newcen.newcen.notice.dto.response.NoticeDetailResponseDTO;
@@ -134,8 +135,30 @@ public class NoticeService {
     }
 
     // 공지사항 파일 등록
+    public NoticeOneResponseDTO createFile (
+            final Long boardId,     // boardId : 파일 추가할 공지사항 id
+            final NoticeCreateFileRequestDTO createFileRequestDTO,
+            final String userId
+    ) {
+        UserEntity userEntity = userRepository.findById(userId).get();
+
+        // UserRole 이 ADMIN 이 아닐 경우 exception
+        if (!userEntity.getUserRole().equals(UserRole.ADMIN)) {
+            throw new RuntimeException("관리자가 아닙니다.");
+        }
+
+        // 파일을 추가할 공지사항 entity
+        BoardEntity boardEntity = noticeRepository.findById(boardId).get();
+
+        BoardFileEntity boardFile = createFileRequestDTO.toEntity(boardEntity);
+        noticeFileRepository.save(boardFile);
+
+        log.info("파일이 저장되었습니다. - 파일 주소: {}", createFileRequestDTO.getBoardFilePath());
+
+        return retrieveOne(boardFile.getBoardId());
+    }
 
     // 공지사항 파일 수정
-
+    
     // 공지사항 파일 삭제
 }
