@@ -17,6 +17,5 @@ public class NoticeOneResponseDTO {     // 공지사항 1개 내용 DTO (파일,
     private List<NoticeDetailResponseDTO> noticeDetails;
 
     // 파일 경로
-    @Builder.Default
-    private List<BoardFileEntity> boardFileEntityList = new ArrayList<>();
+    private List<BoardFileEntity> boardFileEntityList;
 }
