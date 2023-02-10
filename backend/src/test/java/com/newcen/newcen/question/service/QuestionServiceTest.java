@@ -50,7 +50,7 @@ class QuestionServiceTest {
     @Test
     @DisplayName("문의사항을 생성한다.")
     void create(){
-        UserEntity user = userRepository.findById("402880c3862a5ba301862a5badf20000").get();
+        UserEntity user = userRepository.findById("402880c38633b44d018633b4584f0000").get();
         QuestionCreateRequestDTO newQuestion = QuestionCreateRequestDTO
                 .builder()
                 .boardContent("안녕하세요")
