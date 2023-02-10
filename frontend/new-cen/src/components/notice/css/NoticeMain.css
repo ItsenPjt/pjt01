@@ -1,4 +1,12 @@
-.notice_main {
+.btn_orange {
+    background-color: #E9460A;
+    border: none;
+}
+.btn_orange:hover, .btn_orange:active, .btn_orange:focus {
+    background-color: #b43102;
+}
+
+#notice_main {
     width: 60%;
     height: 600px;
 
@@ -13,16 +21,16 @@
     margin: 100px auto;    
 }
 
-.notice_table {
+#notice_table {
     border-collapse: separate;
     border-spacing: 0 20px;
 }
 
-.notice_table th, .notice_table td {
+#notice_table th, #notice_table td {
     border-style: hidden;
 }
 
-.notice_main_thead {
+#notice_main_thead {
     margin-top: 10px;
     background-color: #F3F6F9;
     text-align: center;

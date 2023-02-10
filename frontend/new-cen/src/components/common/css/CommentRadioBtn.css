@@ -1,4 +1,4 @@
-.comment_justify {
+#comment_radio_main {
     margin-top: 15px;
     margin-bottom: 10px;
     border-radius: 10px;
@@ -11,13 +11,13 @@
     border: 1px solid #aaa;
 }
 
-.comment_radio_label {
+#comment_radio_label {
     font-size: 20px;
     line-height: 2rem;
     padding: 0.2em 0.4em;
 }
 
-.comment_radio_span {
+#comment_radio_span {
     vertical-align: middle;
     margin-right: 5px;
 }
