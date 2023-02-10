@@ -1,9 +1,10 @@
 import React from 'react';
 
+import './css/MainTemplate.css';
 const MainTemplate = () => {
     return (
         <div>
-            MainTemplate
+            <img className='main_img' alt='logo' src="/img/main_img.png"/>
         </div>
     )
 }

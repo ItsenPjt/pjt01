@@ -80,8 +80,8 @@ public class NoticeApiController {
         }
     }
 
-    // 공지사항 수정 (PUT)
-    @RequestMapping("/{board_id}")
+    // 공지사항 수정 (PATCH)
+    @PatchMapping("/{board_id}")
     public ResponseEntity<?> updateNotice(
             @AuthenticationPrincipal String userId,
             @PathVariable("board_id") Long boardId,
@@ -174,8 +174,8 @@ public class NoticeApiController {
         }
     }
 
-    // 공지사항 파일 수정 (PUT)
-    @RequestMapping("/{board_id}/files/{board_file_id}")
+    // 공지사항 파일 수정 (PATCH)
+    @PatchMapping("/{board_id}/files/{board_file_id}")
     public ResponseEntity<?> updateFileNotice(
             @AuthenticationPrincipal String userId,
             @PathVariable("board_id") Long boardId,

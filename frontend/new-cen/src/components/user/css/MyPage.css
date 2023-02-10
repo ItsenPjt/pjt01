@@ -1,0 +1,127 @@
+#mypage_main {
+    width: 30%;
+    height: 600px;
+
+    border: 1px solid #aaa;
+    border-radius: 10px;
+
+    /* 음영처리 */ 
+    /* x축, y축, 블러크기, 색상*/
+    box-shadow: 0 0 8px #aaa;
+
+    /* 박스 x축 중앙 정렬 : margin 좌우값을 auto로 설정*/
+    margin: 100px auto; 
+}
+
+#mypage_logo_position {
+    text-align: center;
+}
+
+#mypage_logo_img {
+    margin-top: 20px;
+    height: 80px;
+}
+
+#mypage_main_content {
+    width: 50%;
+    margin: 20px auto;
+}
+
+#mypage_form_label {
+    font-weight: 600;
+}
+
+.mypage_form_control {
+    text-align: center;
+
+    box-shadow: 3px 3px #D0D0D0;
+}
+.mypage_form_control::placeholder {
+    color: #D0D0D0;
+}
+
+#mypage_div {
+    text-align: center;
+    margin-top: 40px; 
+}
+
+.btn_gray {
+    background-color: #717172;
+    border: none;
+}
+.btn_gray:hover, .btn_gray:active, .btn_gray:focus {
+    background-color: #5e5e5e;
+}
+
+.btn_orange {
+    background-color: #E9460A;
+    border: none;
+}
+.btn_orange:hover, .btn_orange:active, .btn_orange:focus {
+    background-color: #b43102;
+}
+
+.mypage_btn {
+    width: 80px;
+}
+
+.btn_size_100 {
+    width: 100px;
+}
+
+#mypage_btn {
+    margin-left: 10px;
+}
+
+/* 회원 탈퇴 */
+#mypage_withdrawal {
+    float: right;
+    color: #E9460A;
+
+    margin: 10px 20px 0px 0px;
+
+    cursor: pointer;
+}
+#mypage_withdrawal:hover {
+    font-weight: 600;
+}
+
+/* 모달 */
+#mypage_modal {
+    width: 400px;
+    border-radius: 10px;
+}
+
+#mypage_modal_body {
+    text-align: center;
+}
+
+#mypage_modal_content {
+    margin-top: 20px;
+        
+    font-size: 14px;
+    font-weight: 550;
+}
+
+#mypage_modal_message {
+    margin-top: 20px;
+
+    font-size: 18px;
+    font-weight: 800;
+}
+
+#mypage_modal_message_write {
+    outline: 0;
+    border-width: 0 0 1px;
+    border-color: #D0D0D0;
+
+    text-align: center;
+    width: 30%;
+}
+#mypage_modal_message_write::placeholder {
+    color: #D0D0D0;
+}
+
+#mypage_withdrawal_btn {
+    margin-left: 10px;
+}

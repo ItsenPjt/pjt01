@@ -1,0 +1,72 @@
+#insert_div {
+    margin: 60px 2%;
+}
+
+.justify {
+    display: flex;
+    justify-content: space-between;
+}
+
+#insert_title {
+    height: 60px;
+    width: 250px;
+    
+    text-align: center;
+    font-size: 20px;
+}
+
+#notice_insert_div {
+    margin-top: 10px;
+    float: right;
+}
+
+.btn_gray {
+    background-color: #717172;
+    border: none;
+}
+.btn_gray:hover, .btn_gray:active, .btn_gray:focus {
+    background-color: #5e5e5e;
+}
+
+.btn_orange {
+    background-color: #E9460A;
+    border: none;
+}
+.btn_orange:hover, .btn_orange:active, .btn_orange:focus {
+    background-color: #b43102;
+}
+
+.notice_btn {
+    width: 80px;
+}
+
+.btn_size_100 {
+    width: 100px;
+}
+
+#notice_insert_btn {
+    margin-left: 10px;
+}
+
+/* 모달 */
+#notice_modal {
+    width: 400px;
+
+    border: 1px solid black;
+    border-radius: 10px;
+}
+
+#notice_modal_body {
+    text-align: center;
+    
+    font-size: 17px;
+    font-weight: 550;
+}
+
+#notice_modal_content {
+    margin-top: 40px;
+}
+
+#notice_insert_btn {
+    margin-left: 10px;
+}
