@@ -1,5 +1,7 @@
 #insert_div {
-    margin: 60px 2%;
+    /* margin: 60px 2%; */
+    width: 60%;
+    margin: 60px auto;
 }
 
 .justify {
@@ -7,12 +9,16 @@
     justify-content: space-between;
 }
 
+/* 공지사항 제목 입력 */
 #insert_title {
     height: 60px;
     width: 250px;
-    
+
     text-align: center;
     font-size: 20px;
+}
+#insert_title::placeholder {
+    color: #D0D0D0;
 }
 
 #notice_insert_div {
@@ -20,6 +26,7 @@
     float: right;
 }
 
+/* button className-- */
 .btn_gray {
     background-color: #717172;
     border: none;
@@ -43,12 +50,13 @@
 .btn_size_100 {
     width: 100px;
 }
+/* --button */
 
 #notice_insert_btn {
     margin-left: 10px;
 }
 
-/* 모달 */
+/* Modal */
 #notice_modal {
     width: 400px;
 
@@ -65,8 +73,4 @@
 
 #notice_modal_content {
     margin-top: 40px;
-}
-
-#notice_insert_btn {
-    margin-left: 10px;
 }

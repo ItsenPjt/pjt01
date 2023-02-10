@@ -12,22 +12,26 @@ const NoticeMain = () => {
 
     return (
         <>
-            <Button onClick={onInsertPage} className='btn_orange' id='notice_insert_btn'>추가</Button>
+            <div id='notice_btn_main'>
+                <div id='notice_insert_btn_main'>
+                    <Button onClick={onInsertPage} className='btn_orange btn_size_100'>추가</Button>
+                </div>
 
-            <div id='notice_main'>
-                <Table responsive id='notice_table'>
-                    <thead>
-                        <tr id='notice_main_thead'>
-                            <th width="10%">번호</th>
-                            <th width="20%">제목</th>
-                            <th width="15%">날짜</th>
-                            <th width="15%">작성자</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    
-                    </tbody>
-                </Table >   
+                <div id='notice_table_main'>
+                    <Table responsive id='notice_table'>
+                        <thead>
+                            <tr id='notice_main_thead'>
+                                <th width="10%">번호</th>
+                                <th width="20%">제목</th>
+                                <th width="15%">날짜</th>
+                                <th width="15%">작성자</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        
+                        </tbody>
+                    </Table >   
+                </div>
             </div>
         </>
     )

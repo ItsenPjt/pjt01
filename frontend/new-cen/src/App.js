@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react"; 
 import { Route, Routes } from 'react-router-dom';
 
 import Header from './components/common/Header';
@@ -18,28 +19,63 @@ import FAQTemplate from './components/faq/FAQTemplate';
 import MessageTemplate from './components/message/MessageTemplate';
 
 function App() {
-  return (
-    <>
-      <Header />
 
-      <Routes>
-        <Route path="/" element={<MainTemplate />} />
-        <Route path="/login" element={<UserLogin />} />
-        <Route path="/join" element={<UserJoin />} />
-        <Route path="/findpw" element={<UserFindPw />} />
-        <Route path="/mypage" element={<MyPage />} />
+    // 로그인 상태 관리 
+    const [isLogin, setIsLogin] = useState(false);
+    
+    useEffect(() => {
 
-        <Route path="/notice" element={<NoticeTemplate />} />
-        <Route path="/notice/insert" element={<NoticeInsert />} />
+        /*
+        if (localStorage.getItem("ACCESS_TOKEN") === null || localStorage.getItem("LOGIN_USERNAME") === null) {
+            // localStorage 에 ACCESS_TOKEN이나 LOGIN_USERNAME의 key 값으로 저장된 값이 없다면
+            setIsLogin(false);
+        } else {
+            // localStorage 에 ACCESS_TOKEN이나 LOGIN_USERNAME의 key 값으로 저장된 값이 있다면
+            setIsLogin(true);   // 로그인 상태 변경
+        }
+        */
 
-        <Route path="/question" element={<QuestionTemplate />} />
+        // 로그인 기능 구현 전까지만 아래 코드로 사용
+        setIsLogin(true);
+    }, []);
 
-        <Route path="/faq" element={<FAQTemplate />} />
-        
-        <Route path="/message" element={<MessageTemplate />} />
-      </Routes>
-    </>
-  );
+    return (
+        <>
+            {
+                isLogin ?
+                (
+                    <>
+                        <Header />
+                
+                        <Routes>
+                            <Route path="/" element={<MainTemplate />} />
+                            
+                            <Route path="/mypage" element={<MyPage />} />
+                    
+                            <Route path="/notice" element={<NoticeTemplate />} />
+                            <Route path="/notice/insert" element={<NoticeInsert />} />
+                    
+                            <Route path="/question" element={<QuestionTemplate />} />
+                    
+                            <Route path="/faq" element={<FAQTemplate />} />
+                            
+                            <Route path="/message" element={<MessageTemplate />} />
+                        </Routes>
+                    </>
+                )
+                :
+                (
+                    <>
+                    <Routes>
+                        <Route path="/" element={<UserLogin />} />
+                        <Route path="/join" element={<UserJoin />} />
+                        <Route path="/findpw" element={<UserFindPw />} />
+                    </Routes>
+                    </>
+                )  
+            }
+        </>
+    );
 }
 
 export default App;

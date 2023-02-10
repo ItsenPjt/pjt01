@@ -14,10 +14,12 @@
     margin: 55px auto;  
 }
 
+/* 로고 이미지 위치 (가운데 정렬) */
 #find_pw_logo_position {
     text-align: center;
 }
 
+/* 로고 이미지 크기 */
 #find_pw_logo_img {
     margin-top: 20px;
     height: 80px;
@@ -49,11 +51,13 @@
     color: #D0D0D0;
 }
 
-#find_pw_div {
+/* footer */
+#find_pw_footer_div {
     text-align: center;
     margin-top: 40px; 
 }
 
+/* button className-- */
 .btn_gray {
     background-color: #717172;
     border: none;
@@ -77,6 +81,7 @@
 .btn_size_100 {
     width: 100px;
 }
+/* --button */
 
 #user_find_change_btn {
     margin-left: 10px;

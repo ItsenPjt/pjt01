@@ -28,6 +28,7 @@ const NoticeInsert = () => {
         setDesc(value);
     };
 
+    // 공지사항 목록 페이지로
     const onNoticePage = () => {
         window.location.href = "/notice";
     }
@@ -56,6 +57,7 @@ const NoticeInsert = () => {
                 </div>
             </div>
 
+{/* Modal */}
             <Modal show={modal} onHide={handleClose} id="notice_modal">
                 <Modal.Body id='notice_modal_body'>
                     <div id='notice_modal_content'>

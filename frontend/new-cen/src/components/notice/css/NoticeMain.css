@@ -1,3 +1,18 @@
+#notice_btn_main {
+    width: 60%;
+
+    /* 박스 x축 중앙 정렬 : margin 좌우값을 auto로 설정*/
+    margin: 100px auto;  
+}
+
+/* 추가 버튼 */
+#notice_insert_btn_main {
+    text-align: right;
+
+    margin-bottom: 10px;
+}
+
+/* button className-- */
 .btn_orange {
     background-color: #E9460A;
     border: none;
@@ -6,22 +21,25 @@
     background-color: #b43102;
 }
 
-#notice_main {
-    width: 60%;
-    height: 600px;
+.btn_size_100 {
+    width: 100px;
+}
+/* --button */
 
-    border: 1px solid black;
+#notice_table_main {
+    border: 1px solid red;
     border-radius: 10px;
+
+    height: 600px;
 
     /* 음영처리 */ 
     /* x축, y축, 블러크기, 색상*/
     box-shadow: 0 0 8px #aaa;
-
-    /* 박스 x축 중앙 정렬 : margin 좌우값을 auto로 설정*/
-    margin: 100px auto;    
 }
 
+/* table */
 #notice_table {
+    /* 테이블 내부 간격 */
     border-collapse: separate;
     border-spacing: 0 20px;
 }

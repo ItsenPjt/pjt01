@@ -9,7 +9,7 @@ const UserJoin = () => {
 
     // 취소 버튼 클릭 시
     const onLoginPage = () => {
-        window.location.href = "/login";
+        window.location.href = "/";
     }
     
     return (

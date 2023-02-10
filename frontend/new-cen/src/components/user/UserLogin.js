@@ -36,7 +36,7 @@ const UserLogin = () => {
                     </Form.Group>
                 </Form>
 
-                <div id = 'login_div'>
+                <div id = 'login_footer_div'>
                     <Button className='btn_orange' id='login_btn'>
                         로그인
                     </Button> 

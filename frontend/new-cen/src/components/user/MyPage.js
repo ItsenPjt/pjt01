@@ -51,7 +51,7 @@ const MyPage = () => {
                         </Form.Group>
                     </Form>
 
-                    <div id = 'mypage_div'>
+                    <div id = 'mypage_footer_div'>
                         <Button className="btn_gray mypage_btn btn_size_100">
                             취소
                         </Button> 

@@ -7,7 +7,7 @@ import './css/UserFindPw.css'
 const UserFindPw = () => {
 
     const onLoginPage = () => {
-        window.location.href = "/login";
+        window.location.href = "/";
     }
     
     return (
@@ -49,7 +49,7 @@ const UserFindPw = () => {
                     </Form.Group>
                 </Form>
 
-                <div id = 'find_pw_div'>
+                <div id = 'find_pw_footer_div'>
                     <Button onClick={onLoginPage} className="btn_gray find_pw_btn btn_size_100">
                         취소
                     </Button> 
