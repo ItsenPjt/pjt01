@@ -39,7 +39,6 @@ public class CommentEntity {
     @UpdateTimestamp
     private LocalDateTime commentUpdateDate;
 
-
     @Column(name="board_id")
     private Long boardId;
 
@@ -50,9 +49,6 @@ public class CommentEntity {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE,orphanRemoval = true)
     private final List<CommentFileEntity> commentFileList = new ArrayList<>();
 
-    @JoinColumn(name = "comment_reply_id")
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE,orphanRemoval = true)
-    private final List<CommentReplyEntity> commentReplyList = new ArrayList<>();
 
     public void updateComment(String commentContent){
         this.commentContent= commentContent;

@@ -24,7 +24,6 @@ public class CommentCreateRequest {
                 .userId(user.getUserId())
                 .commentContent(this.commentContent)
                 .commentWriter(user.getUserName())
-
                 .build();
     }
 }

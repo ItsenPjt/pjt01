@@ -13,11 +13,6 @@ public class NewcenApplication {
 
 	public static void main(String[] args) {
 
-		double min = 1;
-		double max = 4;
-		double random = (int) ((Math.random() * (max - min)));
-
-		log.info("점심은 바로  : {} ", random);
 
 		SpringApplication.run(NewcenApplication.class, args);
 	}
