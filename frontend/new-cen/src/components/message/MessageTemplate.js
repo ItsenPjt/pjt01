@@ -1,7 +1,6 @@
 import React from 'react';
 import MessageMain from './MessageMain';
 
-
 const MessageTemplate = () => {
   return (
     <div>

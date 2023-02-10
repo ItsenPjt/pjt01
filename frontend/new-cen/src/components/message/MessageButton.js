@@ -1,19 +1,18 @@
 import React from 'react';
+
 import Button from 'react-bootstrap/esm/Button';
+
 import './css/MessageButton.css';
 
 const MessageButton = () => {
-  return (
-    <div className='message-btn-group'>
-
-      <Button className='message-confirm'>보낸 메세지</Button>
-      <Button className='message-confirm'>받은 메세지</Button>
-      <Button className='message-confirm'>메세지 보내기</Button>
-      <Button className='message-cancel'>선택 삭제</Button>
-
-
-    </div>
-  )
+    return (
+        <div className='message_btn_group'>
+            <Button className='btn_etc'>보낸 메세지</Button>
+            <Button className='btn_etc'>받은 메세지</Button>
+            <Button className='btn_etc'>메세지 보내기</Button>
+            <Button className='btn_orange'>선택 삭제</Button>
+        </div>
+    )
 }
 
 export default MessageButton

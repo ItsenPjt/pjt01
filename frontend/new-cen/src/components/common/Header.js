@@ -28,8 +28,8 @@ const Header = () => {
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
                         <Nav.Link href="/notice" className='header_nav_link'>공지사항</Nav.Link>
-                        <Nav.Link href="/introduction" className='header_nav_link'>회사소개</Nav.Link>
                         <Nav.Link href="/question" className='header_nav_link'>문의사항</Nav.Link>
+                        <Nav.Link href="/faq" className='header_nav_link'>자주 묻는 질문</Nav.Link>
                     </Nav>
                 </Navbar.Collapse>
             </Container>

@@ -10,7 +10,11 @@ import MyPage from './components/user/MyPage';
 
 import NoticeInsert from './components/notice/NoticeInsert';
 import NoticeTemplate from './components/notice/NoticeTemplate';
+
 import QuestionTemplate from './components/question/QuestionTemplate';
+
+import FAQTemplate from './components/faq/FAQTemplate';
+
 import MessageTemplate from './components/message/MessageTemplate';
 
 function App() {
@@ -30,6 +34,8 @@ function App() {
 
         <Route path="/question" element={<QuestionTemplate />} />
 
+        <Route path="/faq" element={<FAQTemplate />} />
+        
         <Route path="/message" element={<MessageTemplate />} />
       </Routes>
     </>

@@ -1,3 +1,11 @@
+.btn_orange {
+    background-color: #E9460A;
+    border: none;
+}
+.btn_orange:hover, .btn_orange:active, .btn_orange:focus {
+    background-color: #b43102;
+}
+
 #notice_main {
     width: 60%;
     height: 600px;
