@@ -5,11 +5,10 @@ import com.newcen.newcen.common.entity.UserEntity;
 import com.newcen.newcen.common.entity.ValidUserEntity;
 import com.newcen.newcen.common.repository.ValidUserRepository;
 import com.newcen.newcen.users.dto.request.AnonymousReviseRequestDTO;
+import com.newcen.newcen.users.dto.request.UserDeleteRequestDTO;
 import com.newcen.newcen.users.dto.request.UserModifyRequestDTO;
 import com.newcen.newcen.users.dto.request.UserSignUpRequestDTO;
-import com.newcen.newcen.users.dto.response.LoginResponseDTO;
-import com.newcen.newcen.users.dto.response.UserModifyResponseDTO;
-import com.newcen.newcen.users.dto.response.UserSignUpResponseDTO;
+import com.newcen.newcen.users.dto.response.*;
 import com.newcen.newcen.users.exception.NoRegisteredArgumentsException;
 import com.newcen.newcen.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -114,7 +113,7 @@ public class UserService {
 
             log.info(
                     "내정보 수정 성공..!!! - user_id : {}", savedUser.getUserId());
-            log.info("변경된 계정 - user_Email : {}", savedUser.getUserEmail());
+            log.info("변경된 계정 - user_email : {}", savedUser.getUserEmail());
 
         });
 
@@ -125,20 +124,80 @@ public class UserService {
     }
 
     // 익명 사용자 비밀번호 찾기 시 수정
-//    public AnonymousReviseRequestDTO update(
-//            AnonymousReviseRequestDTO anonymousReviseRequestDTO) {
-//        if (anonymousReviseRequestDTO == null) {
-//            throw new NoRegisteredArgumentsException("mysterious UserInfo - 알 수 없는 회원정보 입니다.");
+    public AnonymousReviseResponseDTO update(
+            AnonymousReviseRequestDTO anonymousReviseRequestDTO) {
+        if (anonymousReviseRequestDTO == null) {
+            throw new NoRegisteredArgumentsException("Unknown UserInfo - 알 수 없는 회원정보 입니다.");
+        }
+
+        final String Email = anonymousReviseRequestDTO.getUserEmail();
+        final String Name = anonymousReviseRequestDTO.getUserName();
+        final String validCode = anonymousReviseRequestDTO.getValidCode();
+
+        final boolean authorizedUser =
+                userRepository.existsByUserEmailAndUserName(Email, Name);
+
+        final boolean verifiedUser =
+                validUserRepository.existsByValidCode(validCode);
+
+
+        UserEntity loadUserEmail = userRepository.findByUserEmail(Email);
+
+
+        if (authorizedUser && verifiedUser) {
+            Optional<UserEntity> targetEntity = Optional.of(userRepository.findByUserEmail(loadUserEmail.getUserEmail()));
+
+            targetEntity.ifPresent(entity -> {
+
+                // 패스워드 인코딩
+                String rawPassword = anonymousReviseRequestDTO.getUserPassword();   // 새로운 수정된 평문 암호
+                String encodePassword = passwordEncoder.encode(rawPassword);    // 암호화 처리
+                entity.setUserPassword(encodePassword);
+
+                UserEntity savedUser = userRepository.save(entity);
+
+                log.info(
+                        "익명 사용자 비번찾기 정보 수정 성공..!!! - user_id : {}", savedUser.getUserId());
+                log.info("변경된 계정 - userEmail : {}", savedUser.getUserEmail());
+            });
+
+        } else {
+            log.warn("입력 정보를 확인해주세요. - user_email : {}", Email);
+            log.warn("입력 정보를 확인해주세요. - user_name : {}", Name);
+            log.warn("입력 정보를 확인해주세요. - valid_code : {}", validCode);
+
+            throw new RuntimeException("Unknown UserInfo - 입력 정보를 확인해주세요.");
+
+        }
+
+        UserEntity anonymousUser = userRepository.findByUserEmail(Email);
+
+        return new AnonymousReviseResponseDTO(anonymousUser);
+
+    }
+
+    // 회원 탈퇴 (회원정보 삭제)
+//    public UserDeleteResponseDTO delete(
+//            final String userId,
+//            final UserDeleteRequestDTO userDeleteRequestDTO) {
+//
+//        try {
+//
+//            userRepository.deleteById(userId);
+//
+////            UserEntity email = userRepository.findByUserEmail(userDeleteRequestDTO.getUserEmail());
+//
+//            validUserRepository.findByValidUserEmail(userDeleteRequestDTO.getUserEmail());
+//
+//        } catch (Exception e) {
+//            log.error("userId가 존재하지 않아 삭제에 실패했습니다. - ID: {}, err: {}"
+//                    , userId, e.getMessage());
+//
+//            throw new RuntimeException("userId가 존재하지 않아 삭제에 실패했습니다.");
+//
 //        }
 //
-//        final String userEmail = anonymousReviseRequestDTO.getUserEmail();
-//        final String userName = anonymousReviseRequestDTO.getUserName();
-//        final String userPassword = anonymousReviseRequestDTO.getUserPassword();
-//
-//        final String validCode = anonymousReviseRequestDTO.getValidCode();
-//
-//        final boolean authorizedUser =
-//                validUserRepository.existsByValidUserEmailAndValidCodeAndValidActive(email, code, 1);
+//        return new UserDeleteResponseDTO();
 //
 //    }
 

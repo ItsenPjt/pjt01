@@ -1,5 +1,6 @@
 package com.newcen.newcen.common.repository;
 
+import com.newcen.newcen.common.entity.UserEntity;
 import com.newcen.newcen.common.entity.ValidUserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -24,5 +25,21 @@ public interface ValidUserRepository extends JpaRepository<ValidUserEntity, Stri
     @Modifying
     @Query("update ValidUserEntity u set u.validActive = 2 where u.validUserEmail = :validUserEmail And u.validCode = :validCode")
     void updateSetActive(@Param("validUserEmail") String email, @Param("validCode") String validCode);
+
+    // 익명 사용자 비밀번호 찾기 시 인증코드 존재 여부 조회
+    boolean existsByValidCode(String validCode);
+
+    // 회원 삭제를 위해 email 로 회원 id 조회
+//    ValidUserEntity findByValidUserId(String email);
+
+//    @Query("SELECT u.validUserId FROM ValidUserEntity u WHERE u.validUserEmail = :validUserEmail")
+//    ValidUserEntity selectValidUserId(@Param("validUserEmail") String email);
+//
+//    // 삭제하려는 회원 id가 존재하는지 여부 확인
+//    boolean existsByValidUserId(ValidUserEntity validUserId);
+
+
+
+
 
 }

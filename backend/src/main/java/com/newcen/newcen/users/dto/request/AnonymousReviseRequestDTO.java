@@ -35,11 +35,4 @@ public class AnonymousReviseRequestDTO {
     private String validCode;
 
 
-    // UserEntity 로 변경하는 메서드
-    public UserEntity mdEntity() {
-        return UserEntity.builder()
-                .userPassword(this.userPassword)
-                .build();
-    }
-
 }

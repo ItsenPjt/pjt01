@@ -1,8 +1,10 @@
 package com.newcen.newcen.users.service;
 
 import com.newcen.newcen.common.entity.UserEntity;
+import com.newcen.newcen.users.dto.request.AnonymousReviseRequestDTO;
 import com.newcen.newcen.users.dto.request.UserModifyRequestDTO;
 import com.newcen.newcen.users.dto.request.UserSignUpRequestDTO;
+import com.newcen.newcen.users.dto.response.AnonymousReviseResponseDTO;
 import com.newcen.newcen.users.dto.response.LoginResponseDTO;
 import com.newcen.newcen.users.dto.response.UserModifyResponseDTO;
 import com.newcen.newcen.users.dto.response.UserSignUpResponseDTO;
@@ -104,7 +106,7 @@ class UserServiceTest {
 
     @Test
     @Order(5)
-    @DisplayName("회원 테이블에 존재하는 userId값이면 비밀번호를 암호화한 후 수정해야 한다.")
+    @DisplayName("회원 테이블에 존재하는 userId값이면 비밀번호를 암호화하여 수정해야 한다.")
     void passwordModifyTest() {
         // given
         UserModifyRequestDTO dto = UserModifyRequestDTO.builder()
@@ -119,6 +121,25 @@ class UserServiceTest {
         // then
         assertEquals("암호맨", modifyUser.getUserName());
 
+    }
+
+    @Test
+    @Order(6)
+    @DisplayName("존재하는 이메일, 이름, 인증코드면 비밀번호를 암호화하여 수정해야 한다.")
+    void anonymousReviseTest() {
+        // given
+        AnonymousReviseRequestDTO anonymousDto = AnonymousReviseRequestDTO.builder()
+                .userEmail("postman@naver.com")
+                .userPassword("abc1234")
+                .userName("암호맨")
+                .validCode("XY2baJQ")
+                .build();
+
+        // when
+        AnonymousReviseResponseDTO useUser = userService.update(anonymousDto);
+
+        // then
+        assertEquals("암호맨", anonymousDto.getUserName());
     }
 
 }
