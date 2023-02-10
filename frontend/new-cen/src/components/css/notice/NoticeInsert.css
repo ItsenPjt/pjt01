@@ -24,19 +24,41 @@
     background-color: #717172;
     border: none;
 }
-.notice_btn_gray:hover {
+.notice_btn_gray:hover, .notice_btn_gray:focus {
     background-color: #5e5e5e;
+}
+
+.notice_btn {
+    width: 80px;
 }
 
 .notice_btn_orange {
     background-color: #E9460A;
     border: none;
 }
-.notice_btn_orange:hover {
-    background-color: #ff4400;
+.notice_btn_orange:hover, .notice_btn_orange:focus {
+    background-color: #b43102;
 }
 
-#btn_size {
+.btn_size {
     width: 100px;
     margin-left: 10px;
+}
+
+#header-modal {
+    width: 400px;
+
+    border: 1px solid black;
+    border-radius: 10px;
+}
+
+.notice_modal_body {
+    text-align: center;
+    
+    font-size: 17px;
+    font-weight: 550;
+}
+
+.notice_modal_content {
+    margin-top: 40px;
 }

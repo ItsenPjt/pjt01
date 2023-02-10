@@ -3,7 +3,7 @@ import NoticeMain from './NoticeMain';
 
 import Button from 'react-bootstrap/Button';
 
-import '../css/NoticeTemplate.css';
+import '../css/notice/NoticeTemplate.css';
 
 const NoticeTemplate = () => {
 
