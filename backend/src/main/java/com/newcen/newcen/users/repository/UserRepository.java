@@ -2,6 +2,9 @@ package com.newcen.newcen.users.repository;
 
 import com.newcen.newcen.common.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,5 +28,8 @@ public interface UserRepository extends JpaRepository<UserEntity, String> {
 
 
     List<UserEntity> findByUserName(String userName);
+
+    // 익명 사용자 비밀번호 찾기 시 회원정보 존재 여부 조회
+    boolean existsByUserEmailAndUserName(String email, String name);
 
 }

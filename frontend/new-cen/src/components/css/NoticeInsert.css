@@ -1,0 +1,42 @@
+.insert_div {
+    margin: 60px 2%;
+}
+
+.insert_justify {
+    display: flex;
+    justify-content: space-between;
+}
+
+.insert_title {
+    height: 60px;
+    width: 250px;
+    
+    text-align: center;
+    font-size: 20px;
+}
+
+.insert_btn {
+    margin-top: 10px;
+    float: right;
+}
+
+.notice_btn_gray {
+    background-color: #717172;
+    border: none;
+}
+.notice_btn_gray:hover {
+    background-color: #5e5e5e;
+}
+
+.notice_btn_orange {
+    background-color: #E9460A;
+    border: none;
+}
+.notice_btn_orange:hover {
+    background-color: #ff4400;
+}
+
+#btn_size {
+    width: 100px;
+    margin-left: 10px;
+}
