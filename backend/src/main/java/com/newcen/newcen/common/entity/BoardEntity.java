@@ -19,6 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 @EqualsAndHashCode(of = "boardId")
 @Table(name="board")
+@EntityListeners(AuditingEntityListener.class)
 public class BoardEntity {
     @Id
     @Column(name="board_id")
