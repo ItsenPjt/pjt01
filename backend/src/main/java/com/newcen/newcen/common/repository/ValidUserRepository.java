@@ -1,6 +1,5 @@
 package com.newcen.newcen.common.repository;
 
-import com.newcen.newcen.common.entity.UserEntity;
 import com.newcen.newcen.common.entity.ValidUserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -36,6 +35,9 @@ public interface ValidUserRepository extends JpaRepository<ValidUserEntity, Stri
 
     // 조회된 회원 id로 회원삭제(탈퇴)
     void deleteById(String validUserId);
+
+    // 회원 Email로 회원정보 삭제
+    void deleteByValidUserEmail(String email);
 
     // validUserId 삭제 여부 조회
     boolean existsById(String validUserId);

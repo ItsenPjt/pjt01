@@ -83,5 +83,19 @@ class UserRepositoryTest {
 
     }
 
+    @Test
+    @DisplayName("UUID로 회원 Email을 조회해야 한다.")
+    @Transactional
+    void selectUserEmailTest() {
+        // given
+        String userId = "402880b6862ff68b01862ff696530000";
+
+        // when
+        String userEmail = userRepository.selectUserEmail(userId);
+
+        // then
+        assertEquals("postman@naver.com", userEmail);
+    }
+
 }
 

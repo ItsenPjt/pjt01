@@ -144,17 +144,19 @@ class UserServiceTest {
 
     @Test
     @Order(7)
-    @DisplayName("삭제하려는 회원의 UUID로 회원정보를 삭제해야 한다.")
+    @DisplayName("삭제하려는 회원의 UserId를 받아 validUserEmail값으로 회원정보를 삭제해야 한다.")
     @Transactional
     void validUserDeleteTest() {
         // given
-        String delId = "402880b6862fa0f601862fa101410000";
+        String UserId = "402880b6862ff68b01862ff696530000";
+
+        String validUserId = "402880b6862fa0f601862fa101410000";
 
         // when
-        userService.delete(delId);
+        userService.delete(UserId);
 
         // given
-        assertFalse(validUserRepository.existsById(delId));
+        assertFalse(validUserRepository.existsById(validUserId));
 
     }
 
