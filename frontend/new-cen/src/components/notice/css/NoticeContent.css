@@ -1,5 +1,4 @@
-#notice_insert_div {
-    /* margin: 60px 2%; */
+#notice_content_main {
     width: 60%;
     margin: 60px auto;
 }
@@ -9,23 +8,28 @@
     justify-content: space-between;
 }
 
-/* 공지사항 제목 입력 */
-#notice_insert_title {
+/* 공지사항 제목 */
+#notice_content_title {
     height: 60px;
-    width: 250px;
-
-    text-align: center;
-
+    /* width: 900px; */
+    
     font-size: 25px;
     font-weight: 550;
-}
-#notice_insert_title::placeholder {
-    color: #D0D0D0;
+
+    padding: 10px 0px;
 }
 
-#notice_insert_footer_div {
-    margin-top: 10px;
-    float: right;
+/* 공지사항 작성자/작성일 */
+#notice_content_write {
+    color: #6d6c6c;
+
+    margin-top: 5px;
+    font-size: 15px;
+}
+
+/* 수정/삭제 버튼 */
+#notice_content_body_div {
+    padding-top: 50px;      /* (아래 정렬로 바꿀 수 있음 바꾸기) */
 }
 
 /* button className-- */
@@ -54,25 +58,42 @@
 }
 /* --button */
 
-#notice_insert_btn {
+#notice_content_delete_btn {
     margin-left: 10px;
 }
 
+/* 공지사항 내용 */
+#notice_contents {
+    height: 500px;
+
+    margin-top: 20px;
+    padding: 30px 20px;
+
+    border: 1px solid #aaa;
+    border-radius: 10px;
+}
+
+/* footer */
+#notice_content_footer_div {
+    margin-top: 10px;
+    float: right;
+}
+
 /* Modal */
-#notice_insert_modal {
-    width: 400px;
+#notice_delete_modal {
+    width: 280px;
 
     border: 1px solid black;
     border-radius: 10px;
 }
 
-#notice_insert_modal_body {
+#notice_delete_modal_body {
     text-align: center;
     
     font-size: 17px;
     font-weight: 550;
 }
 
-#notice_insert_modal_content {
+#notice_delete_modal_content {
     margin-top: 40px;
 }

@@ -9,8 +9,10 @@ import UserLogin from './components/user/UserLogin';
 import UserFindPw from './components/user/UserFindPw';
 import MyPage from './components/user/MyPage';
 
-import NoticeInsert from './components/notice/NoticeInsert';
 import NoticeTemplate from './components/notice/NoticeTemplate';
+import NoticeInsert from './components/notice/NoticeInsert';
+import NoticeContent from "./components/notice/NoticeContent";
+import NoticeUpdate from "./components/notice/NoticeUpdate";
 
 import QuestionTemplate from './components/question/QuestionTemplate';
 
@@ -54,6 +56,8 @@ function App() {
                     
                             <Route path="/notice" element={<NoticeTemplate />} />
                             <Route path="/notice/insert" element={<NoticeInsert />} />
+                            <Route path="/notice/:noticeId" element={<NoticeContent />}/>
+                            <Route path="/notice/update/:noticeId" element={<NoticeUpdate />}/>
                     
                             <Route path="/question" element={<QuestionTemplate />} />
                     

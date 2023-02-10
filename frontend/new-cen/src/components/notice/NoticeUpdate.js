@@ -1,4 +1,5 @@
 import React, { useState }  from 'react';
+import { useParams } from 'react-router-dom';
 
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
@@ -7,10 +8,11 @@ import Modal from 'react-bootstrap/Modal';
 import Editor from '../common/EditorComponent';
 import CommentRadioBtn from '../common/CommentRadioBtn';
 
-import './css/NoticeInsert.css';
+import './css/NoticeUpdate.css';
 
-// 공지사항 추가
-const NoticeInsert = () => {
+// 공지사항 수정
+const NoticeUpdate = () => {
+    var noticeId = useParams().noticeId;
 
     const [modal, setModal] = useState(false); 
     const [desc, setDesc] = useState('');
@@ -29,18 +31,18 @@ const NoticeInsert = () => {
         setDesc(value);
     };
 
-    // 공지사항 목록 페이지로
-    const onNoticePage = () => {
-        window.location.href = "/notice";
+    // 공지사항 내용 페이지로
+    const onNoticeContentPage = () => {
+        window.location.href = `/notice/${noticeId}`;
     }
 
     return (
         <>
-            <div id='notice_insert_div'>
+            <div id='notice_update_div'>
                 <div className='justify'>
                     <Form>
                         <Form.Group className='mb-3'>
-                            <Form.Control id='notice_insert_title' autoFocus type='text' placeholder='공지사항 제목 입력' />
+                            <Form.Control id='notice_update_title' autoFocus type='text'/>
                         </Form.Group>
                     </Form>
 
@@ -52,25 +54,25 @@ const NoticeInsert = () => {
                     <Editor value={desc} onChange={onEditorChange} />
                 </div>
 
-                <div id='notice_insert_footer_div'>
+                <div id='notice_update_footer_div'>
                     <Button className='btn_gray btn_size_100' onClick={handleShowCancelModal}>취소</Button>
-                    <Button className='btn_orange btn_size_100' id='notice_insert_btn'>등록</Button>
+                    <Button className='btn_orange btn_size_100' id='notice_update_btn'>수정</Button>
                 </div>
             </div>
 
 {/* Modal */}
-            <Modal show={modal} onHide={handleClose} id="notice_insert_modal">
-                <Modal.Body id='notice_insert_modal_body'>
-                    <div id='notice_insert_modal_content'>
+            <Modal show={modal} onHide={handleClose} id="noticee_update_modal">
+                <Modal.Body id='notice_update_modal_body'>
+                    <div id='notice_update_modal_content'>
                         작성하신 글을 취소하시면 저장되지 않습니다. <br />
                         그래도 취소하시겠습니까?
                     </div>
 
-                    <div id="notice_insert_modal_content">
+                    <div id="notice_update_modal_content">
                         <Button className='btn_gray notice_btn btn_size_100' onClick={handleClose}>
                             아니오
                         </Button>
-                        <Button className='btn_orange notice_btn btn_size_100' id="notice_insert_btn" onClick={onNoticePage}>
+                        <Button className='btn_orange notice_btn btn_size_100' id="notice_update_btn" onClick={onNoticeContentPage}>
                             네
                         </Button>
                     </div>
@@ -80,4 +82,4 @@ const NoticeInsert = () => {
     )
 }
 
-export default NoticeInsert;
+export default NoticeUpdate;

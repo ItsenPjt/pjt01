@@ -4,6 +4,7 @@ import Button from 'react-bootstrap/esm/Button';
 
 import './css/MessageButton.css';
 
+// 메세지 버튼
 const MessageButton = () => {
     return (
         <div className='message_btn_group'>

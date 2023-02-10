@@ -6,6 +6,7 @@ import Modal from 'react-bootstrap/Modal';
 
 import './css/MyPage.css';
 
+// 내 정보
 const MyPage = () => {
 
     const [modal, setModal] = useState(false); 

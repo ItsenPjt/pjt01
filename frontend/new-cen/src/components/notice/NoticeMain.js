@@ -4,6 +4,7 @@ import Button from 'react-bootstrap/Button';
 
 import './css//NoticeMain.css';
 
+// 공지사항 메인
 const NoticeMain = () => {
 
     const onInsertPage = () => {

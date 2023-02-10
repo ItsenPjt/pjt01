@@ -1,4 +1,4 @@
-#notice_insert_div {
+#notice_update_div {
     /* margin: 60px 2%; */
     width: 60%;
     margin: 60px auto;
@@ -10,20 +10,15 @@
 }
 
 /* 공지사항 제목 입력 */
-#notice_insert_title {
+#notice_update_title {
     height: 60px;
     width: 250px;
-
-    text-align: center;
 
     font-size: 25px;
     font-weight: 550;
 }
-#notice_insert_title::placeholder {
-    color: #D0D0D0;
-}
 
-#notice_insert_footer_div {
+#notice_update_footer_div {
     margin-top: 10px;
     float: right;
 }
@@ -54,25 +49,25 @@
 }
 /* --button */
 
-#notice_insert_btn {
+#notice_update_btn {
     margin-left: 10px;
 }
 
 /* Modal */
-#notice_insert_modal {
+#noticee_update_modal {
     width: 400px;
 
     border: 1px solid black;
     border-radius: 10px;
 }
 
-#notice_insert_modal_body {
+#notice_update_modal_body {
     text-align: center;
     
     font-size: 17px;
     font-weight: 550;
 }
 
-#notice_insert_modal_content {
+#notice_update_modal_content {
     margin-top: 40px;
 }

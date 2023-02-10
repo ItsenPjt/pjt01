@@ -5,6 +5,7 @@ import MessageButton from './MessageButton';
 
 import './css/MessageMain.css';
 
+// 메세지 메인
 const MessageMain = () => {
     return (
         <div id='message_main'>

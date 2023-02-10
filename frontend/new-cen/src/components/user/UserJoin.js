@@ -5,6 +5,7 @@ import Form from 'react-bootstrap/Form';
 
 import './css/UserJoin.css';
 
+// 회원가입
 const UserJoin = () => {
 
     // 취소 버튼 클릭 시

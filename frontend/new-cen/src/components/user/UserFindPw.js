@@ -4,6 +4,8 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form'
 
 import './css/UserFindPw.css'
+
+// 비밀번호 변경
 const UserFindPw = () => {
 
     const onLoginPage = () => {
