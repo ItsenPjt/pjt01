@@ -37,5 +37,7 @@ public class CommentReplyEntity {
     @UpdateTimestamp
     private LocalDateTime commentReplyUpdateDate;
 
+    @Column(name="user_id")
+    private String userId;
 
 }

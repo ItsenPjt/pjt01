@@ -39,13 +39,12 @@ public class CommentEntity {
     @UpdateTimestamp
     private LocalDateTime commentUpdateDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnore
-    @JoinColumn(name="board_id", insertable = false, updatable = false)
-    private BoardEntity board;
 
     @Column(name="board_id")
     private Long boardId;
+
+    @Column(name="user_id")
+    private String userId;
 
     @JoinColumn(name="comment_file_id")
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE,orphanRemoval = true)

@@ -22,12 +22,11 @@ public class CommentResponseDTO {
     private Long boardId;
 
     private String commentContent;
-
     private String commentWriter;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime CommentCreateDate;
+    private LocalDateTime commentCreateDate;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime CommentUpdateDate;
+    private LocalDateTime commentUpdateDate;
 
     private List<CommentFileEntity> commentFileList;
 
@@ -38,8 +37,8 @@ public class CommentResponseDTO {
         this.boardId =comment.getBoardId();
         this.commentContent = comment.getCommentContent();
         this.commentWriter = comment.getCommentWriter();
-        this.CommentCreateDate = comment.getCommentCreateDate();
-        this.CommentUpdateDate =comment.getCommentUpdateDate();
+        this.commentCreateDate = comment.getCommentCreateDate();
+        this.commentUpdateDate =comment.getCommentUpdateDate();
         this.commentFileList = comment.getCommentFileList();
         this.commentReplyList =comment.getCommentReplyList();
     }

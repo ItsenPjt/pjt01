@@ -18,14 +18,13 @@ public class CommentCreateRequest {
 
     private String commentContent;
 
-    private String commentWriter;
-
     public CommentEntity toEntity(BoardEntity board, UserEntity user){
         return CommentEntity.builder()
-                .board(board)
                 .boardId(board.getBoardId())
+                .userId(user.getUserId())
                 .commentContent(this.commentContent)
                 .commentWriter(user.getUserName())
+
                 .build();
     }
 }
