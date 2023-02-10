@@ -6,6 +6,7 @@ import com.newcen.newcen.comment.dto.response.CommentListResponseDTO;
 import com.newcen.newcen.comment.dto.response.CommentResponseDTO;
 
 import com.newcen.newcen.comment.repository.CommentRepository;
+import com.newcen.newcen.comment.repository.CommentRepositorySupport;
 import com.newcen.newcen.common.entity.BoardEntity;
 import com.newcen.newcen.common.entity.CommentEntity;
 import com.newcen.newcen.common.entity.UserEntity;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,10 +40,11 @@ public class CommentService {
     private final QuestionsRepositorySupport questionsRepositorySupport;
 
     private final CommentRepository commentRepository;
+    private final CommentRepositorySupport commentRepositorySupport;
 
     //댓글 목록 조회
-    public CommentListResponseDTO retrive(Long BoardId) {
-        List<CommentEntity> commentList = commentRepository.findAll();
+    public CommentListResponseDTO retrive(Long boardId) {
+        List<CommentEntity> commentList = commentRepositorySupport.findAllByBoardId(boardId);
         List<CommentResponseDTO> responseDTO = commentList.stream()
                 .map(CommentResponseDTO::new)
                 .collect(Collectors.toList());
@@ -54,20 +57,17 @@ public class CommentService {
     public CommentListResponseDTO createComment(final CommentCreateRequest dto, String userId, Long boardId) {
         UserEntity user = null;
         user = userRepository.findById(userId).get();
-        BoardEntity board = questionsRepository.findById(boardId).get();
+        Optional<BoardEntity> board = questionsRepository.findById(boardId);
         if (user == null) {
             throw new RuntimeException("해당 유저가 없습니다.");
         }
         if (board == null) {
             throw new RuntimeException("해당 게시글이 없습니다.");
         }
-        CommentEntity comment = dto.toEntity(board, user);
+        CommentEntity comment = dto.toEntity(board.get(), user);
         CommentEntity savedComment = commentRepository.save(comment);
         return retrive(boardId);
-
-
     }
-
     //댓글 수정
     public CommentListResponseDTO updateComment(final CommentUpdateRequest dto, String userId, Long boardId, Long commentId) {
         CommentEntity getComment = commentRepository.findById(commentId).get();

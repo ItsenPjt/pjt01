@@ -3,7 +3,6 @@ package com.newcen.newcen.comment.dto.response;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.newcen.newcen.common.entity.CommentEntity;
 import com.newcen.newcen.common.entity.CommentFileEntity;
-import com.newcen.newcen.common.entity.CommentReplyEntity;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -30,7 +29,7 @@ public class CommentResponseDTO {
 
     private List<CommentFileEntity> commentFileList;
 
-    private List<CommentReplyEntity> commentReplyList;
+
 
     public CommentResponseDTO(CommentEntity comment){
         this.commentId = comment.getCommentId();
@@ -40,7 +39,6 @@ public class CommentResponseDTO {
         this.commentCreateDate = comment.getCommentCreateDate();
         this.commentUpdateDate =comment.getCommentUpdateDate();
         this.commentFileList = comment.getCommentFileList();
-        this.commentReplyList =comment.getCommentReplyList();
     }
 
 }

@@ -5,8 +5,11 @@ import com.newcen.newcen.comment.dto.request.CommentUpdateRequest;
 import com.newcen.newcen.comment.dto.response.CommentListResponseDTO;
 import com.newcen.newcen.comment.repository.CommentRepository;
 import com.newcen.newcen.comment.service.CommentService;
+import com.newcen.newcen.commentFile.dto.request.CommentFileCreateRequest;
+import com.newcen.newcen.commentFile.dto.request.CommentFileUpdateRequest;
+import com.newcen.newcen.commentFile.dto.response.CommentFileListResponseDTO;
+import com.newcen.newcen.commentFile.service.CommentFileService;
 import com.newcen.newcen.common.entity.BoardEntity;
-import com.newcen.newcen.common.entity.CommentEntity;
 import com.newcen.newcen.common.entity.UserEntity;
 import com.newcen.newcen.question.repository.QuestionsRepository;
 import com.newcen.newcen.question.request.QuestionCreateRequestDTO;
@@ -14,9 +17,9 @@ import com.newcen.newcen.question.request.QuestionFileRequestDTO;
 import com.newcen.newcen.question.request.QuestionUpdateRequestDTO;
 import com.newcen.newcen.question.response.QuestionListResponseDTO;
 import com.newcen.newcen.question.response.QuestionResponseDTO;
+import com.newcen.newcen.question.response.QuestionsOneResponseDTO;
 import com.newcen.newcen.question.service.QuestionService;
 import com.newcen.newcen.users.repository.UserRepository;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -24,9 +27,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import javax.websocket.server.PathParam;
-import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,6 +39,8 @@ public class QuestionsController {
 
     private final QuestionService questionService;
     private final CommentService commentService;
+
+    private final CommentFileService commentFileService;
     //문의 게시글 목록조회
     @GetMapping
     private ResponseEntity<?> getQuestionList(){
@@ -49,7 +51,7 @@ public class QuestionsController {
     //문의 게시글 상세조회
     @GetMapping("/{boardId}")
     private ResponseEntity<?> getQuestionsDetail(@PathVariable Long boardId){
-        QuestionResponseDTO questionResponseDTO = questionService.questionDetail(boardId);
+        QuestionsOneResponseDTO questionResponseDTO = questionService.questionDetail(boardId);
         if (questionResponseDTO == null){
             return ResponseEntity.badRequest().body("해당 게시글은 존재하지 않습니다.");
         }
@@ -127,7 +129,7 @@ public class QuestionsController {
                     .body(result.getFieldError());
         }
         try {
-            QuestionResponseDTO questionResponseDTO = questionService.createFile(userId,boardId,questionFileRequestDTO.getBoardFilePath());
+            QuestionsOneResponseDTO questionResponseDTO = questionService.createFile(userId,boardId,questionFileRequestDTO.getBoardFilePath());
             return ResponseEntity
                     .ok()
                     .body(questionResponseDTO);
@@ -241,6 +243,81 @@ public class QuestionsController {
 
     }
 
+    //문의사항 댓글 파일목록 조회
+    @GetMapping("/{boardId}/comments/{commentId}/files")
+    private ResponseEntity<?> getCommentFileList(@PathVariable("boardId") Long boardId, @PathVariable("commentId") Long commentId){
+        CommentFileListResponseDTO commentFileList = commentFileService.retrive(commentId);
+        return ResponseEntity.ok().body(commentFileList);
     }
+    //문의사항 댓글 파일 생성
+    @PostMapping("/{boardId}/comments/{commentId}/files")
+    private ResponseEntity<?> createCommentFile(@AuthenticationPrincipal String userId,@PathVariable("boardId") Long boardId, @Validated @RequestBody CommentFileCreateRequest dto, @PathVariable("commentId") Long commentId
+    ,BindingResult result){
+        if (result.hasErrors()){
+            log.warn("DTO 검증 에러 발생 : {} ", result.getFieldError());
+            return ResponseEntity
+                    .badRequest()
+                    .body(result.getFieldError());
+        }
+        try {
+            CommentFileListResponseDTO commentFileList = commentFileService.createCommentFile(dto,userId,commentId);
+            return ResponseEntity
+                    .ok()
+                    .body(commentFileList);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity
+                    .internalServerError()
+                    .body("서버에러입니다.");
+        }
+    }
+    //문의사항 댓글 파일 수정
+    @PatchMapping("/{boardId}/comments/{commentId}/files/{commentFileId}")
+    public ResponseEntity<?> updateCommentFile(@AuthenticationPrincipal String userId, @PathVariable("boardId") Long boardId, @Validated @RequestBody CommentFileUpdateRequest dto, @PathVariable("commentId") Long commentId
+            , @PathVariable("commentFileId") String commentFileId
+            , BindingResult result){
+        if (result.hasErrors()){
+            log.warn("DTO 검증 에러 발생 : {} ", result.getFieldError());
+            return ResponseEntity
+                    .badRequest()
+                    .body(result.getFieldError());
+        }
+        try {
+            CommentFileListResponseDTO commentFileListResponseDTO = commentFileService.updateCommentFile(dto, userId, commentId, commentFileId);
+            return ResponseEntity
+                    .ok()
+                    .body(commentFileListResponseDTO);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity
+                    .internalServerError()
+                    .body("서버에러입니다.");
+        }
+    }
+    //문의사항 댓글 파일 삭제
+    @DeleteMapping("/{boardId}/comments/{commentId}/files/{commentFileId}")
+    public ResponseEntity<?> deleteCommentFile(@AuthenticationPrincipal String userId, @PathVariable("boardId") Long boardId,  @PathVariable("commentId") Long commentId
+            , @PathVariable("commentFileId") String commentFileId
+            ){
+        try {
+            boolean deleteCommentFile = commentFileService.deleteCommentFile(userId, commentId, commentFileId);
+            CommentFileListResponseDTO commentFileList = commentFileService.retrive(commentId);
+            if (deleteCommentFile==true){
+                return ResponseEntity
+                        .ok()
+                        .body(commentFileList);
+            }else {
+                return ResponseEntity
+                        .badRequest()
+                        .body("삭제에 실패했습니다.");
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity
+                    .internalServerError()
+                    .body("서버에러입니다.");
+        }
+    }
+}
 
 

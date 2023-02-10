@@ -47,8 +47,10 @@ dependencies {
 	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
 	implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
 
+
 	// random 문자열 생성 추가
 	implementation 'org.apache.commons:commons-lang3:3.12.0'
+
 
 
 }
