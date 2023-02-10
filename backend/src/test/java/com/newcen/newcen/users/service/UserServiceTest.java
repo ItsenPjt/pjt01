@@ -1,21 +1,18 @@
 package com.newcen.newcen.users.service;
 
 import com.newcen.newcen.common.entity.UserEntity;
+import com.newcen.newcen.common.repository.ValidUserRepository;
 import com.newcen.newcen.users.dto.request.AnonymousReviseRequestDTO;
 import com.newcen.newcen.users.dto.request.UserModifyRequestDTO;
 import com.newcen.newcen.users.dto.request.UserSignUpRequestDTO;
-import com.newcen.newcen.users.dto.response.AnonymousReviseResponseDTO;
-import com.newcen.newcen.users.dto.response.LoginResponseDTO;
-import com.newcen.newcen.users.dto.response.UserModifyResponseDTO;
-import com.newcen.newcen.users.dto.response.UserSignUpResponseDTO;
+import com.newcen.newcen.users.dto.response.*;
 import com.newcen.newcen.users.repository.UserRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -27,6 +24,9 @@ class UserServiceTest {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    ValidUserRepository validUserRepository;
 
     @Test
     @Order(1)
@@ -140,6 +140,22 @@ class UserServiceTest {
 
         // then
         assertEquals("암호맨", anonymousDto.getUserName());
+    }
+
+    @Test
+    @Order(7)
+    @DisplayName("삭제하려는 회원의 UUID로 회원정보를 삭제해야 한다.")
+    @Transactional
+    void validUserDeleteTest() {
+        // given
+        String delId = "402880b6862fa0f601862fa101410000";
+
+        // when
+        userService.delete(delId);
+
+        // given
+        assertFalse(validUserRepository.existsById(delId));
+
     }
 
 }

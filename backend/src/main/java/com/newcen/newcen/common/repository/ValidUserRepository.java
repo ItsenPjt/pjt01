@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
+
 public interface ValidUserRepository extends JpaRepository<ValidUserEntity, String> {
 
     // 이메일로 회원 조회
@@ -32,17 +34,14 @@ public interface ValidUserRepository extends JpaRepository<ValidUserEntity, Stri
     // 회원 삭제를 위해 email 로 회원 id 조회
     ValidUserEntity findByValidUserId(String email);
 
-//    @Query("SELECT u.validUserId FROM ValidUserEntity u WHERE u.validUserEmail = :validUserEmail")
-//    ValidUserEntity selectValidUserId(@Param("validUserEmail") String email);
-//
-//    // 삭제하려는 회원 id가 존재하는지 여부 확인
-//    boolean existsByValidUserId(ValidUserEntity validUserId);
-
     // 조회된 회원 id로 회원삭제(탈퇴)
-    Long deleteByValidUserId(String validUserId);
+    void deleteById(String validUserId);
 
+    // validUserId 삭제 여부 조회
+    boolean existsById(String validUserId);
 
-
+    // 삭제된 회원 UUID 조회
+    Optional<ValidUserEntity> findById(String validUserId);
 
 
 }

@@ -177,28 +177,41 @@ public class UserService {
     }
 
     // 회원 탈퇴 (회원정보 삭제)
-//    public UserDeleteResponseDTO delete(
-//            final String userId,
-//            final UserDeleteRequestDTO userDeleteRequestDTO) {
-//
-//        try {
-//
-//            userRepository.deleteById(userId);
-//
-////            UserEntity email = userRepository.findByUserEmail(userDeleteRequestDTO.getUserEmail());
-//
-//            validUserRepository.findByValidUserEmail(userDeleteRequestDTO.getUserEmail());
-//
-//        } catch (Exception e) {
-//            log.error("userId가 존재하지 않아 삭제에 실패했습니다. - ID: {}, err: {}"
-//                    , userId, e.getMessage());
-//
-//            throw new RuntimeException("userId가 존재하지 않아 삭제에 실패했습니다.");
-//
-//        }
-//
-//        return new UserDeleteResponseDTO();
-//
-//    }
+    public UserDeleteResponseDTO delete(
+            final String userId) {
+
+        try {
+
+            validUserRepository.deleteById(userId);  // 회원 UUID로 회원정보 삭제
+
+            boolean nonexistentId = validUserRepository.existsById(userId); // 삭제된 UUID 조회
+
+            if (!nonexistentId) {
+                log.info("User Delete Complete - validUserId : {}", userId);
+            }
+
+        } catch (Exception e) {
+            log.error("validUserId가 존재하지 않아 삭제에 실패했습니다. - ID: {}, err: {}"
+                    , userId, e.getMessage());
+
+            throw new RuntimeException("validUserId가 존재하지 않아 삭제에 실패했습니다.");
+
+        }
+
+        Optional<ValidUserEntity> endUser = validUserRepository.findById(userId);
+
+        String message = "";
+
+        if (!endUser.isPresent()) {
+            message = "회원정보가 정상적으로 삭제되었습니다.";
+            log.info("{}", message);
+        } else {
+            message = "비정상적인 처리입니다.";
+            log.info("{}", message);
+        }
+
+        return new UserDeleteResponseDTO(!endUser.isPresent(), message);
+
+    }
 
 }

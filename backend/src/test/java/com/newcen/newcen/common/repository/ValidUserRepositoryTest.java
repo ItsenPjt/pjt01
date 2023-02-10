@@ -2,6 +2,7 @@ package com.newcen.newcen.common.repository;
 
 import com.newcen.newcen.common.entity.UserEntity;
 import com.newcen.newcen.common.entity.ValidUserEntity;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -139,10 +140,11 @@ class ValidUserRepositoryTest {
         String id = "402880b6862fa0f601862fa101410000";
 
         // when
-        Long deleteUser = validUserRepository.deleteByValidUserId(id);
+        validUserRepository.deleteById(id);
 
         // then
-        assertNotEquals("402880b6862fa0f601862fa101410000", deleteUser);
+        Assertions.assertFalse(validUserRepository.existsById(id));
+
     }
 
 
