@@ -46,6 +46,8 @@ dependencies {
 	//querydsl 추가
 	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
 	implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
+
+
 }
 // QueryDSL
 def querydslDir = "$buildDir/generated/querydsl"
