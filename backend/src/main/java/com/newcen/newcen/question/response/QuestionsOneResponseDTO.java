@@ -5,7 +5,6 @@ import com.newcen.newcen.common.entity.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -14,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class QuestionResponseDTO {
+public class QuestionsOneResponseDTO {
 
     private Long boardId;
     private BoardType boardType;
@@ -32,8 +31,10 @@ public class QuestionResponseDTO {
 
     private String boardWriter;
 
+    private List<BoardFileEntity> boardFileList;
+    private List<CommentEntity> commentList;
 
-    public QuestionResponseDTO(BoardEntity boardEntity){
+    public QuestionsOneResponseDTO(BoardEntity boardEntity){
         this.boardId = boardEntity.getBoardId();
         this.boardCommentIs= boardEntity.getBoardCommentIs();
         this.createDate=boardEntity.getCreateDate();
@@ -41,8 +42,8 @@ public class QuestionResponseDTO {
         this.boardTitle=boardEntity.getBoardTitle();
         this.boardUpdateDate=boardEntity.getBoardUpdateDate();
         this.boardWriter=boardEntity.getUser().getUserName();
+        this.boardFileList=boardEntity.getBoardFileEntityList();
+        this.commentList=boardEntity.getCommentEntityList();
         this.boardType = boardEntity.getBoardType();
     }
-
-
 }
