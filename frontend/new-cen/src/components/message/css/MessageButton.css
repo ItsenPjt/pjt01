@@ -1,0 +1,28 @@
+.message-btn-group {
+    display: flex;
+    box-sizing: border-box;
+    width: 60%;
+    margin-left: 40%;
+    justify-content: space-between;
+}
+
+.message-confirm {
+    background: #2F3E60;
+    border: none;
+}
+
+.message-confirm:hover {
+    background: #2F3E60;
+    opacity: 0.9;
+
+}
+
+.message-cancel {
+    border: none;
+    background: #717172;
+}
+
+.message-cancel:hover {
+    background: #717172;
+    opacity: 0.9;
+}
