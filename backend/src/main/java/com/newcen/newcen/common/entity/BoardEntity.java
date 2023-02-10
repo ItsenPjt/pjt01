@@ -2,7 +2,6 @@ package com.newcen.newcen.common.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
-import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -20,6 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 @EqualsAndHashCode(of = "boardId")
 @Table(name="board")
+@EntityListeners(AuditingEntityListener.class)
 public class BoardEntity {
     @Id
     @Column(name="board_id")
@@ -59,17 +59,17 @@ public class BoardEntity {
     @Column(name="user_id")
     private String userId;
 
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
-    @OneToMany(fetch = FetchType.LAZY)
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE,orphanRemoval = true)
     @JoinColumn(name="comment_id")
     private final List<CommentEntity> commentEntityList = new ArrayList<>();
 
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
-    @OneToMany(fetch = FetchType.EAGER)
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE,orphanRemoval = true)
     @JoinColumn(name="board_id")
     private final List<BoardFileEntity> boardFileEntityList = new ArrayList<>();
 
-    public void updateQuestion(String boardTitle, String boardContent){
+    public void updateBoard(String boardTitle, String boardContent){
         this.boardContent = boardContent;
         this.boardTitle = boardTitle;
     }

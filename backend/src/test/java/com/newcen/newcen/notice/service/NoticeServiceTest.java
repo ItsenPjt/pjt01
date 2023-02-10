@@ -1,22 +1,21 @@
 package com.newcen.newcen.notice.service;
 
 import com.newcen.newcen.common.entity.BoardCommentIs;
-import com.newcen.newcen.common.entity.BoardType;
+import com.newcen.newcen.common.entity.BoardFileEntity;
 import com.newcen.newcen.common.entity.UserEntity;
 import com.newcen.newcen.notice.dto.request.NoticeCreateFileRequestDTO;
 import com.newcen.newcen.notice.dto.request.NoticeCreateRequestDTO;
+import com.newcen.newcen.notice.dto.request.NoticeUpdateFileRequestDTO;
 import com.newcen.newcen.notice.dto.request.NoticeUpdateRequestDTO;
 import com.newcen.newcen.notice.dto.response.NoticeDetailResponseDTO;
 import com.newcen.newcen.notice.dto.response.NoticeListResponseDTO;
 import com.newcen.newcen.notice.dto.response.NoticeOneResponseDTO;
-import com.newcen.newcen.notice.repository.NoticeRepository;
 import com.newcen.newcen.users.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -189,7 +188,7 @@ class NoticeServiceTest {
     void createFileTest() {
 
         // given
-        UserEntity user = userRepository.findById("402880e7862e5d3201862e5d3ab20000").get();   // 인사팀 user_id (ADMIN)
+        UserEntity user = userRepository.findById("402880e7863388c301863388cce40000").get();   // 암호맨 user_id (ADMIN)
 
         String filePath = "test.md";
 
@@ -219,14 +218,135 @@ class NoticeServiceTest {
 
         Long boardId = noticeService.retrieve().getNotices().get(1).getBoardId();        // 2번째 공지사항 boardId
 
-        NoticeCreateFileRequestDTO newFile = NoticeCreateFileRequestDTO.builder()
+        NoticeCreateFileRequestDTO newFileDTO = NoticeCreateFileRequestDTO.builder()
                 .boardFilePath(filePath)
                 .build();
 
         // then
         assertThrows(RuntimeException.class, () -> {
             // when
-            noticeService.createFile(boardId, newFile, user.getUserId());
+            noticeService.createFile(boardId, newFileDTO, user.getUserId());
+        });
+    }
+
+    @Test
+    @DisplayName("2번째 공지사항을 등록한 사용자가, 첨부된 두번째 파일의 경로를 'update2.md' 로 수정 해야한다")
+    void updateFileTest() {
+
+        // given
+        UserEntity user = userRepository.findById("402880e7863388c301863388cce40000").get();   // 2번째 공지사항 등록한 user_id (ADMIN)
+
+        Long boardId = noticeService.retrieve().getNotices().get(1).getBoardId();        // 2번째 공지사항 boardId
+
+        int FileIndex = 1;
+        BoardFileEntity fileEntity = noticeService.retrieveOne(boardId).getBoardFileEntityList().get(FileIndex);        // 2번째 공지사항의 두번째 첨부파일 boardFileId
+        String updatePath = "update2.md";
+        NoticeUpdateFileRequestDTO updateFileDTO = NoticeUpdateFileRequestDTO.builder()
+                .boardFilePath(updatePath)
+                .build();
+
+        // when
+        NoticeOneResponseDTO noticeOneResponseDTO = noticeService.updateFile(boardId, fileEntity.getBoardFileId(), updateFileDTO, user.getUserId());
+
+        // then
+        assertEquals(noticeOneResponseDTO.getBoardFileEntityList().get(FileIndex).getBoardFilePath(), updatePath);
+    }
+
+    @Test
+    @DisplayName("2번째 공지사항을 등록하지 않은 관리자가, 첨부된 두번째 파일의 경로를 'update2.md' 로 수정하면 에러가 발생한다.")
+    void updateFileErrorTest() {
+        // given
+        UserEntity user = userRepository.findById("402880e7862e5d3201862e5d3ade0001").get();   // 2번째 공지사항을 등록하지 않은 user_id (ADMIN)
+
+        Long boardId = noticeService.retrieve().getNotices().get(1).getBoardId();        // 2번째 공지사항 boardId
+
+        int FileIndex = 1;
+        BoardFileEntity fileEntity = noticeService.retrieveOne(boardId).getBoardFileEntityList().get(FileIndex);        // 2번째 공지사항의 두번째 첨부파일 boardFileId
+        String updatePath = "update2.md";
+        NoticeUpdateFileRequestDTO updateFileDTO = NoticeUpdateFileRequestDTO.builder()
+                .boardFilePath(updatePath)
+                .build();
+
+        // then
+        assertThrows(RuntimeException.class, () -> {
+            // when
+            noticeService.updateFile(boardId, fileEntity.getBoardFileId(), updateFileDTO, user.getUserId());
+        });
+    }
+
+    @Test
+    @DisplayName("일반 사용자가, 첨부된 두번째 파일의 경로를 'update2.md' 로 수정하면 에러가 발생한다.")
+    void updateFileErrorTest2() {
+        // given
+        UserEntity user = userRepository.findById("402880e7862e5d3201862e5d3ae30002").get();   // 이오이 user_id (MEMBER)
+
+        Long boardId = noticeService.retrieve().getNotices().get(1).getBoardId();        // 2번째 공지사항 boardId
+
+        int FileIndex = 1;
+        BoardFileEntity fileEntity = noticeService.retrieveOne(boardId).getBoardFileEntityList().get(FileIndex);        // 2번째 공지사항의 두번째 첨부파일 boardFileId
+        String updatePath = "update2.md";
+        NoticeUpdateFileRequestDTO updateFileDTO = NoticeUpdateFileRequestDTO.builder()
+                .boardFilePath(updatePath)
+                .build();
+
+        // then
+        assertThrows(RuntimeException.class, () -> {
+            // when
+            noticeService.updateFile(boardId, fileEntity.getBoardFileId(), updateFileDTO, user.getUserId());
+        });
+    }
+
+    @Test
+    @DisplayName("2번째 공지사항의 2번째 파일을 삭제하면 해당 공지사항에 1개의 파일만 남는다.")
+    void deleteFileTest() {
+
+        // given
+        UserEntity user = userRepository.findById("402880e7863388c301863388cce40000").get();   // 2번째 공지사항 등록한 user_id (ADMIN)
+        Long boardId = noticeService.retrieve().getNotices().get(1).getBoardId();        // 2번째 공지사항 boardId
+
+        int FileIndex = 1;
+        BoardFileEntity fileEntity = noticeService.retrieveOne(boardId).getBoardFileEntityList().get(FileIndex);        // 2번째 공지사항의 두번째 첨부파일 boardFileId
+
+        // when
+        NoticeOneResponseDTO noticeOneResponseDTO = noticeService.deleteFile(boardId, fileEntity.getBoardFileId(), user.getUserId());
+
+        // then
+        assertEquals(2, noticeOneResponseDTO.getBoardFileEntityList().size());
+    }
+
+    @Test
+    @DisplayName("2번째 공지사항을 등록하지 않은 관리자가, 첨부된 두번째 파일을 삭제하면 에러가 발생한다.")
+    void deleteFileErrorTest() {
+
+        // given
+        UserEntity user = userRepository.findById("402880e7862e5d3201862e5d3ade0001").get();   // 2번째 공지사항 등록하지 않은 user_id (ADMIN)
+        Long boardId = noticeService.retrieve().getNotices().get(1).getBoardId();        // 2번째 공지사항 boardId
+
+        int FileIndex = 1;
+        BoardFileEntity fileEntity = noticeService.retrieveOne(boardId).getBoardFileEntityList().get(FileIndex);        // 2번째 공지사항의 두번째 첨부파일 boardFileId
+
+        // then
+        assertThrows(RuntimeException.class, () -> {
+            // when
+            noticeService.deleteFile(boardId, fileEntity.getBoardFileId(), user.getUserId());
+        });
+    }
+
+    @Test
+    @DisplayName("일반 사용자가, 첨부된 두번째 파일을 삭제하면 에러가 발생한다.")
+    void deleteFileErrorTest2() {
+
+        // given
+        UserEntity user = userRepository.findById("402880e7862e5d3201862e5d3ae30002").get();   // 이오이 user_id (MEMBER)
+        Long boardId = noticeService.retrieve().getNotices().get(1).getBoardId();        // 2번째 공지사항 boardId
+
+        int FileIndex = 1;
+        BoardFileEntity fileEntity = noticeService.retrieveOne(boardId).getBoardFileEntityList().get(FileIndex);        // 2번째 공지사항의 두번째 첨부파일 boardFileId
+
+        // then
+        assertThrows(RuntimeException.class, () -> {
+            // when
+            noticeService.deleteFile(boardId, fileEntity.getBoardFileId(), user.getUserId());
         });
     }
 }

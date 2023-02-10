@@ -1,5 +1,6 @@
 package com.newcen.newcen.common.repository;
 
+import com.newcen.newcen.common.entity.UserEntity;
 import com.newcen.newcen.common.entity.ValidUserEntity;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,7 @@ class ValidUserRepositoryTest {
 
     @Autowired
     ValidUserRepository validUserRepository;
+
 
     @Test
     @DisplayName("회원 이메일, 유저코드를 삽입해야한다.")
@@ -98,5 +100,38 @@ class ValidUserRepositoryTest {
         System.out.println("====================");
 
     }
+
+    @Test
+    @DisplayName("기존에 가입되어있는 회원의 인증코드를 조회하면 true를 반환해야 한다.")
+    void existsByUserEmailAndUserNameTest() {
+        // given
+        String validCode = "XY2baJQ";
+
+        // when
+        boolean userCode = validUserRepository.existsByValidCode(validCode);
+
+        // then
+        assertTrue(userCode);
+
+    }
+
+//    @Test
+//    @DisplayName("삭제하려는 회원의 Email로 validUserId를 조회해야한다.")
+////    @Transactional
+//    void deleteByEmailTest() {
+//        // given
+//        String email = "postman@naver.com";
+//
+//        // when
+//        ValidUserEntity delID = validUserRepository.selectValidUserId(email);
+//
+//        System.out.println("delID = " + delID);
+//
+//        // then
+//        assertEquals("40288a81863665e101863665ec3b0000", delID.getValidUserId());
+//
+//
+//    }
+
 
 }

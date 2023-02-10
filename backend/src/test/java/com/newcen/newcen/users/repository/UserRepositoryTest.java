@@ -68,5 +68,20 @@ class UserRepositoryTest {
         assertFalse(flag);
     }
 
+    @Test
+    @DisplayName("기존에 가입되어있는 회원정보로 조회하면 true를 반환해야 한다.")
+    void existsByUserEmailAndUserNameTest() {
+        // given
+        String email = "postman@naver.com";
+        String name = "암호맨";
+
+        // when
+        boolean existsUser = userRepository.existsByUserEmailAndUserName(email, name);
+
+        // then
+        assertTrue(existsUser);
+
+    }
+
 }
 

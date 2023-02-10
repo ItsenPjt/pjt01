@@ -1,6 +1,8 @@
 package com.newcen.newcen.notice.controller;
 
+import com.newcen.newcen.notice.dto.request.NoticeCreateFileRequestDTO;
 import com.newcen.newcen.notice.dto.request.NoticeCreateRequestDTO;
+import com.newcen.newcen.notice.dto.request.NoticeUpdateFileRequestDTO;
 import com.newcen.newcen.notice.dto.request.NoticeUpdateRequestDTO;
 import com.newcen.newcen.notice.dto.response.NoticeListResponseDTO;
 import com.newcen.newcen.notice.dto.response.NoticeOneResponseDTO;
@@ -138,5 +140,100 @@ public class NoticeApiController {
         }
     }
 
-    //
+    // 공지사항 파일첨부 (POST)
+    @PostMapping("/{board_id}/files")
+    public ResponseEntity<?> createFileNotice (
+            @AuthenticationPrincipal String userId,
+            @PathVariable("board_id") Long boardId,
+            @Validated @RequestBody NoticeCreateFileRequestDTO requestDTO,
+            BindingResult result
+    ) {
+        if (result.hasErrors()) {
+            log.warn("DTO 검증 에러 발생: {}", result.getFieldError());
+
+            return ResponseEntity
+                    .badRequest()
+                    .body(result.getFieldError());
+        }
+
+        log.info("/api/notices/{}/file POST request", boardId);
+
+        try {
+            NoticeOneResponseDTO responseDTO = noticeService.createFile(boardId, requestDTO, userId);
+
+            return ResponseEntity
+                    .ok()
+                    .body(responseDTO);
+        } catch (RuntimeException e) {
+            log.error(e.getMessage());
+            return ResponseEntity
+                    .internalServerError()
+                    .body(NoticeListResponseDTO
+                            .builder()
+                            .error(e.getMessage()));
+        }
+    }
+
+    // 공지사항 파일 수정 (PUT)
+    @RequestMapping("/{board_id}/files/{board_file_id}")
+    public ResponseEntity<?> updateFileNotice(
+            @AuthenticationPrincipal String userId,
+            @PathVariable("board_id") Long boardId,
+            @PathVariable("board_file_id") String boardFileId,
+            @Validated @RequestBody NoticeUpdateFileRequestDTO requestDTO,
+            BindingResult result
+    ) {
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest()
+                    .body(result.getFieldError());
+        }
+
+        log.info("/api/todos/{}/file/{} PUT request", boardId, boardFileId);
+        log.info("modifying dto : {}", requestDTO);
+
+        try {
+            NoticeOneResponseDTO responseDTO = noticeService.updateFile(boardId, boardFileId, requestDTO, userId);
+            return ResponseEntity
+                    .ok()
+                    .body(responseDTO);
+        } catch (Exception e) {
+            return ResponseEntity
+                    .internalServerError()
+                    .body(NoticeListResponseDTO
+                            .builder()
+                            .error(e.getMessage()));
+        }
+    }
+
+    // 공지사항 파일 삭제 (DELETE)
+    @DeleteMapping("/{board_id}/files/{board_file_id}")
+    public ResponseEntity<?> deleteFileNotice(
+            @AuthenticationPrincipal String userId,
+            @PathVariable("board_id") Long boardId,
+            @PathVariable("board_file_id") String boardFileId
+    ) {
+        if (boardId == null || boardId.equals("")) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(NoticeListResponseDTO.builder()
+                            .error("Board ID를 전달해주세요"));
+        }
+
+        log.info("/api/notices/{}/file/{} DELETE request", boardId, boardFileId);
+
+        try {
+            NoticeOneResponseDTO responseDTO = noticeService.deleteFile(boardId, boardFileId, userId);
+            return ResponseEntity
+                    .ok()
+                    .body(responseDTO);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+
+            return ResponseEntity
+                    .internalServerError()
+                    .body(NoticeListResponseDTO
+                            .builder()
+                            .error(e.getMessage()));
+        }
+    }
 }

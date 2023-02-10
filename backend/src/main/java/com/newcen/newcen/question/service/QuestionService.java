@@ -8,7 +8,6 @@ import com.newcen.newcen.question.repository.QuestionsFileRepository;
 import com.newcen.newcen.question.repository.QuestionsRepository;
 import com.newcen.newcen.question.repository.QuestionsRepositorySupport;
 import com.newcen.newcen.question.request.QuestionCreateRequestDTO;
-import com.newcen.newcen.question.request.QuestionFileRequestDTO;
 import com.newcen.newcen.question.request.QuestionUpdateRequestDTO;
 import com.newcen.newcen.question.response.QuestionListResponseDTO;
 import com.newcen.newcen.question.response.QuestionResponseDTO;
@@ -19,7 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,6 +46,7 @@ public class QuestionService {
     //문의사항 상세조회
     public QuestionResponseDTO questionDetail(Long boardId){
         BoardEntity boardGet = questionsRepository.getById(boardId);
+//        BoardEntity boardGet = questionsRepository.getById(boardId);
         return new QuestionResponseDTO(boardGet);
     }
 
@@ -81,7 +81,7 @@ public class QuestionService {
             title = dto.getBoardTitle();
         }
 
-        boardGet.updateQuestion(title,content);
+        boardGet.updateBoard(title,content);
         BoardEntity savedBoard = questionsRepository.save(boardGet);
         return new QuestionResponseDTO(savedBoard);
     }
@@ -89,6 +89,10 @@ public class QuestionService {
     //문의사항 삭제
     public boolean deleteQuestion(String userId, Long boardId){
         BoardEntity boardGet = questionsRepositorySupport.findBoardByUserIdAndBoardId(userId,boardId);
+        UserEntity user = userRepository.findById(userId).get();
+        if (!Objects.equals(boardGet.getUserId(), user.getUserId())){
+            throw new RuntimeException("본인이 작성한 글이 아닙니다.");
+        }
         questionsRepository.delete(boardGet);
         return true;
     }
@@ -125,23 +129,41 @@ public class QuestionService {
 
         BoardFileEntity boardFileGetById = questionsFileRepository.getById(boardFileId);
         boardFileGetById.setBoardFilePath(boardFilePath);
-        BoardFileEntity savedBoardFile = questionsFileRepository.save(boardFileGetById);
+        questionsFileRepository.save(boardFileGetById);
+
         BoardEntity savedBoard = questionsRepository.save(board);
         return new QuestionResponseDTO(savedBoard);
     }
     //게시물 파일 삭제
     public QuestionResponseDTO deleteFile(String userId, Long boardId, String boardFileId){
-        UserEntity user = null;
         BoardEntity board = questionsRepositorySupport.findBoardByUserIdAndBoardId(userId,boardId);
-        user = userRepository.findById(userId).get();
-        if (user == null){
-            throw new RuntimeException("해당 유저가 없습니다.");
-        }
-        if (board.getUserId()!=userId){
+//        Optional<BoardEntity> board = questionsRepository.findById(boardId);
+        UserEntity user = userRepository.findById(userId).get();
+        if (!Objects.equals(board.getUserId(), user.getUserId())){
             throw new RuntimeException("본인이 작성한 글이 아닙니다.");
         }
-        questionsFileRepository.deleteById(boardFileId);
-        return new QuestionResponseDTO(board);
+        try {
+            System.out.println("====================삭제시작");
+            questionsFileRepository.deleteById(boardFileId);
+            System.out.println("====================삭제끝");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        BoardEntity res = BoardEntity.builder()
+                .boardTitle(board.getBoardTitle())
+                .boardContent(board.getBoardContent())
+                .boardType(board.getBoardType())
+                .boardWriter(board.getBoardWriter())
+                .boardCommentIs(board.getBoardCommentIs())
+                .boardId(board.getBoardId())
+                .boardTitle(board.getBoardTitle())
+                .boardUpdateDate(board.getBoardUpdateDate())
+                .userId(userId)
+                .user(user)
+                .build();
+
+        System.out.println(res.getUser());
+        return new QuestionResponseDTO(res);
     }
 
 
