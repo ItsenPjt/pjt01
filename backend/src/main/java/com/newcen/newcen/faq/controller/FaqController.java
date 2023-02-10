@@ -21,6 +21,7 @@ public class FaqController {
 
     private final FaqService faqService;
 
+    // FAQ 목록 조회
     @GetMapping("/api/faqs")
     public ResponseEntity<?> faqList() {
 
@@ -30,6 +31,7 @@ public class FaqController {
                 .body(faqList);
     }
 
+    // FAQ 상세 조회
     @GetMapping("/api/faqs/{boardId}")
     public ResponseEntity<?> faqDetail(@PathVariable("boardId") Long boardId) {
 
@@ -39,6 +41,7 @@ public class FaqController {
                 .body(faqDetail);
     }
 
+    // FAQ 등록
     @PostMapping("/api/faqs")
     public ResponseEntity<?> faqSave(@AuthenticationPrincipal String userId,
                                      @Validated @RequestBody FaqSaveRequestDTO requestDTO) {
@@ -49,6 +52,7 @@ public class FaqController {
                 .body(faqList);
     }
 
+    // FAQ 수정
     @PatchMapping("/api/faqs/{boardId}")
     public ResponseEntity<?> faqUpdate(@AuthenticationPrincipal String userId,
                                        @PathVariable("boardId") Long boardId,
@@ -62,6 +66,7 @@ public class FaqController {
                 .body(faqDetail);
     }
 
+    // FAQ 삭제
     @DeleteMapping("/api/faqs/{boardId}")
     public ResponseEntity<?> faqDelete(@AuthenticationPrincipal String userId,
                                        @PathVariable("boardId") Long boardId) {
