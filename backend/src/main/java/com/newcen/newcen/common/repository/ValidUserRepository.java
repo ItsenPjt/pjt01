@@ -1,11 +1,12 @@
 package com.newcen.newcen.common.repository;
 
-import com.newcen.newcen.common.entity.UserEntity;
 import com.newcen.newcen.common.entity.ValidUserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
+import java.util.Optional;
 
 public interface ValidUserRepository extends JpaRepository<ValidUserEntity, String> {
 
@@ -30,16 +31,19 @@ public interface ValidUserRepository extends JpaRepository<ValidUserEntity, Stri
     boolean existsByValidCode(String validCode);
 
     // 회원 삭제를 위해 email 로 회원 id 조회
-//    ValidUserEntity findByValidUserId(String email);
+    ValidUserEntity findByValidUserId(String email);
 
-//    @Query("SELECT u.validUserId FROM ValidUserEntity u WHERE u.validUserEmail = :validUserEmail")
-//    ValidUserEntity selectValidUserId(@Param("validUserEmail") String email);
-//
-//    // 삭제하려는 회원 id가 존재하는지 여부 확인
-//    boolean existsByValidUserId(ValidUserEntity validUserId);
+    // 조회된 회원 id로 회원삭제(탈퇴)
+    void deleteById(String validUserId);
 
+    // 회원 Email로 회원정보 삭제
+    void deleteByValidUserEmail(String email);
 
+    // validUserId 삭제 여부 조회
+    boolean existsById(String validUserId);
 
+    // 삭제된 회원 UUID 조회
+    Optional<ValidUserEntity> findById(String validUserId);
 
 
 }

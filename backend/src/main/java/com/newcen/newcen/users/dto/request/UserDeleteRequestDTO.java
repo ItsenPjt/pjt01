@@ -15,6 +15,8 @@ import javax.validation.constraints.NotBlank;
 
 public class UserDeleteRequestDTO {
 
+
+
     @NotBlank   // @NotBlank - null 과 "" 과 " " 모두 허용하지 않음
     @Email
     private String userEmail;

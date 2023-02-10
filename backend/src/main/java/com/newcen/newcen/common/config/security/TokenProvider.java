@@ -38,7 +38,7 @@ public class TokenProvider {
                         SignatureAlgorithm.HS512
                 )
                 .setSubject(userEntity.getUserId()) //sub:토큰 식별자
-                .setIssuer("todo app")  //iss:발급자정보
+                .setIssuer("newcen app")  //iss:발급자정보
                 .setIssuedAt(new Date()) //At: 토큰 발급시간
                 .setExpiration(expiryDate) //exp: 토큰 만료시간
                 .compact();

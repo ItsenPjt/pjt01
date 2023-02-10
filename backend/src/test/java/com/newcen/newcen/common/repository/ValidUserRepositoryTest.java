@@ -2,13 +2,16 @@ package com.newcen.newcen.common.repository;
 
 import com.newcen.newcen.common.entity.UserEntity;
 import com.newcen.newcen.common.entity.ValidUserEntity;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 @SpringBootTest
 class ValidUserRepositoryTest {
@@ -115,23 +118,34 @@ class ValidUserRepositoryTest {
 
     }
 
-//    @Test
-//    @DisplayName("삭제하려는 회원의 Email로 validUserId를 조회해야한다.")
-////    @Transactional
-//    void deleteByEmailTest() {
-//        // given
-//        String email = "postman@naver.com";
-//
-//        // when
-//        ValidUserEntity delID = validUserRepository.selectValidUserId(email);
-//
-//        System.out.println("delID = " + delID);
-//
-//        // then
-//        assertEquals("40288a81863665e101863665ec3b0000", delID.getValidUserId());
-//
-//
-//    }
+    @Test
+    @DisplayName("삭제하려는 회원의 Email로 validUserId를 조회해야한다.")
+    void findByValidUserIdTest() {
+        // given
+        String email = "postman@naver.com";
+
+        // when
+        ValidUserEntity targetId = validUserRepository.findByValidUserId(email);
+
+        // then
+        assertNotEquals("402880b6862fa0f601862fa101410123", targetId);
+
+    }
+
+    @Test
+    @DisplayName("조회된 회원 UUID로 회원 정보를 삭제해야 한다.")
+    @Transactional
+    void deleteByValidUserIdTest() {
+        // given
+        String id = "402880b6862fa0f601862fa101410000";
+
+        // when
+        validUserRepository.deleteById(id);
+
+        // then
+        Assertions.assertFalse(validUserRepository.existsById(id));
+
+    }
 
 
 }

@@ -1,0 +1,72 @@
+#login_main {
+    width: 50%;
+    height: 650px;
+
+    /* 박스 x축 중앙 정렬 : margin 좌우값을 auto로 설정*/
+    margin: 100px auto;  
+}
+
+#login_logo_position {
+    text-align: center;
+}
+
+#login_logo_img {
+    margin-top: 20px;
+    height: 120px;
+}
+
+#login_main_content {
+    width: 50%;
+    margin: 20px auto;
+}
+
+#login_form_label {
+    font-weight: 600;
+}
+
+.login_form_control {
+    text-align: center;
+    height: 60px;
+
+    box-shadow: 3px 3px #D0D0D0;
+}
+.login_form_control::placeholder {
+    color: #D0D0D0;
+}
+
+#login_div {
+    text-align: center;
+    margin-top: 40px; 
+}
+
+.btn_orange {
+    background-color: #E9460A;
+    border: none;
+}
+.btn_orange:hover, .btn_orange:active, .btn_orange:focus {
+    background-color: #b43102;
+}
+
+#login_btn {
+    width: 100%;
+    height: 50px;
+
+    box-shadow: 3px 3px #f78156;
+}
+
+.justify {
+    display: flex;
+    justify-content: space-between;
+}
+
+#login_justify {
+    color: #6390E7;
+    margin-top: 7px;
+}
+
+.on_pointer {
+    cursor: pointer;
+}
+.on_pointer:hover {
+    font-weight: 600;
+}

@@ -18,12 +18,7 @@ import java.time.LocalDate;
 
 public class UserDeleteResponseDTO {
 
-    private String userEmail;
-
-    private String userName;
-
-    @JsonFormat(pattern = "yyyy년 MM월 dd일")
-    private LocalDate userRegdate;
+    private boolean done;   // 삭제 여부
 
     private String message; // 응답 메세지
 

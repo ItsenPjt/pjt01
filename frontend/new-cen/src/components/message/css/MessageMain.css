@@ -1,0 +1,14 @@
+#message_main {
+    width: 900px;
+    height: 600px;
+    
+    border: 1px solid black;
+    border-radius: 10px;
+
+    /* 음영처리 */ 
+    /* x축, y축, 블러크기, 색상*/
+    box-shadow: 0 0 8px #aaa;
+
+    /* 박스 x축 중앙 정렬 : margin 좌우값을 auto로 설정*/
+    margin: 100px auto;    
+}

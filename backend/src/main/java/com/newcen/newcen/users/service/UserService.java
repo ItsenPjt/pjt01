@@ -5,7 +5,6 @@ import com.newcen.newcen.common.entity.UserEntity;
 import com.newcen.newcen.common.entity.ValidUserEntity;
 import com.newcen.newcen.common.repository.ValidUserRepository;
 import com.newcen.newcen.users.dto.request.AnonymousReviseRequestDTO;
-import com.newcen.newcen.users.dto.request.UserDeleteRequestDTO;
 import com.newcen.newcen.users.dto.request.UserModifyRequestDTO;
 import com.newcen.newcen.users.dto.request.UserSignUpRequestDTO;
 import com.newcen.newcen.users.dto.response.*;
@@ -13,6 +12,7 @@ import com.newcen.newcen.users.exception.NoRegisteredArgumentsException;
 import com.newcen.newcen.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.DynamicInsert;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +22,7 @@ import java.util.Optional;
 @Service
 @Slf4j
 @RequiredArgsConstructor    // 초기화 되지않은 final 또는 @NonNull 이 붙은 필드에 대해 생성자를 생성
+@DynamicInsert
 public class UserService {
 
     private final UserRepository userRepository;
@@ -126,6 +127,7 @@ public class UserService {
     // 익명 사용자 비밀번호 찾기 시 수정
     public AnonymousReviseResponseDTO update(
             AnonymousReviseRequestDTO anonymousReviseRequestDTO) {
+
         if (anonymousReviseRequestDTO == null) {
             throw new NoRegisteredArgumentsException("Unknown UserInfo - 알 수 없는 회원정보 입니다.");
         }
@@ -177,28 +179,50 @@ public class UserService {
     }
 
     // 회원 탈퇴 (회원정보 삭제)
-//    public UserDeleteResponseDTO delete(
-//            final String userId,
-//            final UserDeleteRequestDTO userDeleteRequestDTO) {
-//
-//        try {
-//
-//            userRepository.deleteById(userId);
-//
-////            UserEntity email = userRepository.findByUserEmail(userDeleteRequestDTO.getUserEmail());
-//
-//            validUserRepository.findByValidUserEmail(userDeleteRequestDTO.getUserEmail());
-//
-//        } catch (Exception e) {
-//            log.error("userId가 존재하지 않아 삭제에 실패했습니다. - ID: {}, err: {}"
-//                    , userId, e.getMessage());
-//
-//            throw new RuntimeException("userId가 존재하지 않아 삭제에 실패했습니다.");
-//
-//        }
-//
-//        return new UserDeleteResponseDTO();
-//
-//    }
+    public UserDeleteResponseDTO delete(
+            final String userId) {
+
+        try {
+
+            String delEmail = userRepository.selectUserEmail(userId);
+
+            userRepository.deleteById(userId);  // 회원 UUID로 회원정보 삭제
+
+            boolean nonexistentId = userRepository.existsById(userId); // 삭제된 UUID 조회
+
+            if (!nonexistentId) {
+                log.info("User Delete Complete - UserId : {}", userId);
+
+
+
+                validUserRepository.deleteByValidUserEmail(delEmail);
+                log.info("validUserEmail Delete Complete - ValidUserEmail : {}", delEmail);
+
+
+            }
+
+        } catch (Exception e) {
+            log.error("UserId가 존재하지 않아 삭제에 실패했습니다. - ID: {}, err: {}"
+                    , userId, e.getMessage());
+
+            throw new RuntimeException("UserId가 존재하지 않아 삭제에 실패했습니다.");
+
+        }
+
+        Optional<ValidUserEntity> endUser = validUserRepository.findById(userId);
+
+        String message = "";
+
+        if (!endUser.isPresent()) {
+            message = "회원 탈퇴 처리가 완료되었습니다.";
+            log.info("{}", message);
+        } else {
+            message = "비정상적인 처리입니다.";
+            log.info("{}", message);
+        }
+
+        return new UserDeleteResponseDTO(!endUser.isPresent(), message);
+
+    }
 
 }
