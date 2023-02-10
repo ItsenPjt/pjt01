@@ -66,8 +66,13 @@ public class UserService {
 
         log.info("********** - User ActiveValue Change Complete - valid_user_active : {}", updatedActive);
 
-        return new UserSignUpResponseDTO(savedUser);
+        return retrieve(email);
 
+    }
+
+    private UserSignUpResponseDTO retrieve(String email) {
+        UserEntity user = userRepository.findByUserEmail(email);
+        return new UserSignUpResponseDTO(user);
     }
 
 
