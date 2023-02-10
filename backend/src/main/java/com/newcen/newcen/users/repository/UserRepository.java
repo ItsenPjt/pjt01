@@ -26,8 +26,15 @@ public interface UserRepository extends JpaRepository<UserEntity, String> {
     // 유저 아이디로 회원 조회 (메세지)
     Optional<UserEntity> findByUserId(String userId);
 
+    // UUID로 회원정보 삭제
+    void deleteById(String UserId);
 
-    List<UserEntity> findByUserName(String userName);
+    // 삭제한 회원 UUID로 email 존재 여부 조회
+    boolean existsById(String UserId);
+
+    // 삭제한 회원 Email 조회
+    @Query("SELECT u.userEmail FROM UserEntity u WHERE u.userId =:userId")
+    String selectUserEmail(@Param("userId") String userId);
 
     // 익명 사용자 비밀번호 찾기 시 회원정보 존재 여부 조회
     boolean existsByUserEmailAndUserName(String email, String name);

@@ -1,0 +1,26 @@
+.message_btn_group {
+    display: flex;
+    box-sizing: border-box;
+
+    width: 60%;
+    margin-left: 40%;
+    
+    justify-content: space-between;
+}
+
+.btn_etc {
+    background-color: #58657F;
+    border: none;
+}
+.btn_etc:hover, .btn_etc:active, .btn_etc:focus {
+    background-color: #414858;
+}
+
+
+.btn_orange {
+    background-color: #E9460A;
+    border: none;
+}
+.btn_orange:hover, .btn_orange:active, .btn_orange:focus {
+    background-color: #b43102;
+}

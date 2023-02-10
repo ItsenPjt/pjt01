@@ -1,0 +1,37 @@
+.btn_orange {
+    background-color: #E9460A;
+    border: none;
+}
+.btn_orange:hover, .btn_orange:active, .btn_orange:focus {
+    background-color: #b43102;
+}
+
+#notice_main {
+    width: 60%;
+    height: 600px;
+
+    border: 1px solid black;
+    border-radius: 10px;
+
+    /* 음영처리 */ 
+    /* x축, y축, 블러크기, 색상*/
+    box-shadow: 0 0 8px #aaa;
+
+    /* 박스 x축 중앙 정렬 : margin 좌우값을 auto로 설정*/
+    margin: 100px auto;    
+}
+
+#notice_table {
+    border-collapse: separate;
+    border-spacing: 0 20px;
+}
+
+#notice_table th, #notice_table td {
+    border-style: hidden;
+}
+
+#notice_main_thead {
+    margin-top: 10px;
+    background-color: #F3F6F9;
+    text-align: center;
+}
