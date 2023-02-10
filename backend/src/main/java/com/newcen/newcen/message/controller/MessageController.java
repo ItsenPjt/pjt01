@@ -2,6 +2,7 @@ package com.newcen.newcen.message.controller;
 
 import com.newcen.newcen.message.dto.request.MessageSendRequestDTO;
 import com.newcen.newcen.message.dto.response.*;
+import com.newcen.newcen.message.exception.MessageCustomException;
 import com.newcen.newcen.message.exception.MessageExceptionEntity;
 import com.newcen.newcen.message.exception.MessageExceptionEnum;
 import com.newcen.newcen.message.service.MessageService;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +26,9 @@ public class MessageController {
     private final MessageService messageService;
 
     // 메세지 목록 조회
-    @GetMapping("/api/{userId}/messages")
-    public ResponseEntity<?> messageList(@PathVariable("userId") String userId, @RequestParam("mode") String mode) {
+    @GetMapping("/api/messages")
+    public ResponseEntity<?> messageList(@AuthenticationPrincipal String userId,
+                                         @RequestParam("mode") String mode) {
 
         log.info("/api/{}/message message list GET request!", userId);
 
@@ -48,8 +51,8 @@ public class MessageController {
     }
 
     // 메세지 상세 조회
-    @GetMapping("/api/{userId}/messages/{messageId}")
-    public ResponseEntity<?> receivedMessageDetail(@PathVariable("userId") String userId,
+    @GetMapping("/api/messages/{messageId}")
+    public ResponseEntity<?> receivedMessageDetail(@AuthenticationPrincipal String userId,
                                                    @PathVariable("messageId") Long messageId,
                                                    @RequestParam("mode") String mode) {
 
@@ -72,8 +75,13 @@ public class MessageController {
     }
 
     // 받는 사람 실시간 검색
-    @GetMapping("/api/{userId}/messages/receiver")
-    public ResponseEntity<?> findReceiver(@RequestParam("username") String userName) {
+    @GetMapping("/api/messages/receiver")
+    public ResponseEntity<?> findReceiver(@RequestParam("username") String userName,
+                                          @AuthenticationPrincipal String userId) {
+
+        if(userId.equals("anonymousUser")) {
+            throw new MessageCustomException(MessageExceptionEnum.UNAUTHORIZED_ACCESS);
+        }
 
         List<MessageReceiverResponseDTO> receiverList = messageService.findReceiver(userName);
         return ResponseEntity
@@ -82,10 +90,10 @@ public class MessageController {
     }
 
     // 메세지 보내기
-    @PostMapping("/api/{userId}/messages")
+    @PostMapping("/api/messages")
     public ResponseEntity<?> sendMessages(@Validated @RequestBody MessageSendRequestDTO message,
                                          @RequestParam("receiverList") List<String> receiverList,
-                                         @PathVariable("userId") String userId) {
+                                          @AuthenticationPrincipal String userId) {
 
         MessageReceivedListResponseDTO receivedList = messageService.sendMessage(userId, receiverList, message);
         return ResponseEntity
@@ -95,9 +103,13 @@ public class MessageController {
     }
 
     // 메세지 삭제
-    @DeleteMapping("/api/{userId}/messages")
+    @DeleteMapping("/api/messages")
     public ResponseEntity<?> deleteMessages(@RequestParam("messageId") List<Long> messageList,
-                                            @PathVariable("userId") String userId) {
+                                            @AuthenticationPrincipal String userId) {
+
+        if(userId.equals("anonymousUser")) {
+            throw new MessageCustomException(MessageExceptionEnum.UNAUTHORIZED_ACCESS);
+        }
 
         MessageReceivedListResponseDTO receivedList = messageService.deleteMessage(messageList, userId);
         return ResponseEntity

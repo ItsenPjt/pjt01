@@ -31,7 +31,7 @@ public class FaqController {
     }
 
     @GetMapping("/api/faqs/{boardId}")
-    public ResponseEntity<?> faqDetail(@PathVariable("id") Long boardId) {
+    public ResponseEntity<?> faqDetail(@PathVariable("boardId") Long boardId) {
 
         FaqDetailResponseDTO faqDetail = faqService.faqDetail(boardId);
         return ResponseEntity
@@ -51,7 +51,7 @@ public class FaqController {
 
     @PatchMapping("/api/faqs/{boardId}")
     public ResponseEntity<?> faqUpdate(@AuthenticationPrincipal String userId,
-                                       @PathVariable("id") Long boardId,
+                                       @PathVariable("boardId") Long boardId,
                                        @Validated @RequestBody FaqUpdateRequestDTO requestDTO) {
 
         requestDTO.setBoardId(boardId);
@@ -64,7 +64,7 @@ public class FaqController {
 
     @DeleteMapping("/api/faqs/{boardId}")
     public ResponseEntity<?> faqDelete(@AuthenticationPrincipal String userId,
-                                       @PathVariable("id") Long boardId) {
+                                       @PathVariable("boardId") Long boardId) {
 
         List<FaqResponseDTO> faqList = faqService.faqDelete(userId, boardId);
         return ResponseEntity

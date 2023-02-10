@@ -10,14 +10,11 @@ import com.newcen.newcen.message.repository.MessageRepository;
 import com.newcen.newcen.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.HttpServerErrorException;
 
 import java.security.InvalidParameterException;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,7 +31,7 @@ public class MessageService {
     public MessageReceivedListResponseDTO receivedMessageList(final String userId) {
 
         userRepository.findByUserId(userId).orElseThrow(() -> {
-            throw new MessageCustomException(MessageExceptionEnum.USER_NOT_EXIST);
+            throw new MessageCustomException(MessageExceptionEnum.UNAUTHORIZED_ACCESS);
         });
 
         log.info("=====================================================");
@@ -56,7 +53,7 @@ public class MessageService {
     public MessageReceivedDetailResponseDTO receivedMessageDetail(final String userId, final long messageId) {
 
         userRepository.findByUserId(userId).orElseThrow(() -> {
-            throw new MessageCustomException(MessageExceptionEnum.USER_NOT_EXIST);
+            throw new MessageCustomException(MessageExceptionEnum.UNAUTHORIZED_ACCESS);
         });
 
         List<MessageEntity> receivedMessageEntityList = messageRepository.findByReceiverId(userId);
@@ -76,7 +73,7 @@ public class MessageService {
     public MessageSentListResponseDTO sentMessageList(final String userId) {
 
         userRepository.findByUserId(userId).orElseThrow(() -> {
-            throw new MessageCustomException(MessageExceptionEnum.USER_NOT_EXIST);
+            throw new MessageCustomException(MessageExceptionEnum.UNAUTHORIZED_ACCESS);
         });
 
         List<MessageEntity> sentMessageEntityList = messageRepository.findBySenderId(userId);
@@ -96,7 +93,7 @@ public class MessageService {
     public MessageSentDetailResponseDTO sentMessageDetail(final String userId, final long messageId) {
 
         userRepository.findByUserId(userId).orElseThrow(() -> {
-            throw new MessageCustomException(MessageExceptionEnum.USER_NOT_EXIST);
+            throw new MessageCustomException(MessageExceptionEnum.UNAUTHORIZED_ACCESS);
         });
 
         List<MessageEntity> sentMessageEntityList = messageRepository.findBySenderId(userId);
@@ -130,7 +127,7 @@ public class MessageService {
     public MessageReceivedListResponseDTO sendMessage(final String senderId, final List<String> receiverId, final MessageSendRequestDTO message) {
 
         UserEntity sender = userRepository.findByUserId(senderId).orElseThrow(() -> {
-            throw new MessageCustomException(MessageExceptionEnum.USER_NOT_EXIST);
+            throw new MessageCustomException(MessageExceptionEnum.UNAUTHORIZED_ACCESS);
         });
 
         if(receiverId.size()==0) {
@@ -155,6 +152,9 @@ public class MessageService {
     public MessageReceivedListResponseDTO deleteMessage(final List<Long> messageId, final String userId) {
 
         for(long id : messageId) {
+            messageRepository.findById(id).orElseThrow(() -> {
+                throw new MessageCustomException(MessageExceptionEnum.MESSAGE_NOT_FOUND);
+            });
             messageRepository.deleteByMessageId(id);
         }
 

@@ -8,6 +8,8 @@ import com.newcen.newcen.faq.dto.request.FaqSaveRequestDTO;
 import com.newcen.newcen.faq.dto.request.FaqUpdateRequestDTO;
 import com.newcen.newcen.faq.dto.response.FaqDetailResponseDTO;
 import com.newcen.newcen.faq.dto.response.FaqResponseDTO;
+import com.newcen.newcen.faq.exception.FaqCustomException;
+import com.newcen.newcen.faq.exception.FaqExceptionEnum;
 import com.newcen.newcen.faq.repository.FaqRepository;
 import com.newcen.newcen.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +35,7 @@ public class FaqService {
         List<BoardEntity> entityList = faqRepository.findByBoardType(BoardType.FAQ);
 
         if(entityList.isEmpty() ) {
-            throw new RuntimeException("FAQ list is Empty");
+            throw new FaqCustomException(FaqExceptionEnum.EMPTY_LIST);
         }
 
         List<FaqResponseDTO> faqList = new ArrayList<>();
@@ -49,7 +51,7 @@ public class FaqService {
     public FaqDetailResponseDTO faqDetail(final Long boardId) {
 
         BoardEntity faqEntity = faqRepository.findById(boardId).orElseThrow(() -> {
-            throw new RuntimeException("FAQ Does Not Exist with Given ID");
+            throw new FaqCustomException(FaqExceptionEnum.USER_NOT_EXIST);
         });
 
         return new FaqDetailResponseDTO(faqEntity);
@@ -59,11 +61,11 @@ public class FaqService {
     public List<FaqResponseDTO> faqSave(final String userId, final FaqSaveRequestDTO faqSaveRequestDTO) {
 
         UserEntity user = userRepository.findByUserId(userId).orElseThrow(() -> {
-            throw new RuntimeException("User Does Not Exist");
+            throw new FaqCustomException(FaqExceptionEnum.USER_NOT_EXIST);
         });
 
         if(!user.getUserRole().equals(UserRole.ADMIN)) {
-            throw new RuntimeException("No Authority to Write FAQ");
+            throw new FaqCustomException(FaqExceptionEnum.ACCESS_FORBIDDEN);
         }
 
         BoardEntity faq  = faqSaveRequestDTO.toEntity(user);
@@ -76,15 +78,15 @@ public class FaqService {
     public FaqDetailResponseDTO faqUpdate(final String userId, final FaqUpdateRequestDTO faqUpdateRequestDTO) {
 
         UserEntity user = userRepository.findByUserId(userId).orElseThrow(() -> {
-            throw new RuntimeException("User Does Not Exist");
+            throw new FaqCustomException(FaqExceptionEnum.USER_NOT_EXIST);
         });
 
         if(!user.getUserRole().equals(UserRole.ADMIN)) {
-            throw new RuntimeException("No Authority to Write FAQ");
+            throw new FaqCustomException(FaqExceptionEnum.ACCESS_FORBIDDEN);
         }
 
         BoardEntity faq = faqRepository.findById(faqUpdateRequestDTO.getBoardId()).orElseThrow(() -> {
-            throw new RuntimeException("FAQ Does Not Exist With Given ID");
+            throw new FaqCustomException(FaqExceptionEnum.INVALID_FAQ_ID);
         });
 
         faq.updateBoard(faqUpdateRequestDTO.getBoardTitle(), faqUpdateRequestDTO.getBoardContent());
@@ -97,11 +99,11 @@ public class FaqService {
     public List<FaqResponseDTO> faqDelete(final String userId, final Long boardId) {
 
         UserEntity user = userRepository.findByUserId(userId).orElseThrow(() -> {
-            throw new RuntimeException("User Does Not Exist");
+            throw new FaqCustomException(FaqExceptionEnum.USER_NOT_EXIST);
         });
 
         if(!user.getUserRole().equals(UserRole.ADMIN)) {
-            throw new RuntimeException("No Authority to Write FAQ");
+            throw new FaqCustomException(FaqExceptionEnum.ACCESS_FORBIDDEN);
         }
 
         faqRepository.deleteById(boardId);
