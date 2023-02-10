@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import '../css/common/CommentRadioBtn.css';
+import './css/CommentRadioBtn.css';
 
 const CommentRadioBtn = () => {
     
@@ -10,9 +10,9 @@ const CommentRadioBtn = () => {
     };
 
     return (
-        <div className='comment_justify'>
-            <label className='comment_radio_label'>
-                <span className='comment_radio_span' htmlFor='ON'>댓글 허용</span>
+        <div id='comment_radio_main'>
+            <label id='comment_radio_label'>
+                <span id='comment_radio_span' htmlFor='ON'>댓글 허용</span>
                 <input 
                     className='comment_radio'
                     type='radio' 
@@ -21,8 +21,8 @@ const CommentRadioBtn = () => {
                     onChange={() => handleClickRadioButton('ON')} 
                 />
             </label>
-            <label className='comment_radio_label'>
-                <span className='comment_radio_span' htmlFor='OFF'>댓글 비허용</span>
+            <label id='comment_radio_label'>
+                <span id='comment_radio_span' htmlFor='OFF'>댓글 비허용</span>
                 <input 
                     className='comment_radio'
                     type='radio' 

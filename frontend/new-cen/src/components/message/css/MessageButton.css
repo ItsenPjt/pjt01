@@ -11,7 +11,7 @@
     border: none;
 }
 
-.message-confirm:hover {
+.message-confirm:hover, .message-confirm:active {
     background: #2F3E60;
     opacity: 0.9;
 
@@ -22,7 +22,7 @@
     background: #717172;
 }
 
-.message-cancel:hover {
+.message-cancel:hover, .message-cancel:active {
     background: #717172;
     opacity: 0.9;
 }
