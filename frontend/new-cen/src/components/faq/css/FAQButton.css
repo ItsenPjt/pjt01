@@ -3,12 +3,12 @@
     justify-content: space-between;
 }
 
-#question_button_txt {
+#faq_button_txt {
     font-size: 17px;
     font-weight: 550;
 }
 
-#question_button_group {
+#faq_button_group {
     text-align: right;
     margin-bottom: 10px;
 }
@@ -35,20 +35,20 @@
 }
 /* --button */
 
-#question_button_date_asc {
+#faq_button_date_asc {
     font-size: 13px;
 }
 
-#question_button_like_asc {
-    font-size: 13px;
-    margin-left: 5px;
-}
-
-#question_button_commente_asc {
+#faq_button_like_asc {
     font-size: 13px;
     margin-left: 5px;
 }
 
-#question_button_insert {
+#faq_button_commente_asc {
+    font-size: 13px;
+    margin-left: 5px;
+}
+
+#faq_button_insert {
     margin-left: 10px;
 }

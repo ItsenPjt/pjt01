@@ -5,11 +5,11 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 
-import './css/QuestionContent.css';
+import './css/FAQContent.css';
 
-// 문의사항 내용
-const QuestionContent = () => {
-    var questionId = useParams().questionId;
+// 자주 묻는 질문 내용
+const FAQContent = () => {
+    var faqId = useParams().faqId;
     
     const [modal, setModal] = useState(false); 
 
@@ -23,38 +23,38 @@ const QuestionContent = () => {
         setModal(true);     // 모달 열기
     }
 
-    // 문의사항 목록 페이지로
-    const onQuestionPage = () => {
-        window.location.href = "/question";
+    // 자주 묻는 질문 목록 페이지로
+    const onFaqPage = () => {
+        window.location.href = "/faq";
     }
 
-    // 문의사항 수정 페이지로
+    // 자주 묻는 질문 수정 페이지로
     const onUpdatePage = () => {
-        window.location.href = `/question/update/${questionId}`;
+        window.location.href = `/faq/update/${faqId}`;
     }
 
     return (
         <>
-            <div id='question_content_main'>
+            <div id='faq_content_main'>
                 <div className='justify'>
                     <div>
-                        <Form id='question_content_title'>
+                        <Form id='faq_content_title'>
                             (제목)
                         </Form>
 
-                        <div id='question_content_write'>
+                        <div id='faq_content_write'>
                             작성자 : | 작성일 :
                         </div>
                     </div>
 
-                    <div id='question_content_body_div'>
+                    <div id='faq_content_body_div'>
                         <Button className='btn_gray btn_size_100' onClick={onUpdatePage}>수정</Button>
-                        <Button className='btn_orange btn_size_100' id='question_content_delete_btn' onClick={handleShowDeleteModal}>삭제</Button>
+                        <Button className='btn_orange btn_size_100' id='faq_content_delete_btn' onClick={handleShowDeleteModal}>삭제</Button>
                     </div>
                 </div>
 
                 <div>
-                    <Form id='question_contents'>
+                    <Form id='faq_contents'>
                         (내용)
                     </Form>
                 </div>
@@ -62,17 +62,17 @@ const QuestionContent = () => {
             </div>
 
             {/* Modal */}
-            <Modal show={modal} onHide={handleClose} id="question_delete_modal">
-                <Modal.Body id='question_delete_modal_body'>
-                    <div id='question_delete_modal_content'>
-                        문의사항을 삭제하시겠습니까?
+            <Modal show={modal} onHide={handleClose} id="faq_delete_modal">
+                <Modal.Body id='faq_delete_modal_body'>
+                    <div id='faq_delete_modal_content'>
+                        게시물을 삭제하시겠습니까?
                     </div>
 
-                    <div id="question_delete_modal_content">
-                        <Button className='btn_gray question_btn btn_size_100' onClick={handleClose}>
+                    <div id="faq_delete_modal_content">
+                        <Button className='btn_gray faq_btn btn_size_100' onClick={handleClose}>
                             아니오
                         </Button>
-                        <Button className='btn_orange question_btn btn_size_100' id="question_content_delete_btn" onClick={onQuestionPage}>
+                        <Button className='btn_orange faq_btn btn_size_100' id="faq_content_delete_btn" onClick={onFaqPage}>
                             네
                         </Button>
                     </div>
@@ -82,4 +82,4 @@ const QuestionContent = () => {
     )
 }
 
-export default QuestionContent;
+export default FAQContent;

@@ -30,6 +30,7 @@ const Header = () => {
                         <Nav.Link href="/notice" className='header_nav_link'>공지사항</Nav.Link>
                         <Nav.Link href="/question" className='header_nav_link'>문의사항</Nav.Link>
                         <Nav.Link href="/faq" className='header_nav_link'>자주 묻는 질문</Nav.Link>
+                        <Nav.Link href="/management" className='header_nav_link'>관리자</Nav.Link>
                     </Nav>
                 </Navbar.Collapse>
             </Container>

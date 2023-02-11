@@ -20,8 +20,13 @@ import QuestionContent from "./components/question/QuestionContent";
 import QuestionUpdate from "./components/question/QuestionUpdate";
 
 import FAQTemplate from './components/faq/FAQTemplate';
+import FAQInsert from "./components/faq/FAQInsert";
+import FAQContent from "./components/faq/FAQContent";
+import FAQUpdate from "./components/faq/FAQUpdate";
 
 import MessageTemplate from './components/message/MessageTemplate';
+
+import ManagementTemplate from "./components/management/ManagementTemplate";
 
 function App() {
 
@@ -68,8 +73,13 @@ function App() {
                             <Route path="/question/update/:questionId" element={<QuestionUpdate />}/>
 
                             <Route path="/faq" element={<FAQTemplate />} />
-                            
+                            <Route path="/faq/insert" element={<FAQInsert />} />
+                            <Route path="/faq/:faqId" element={<FAQContent />}/>
+                            <Route path="/faq/update/:faqId" element={<FAQUpdate />}/>
+
                             <Route path="/message" element={<MessageTemplate />} />
+
+                            <Route path="/management" element={<ManagementTemplate />} />
                         </Routes>
                     </>
                 )

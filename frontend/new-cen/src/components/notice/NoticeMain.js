@@ -16,7 +16,7 @@ const NoticeMain = () => {
             <div id='notice_btn_main'>
                 <div className='justify' id='notice_insert_btn_main'>
                     <div id='notice_header_txt'>공지사항</div>
-                    <Button onClick={onInsertPage} className='btn_orange btn_size_100'>추가</Button>
+                    <Button onClick={onInsertPage} className='btn_orange btn_size_100'>글쓰기</Button>
                 </div>
 
                 <div id='notice_table_main'>
