@@ -1,5 +1,6 @@
 package com.newcen.newcen.admin.service;
 
+import com.newcen.newcen.admin.dto.SendEmailDTO;
 import com.newcen.newcen.admin.dto.request.AdminValidUserSaveRequestDTO;
 import com.newcen.newcen.admin.dto.response.AdminUserResponseDTO;
 import com.newcen.newcen.admin.dto.response.AdminValidUserResponseDTO;
@@ -26,8 +27,8 @@ import java.util.List;
 public class AdminService {
 
     private final AdminRepository adminRepository;
-
     private final ValidUserRepository validUserRepository;
+    private final EmailService emailService;
 
     public List<AdminUserResponseDTO> userList(final String userId) {
 
@@ -114,6 +115,9 @@ public class AdminService {
         String validCode = RandomStringUtils.randomNumeric(6);
         requestDTO.setValidCode(validCode);
         ValidUserEntity savedValidUser = validUserRepository.save(requestDTO.toEntity());
+
+        SendEmailDTO emailDTO = new SendEmailDTO(requestDTO);
+        emailService.sendSimpleMessage(emailDTO);
 
         return validUserList(userId);
     }
