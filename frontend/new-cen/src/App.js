@@ -15,6 +15,9 @@ import NoticeContent from "./components/notice/NoticeContent";
 import NoticeUpdate from "./components/notice/NoticeUpdate";
 
 import QuestionTemplate from './components/question/QuestionTemplate';
+import QuestionInsert from "./components/question/QuestionInsert";
+import QuestionContent from "./components/question/QuestionContent";
+import QuestionUpdate from "./components/question/QuestionUpdate";
 
 import FAQTemplate from './components/faq/FAQTemplate';
 
@@ -60,7 +63,10 @@ function App() {
                             <Route path="/notice/update/:noticeId" element={<NoticeUpdate />}/>
                     
                             <Route path="/question" element={<QuestionTemplate />} />
-                    
+                            <Route path="/question/insert" element={<QuestionInsert />} />
+                            <Route path="/question/:questionId" element={<QuestionContent />}/>
+                            <Route path="/question/update/:questionId" element={<QuestionUpdate />}/>
+
                             <Route path="/faq" element={<FAQTemplate />} />
                             
                             <Route path="/message" element={<MessageTemplate />} />

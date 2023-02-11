@@ -1,0 +1,13 @@
+#pagination_css {
+    text-align: center;
+    width: 22%;
+    margin: 0 auto;
+}
+
+.pagination_li {
+    margin: 10px;
+}
+
+.pagination_a {
+    color: black;
+}

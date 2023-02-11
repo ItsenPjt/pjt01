@@ -6,6 +6,9 @@ import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 
 import './css/NoticeContent.css';
+import NoticeNoComment from './NoticeNoComment';
+import NoticeYesCommentBefore from './NoticeYesCommentBefore';
+import NoticeYseCommentAfter from './NoticeYseCommentAfter';
 
 // 공지사항 내용
 const NoticeContent = () => {
@@ -59,9 +62,15 @@ const NoticeContent = () => {
                     </Form>
                 </div>
 
-                <div id='notice_content_footer_div'>
-                    <Button className='btn_gray btn_size_100' onClick={onNoticePage}>목록</Button>
-                </div>
+{/* 아래 3개 컴포넌트 DB 에서 데이터에 따라 이용 */}
+                {/* 댓글 X */}
+                <NoticeNoComment />
+<br /><br /><br /><br /><hr />
+                {/* 댓글 O - 댓글 작성 전 */}
+                <NoticeYesCommentBefore />
+<br /><br /><br /><br /><hr />
+                {/* 댓글 O - 댓글 작성 후 */}
+                <NoticeYseCommentAfter />
             </div>
 
             {/* Modal */}

@@ -14,7 +14,8 @@ const NoticeMain = () => {
     return (
         <>
             <div id='notice_btn_main'>
-                <div id='notice_insert_btn_main'>
+                <div className='justify' id='notice_insert_btn_main'>
+                    <div id='notice_header_txt'>공지사항</div>
                     <Button onClick={onInsertPage} className='btn_orange btn_size_100'>추가</Button>
                 </div>
 
@@ -29,7 +30,7 @@ const NoticeMain = () => {
                             </tr>
                         </thead>
                         <tbody>
-                        
+                            {/* map 함수 이용 */}
                         </tbody>
                     </Table >   
                 </div>
