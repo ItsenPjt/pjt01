@@ -60,8 +60,6 @@ function App() {
                         <Routes>
                             <Route path="/" element={<MainTemplate />} />
                             
-                            <Route path="/mypage" element={<MyPage />} />
-                    
                             <Route path="/notice" element={<NoticeTemplate />} />
                             <Route path="/notice/insert" element={<NoticeInsert />} />
                             <Route path="/notice/:noticeId" element={<NoticeContent />}/>
@@ -77,9 +75,12 @@ function App() {
                             <Route path="/faq/:faqId" element={<FAQContent />}/>
                             <Route path="/faq/update/:faqId" element={<FAQUpdate />}/>
 
+                            <Route path="/management" element={<ManagementTemplate />} />
+
+                            <Route path="/mypage" element={<MyPage />} />
+
                             <Route path="/message" element={<MessageTemplate />} />
 
-                            <Route path="/management" element={<ManagementTemplate />} />
                         </Routes>
                     </>
                 )

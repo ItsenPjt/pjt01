@@ -15,10 +15,10 @@ const FAQMain = () => {
                     <Table responsive id='faq_table'>
                         <thead>
                             <tr id='faq_main_thead'>
-                                <th width="10%">이름</th>
+                                <th width="10%">번호</th>
                                 <th width="20%">제목</th>
                                 <th width="15%">날짜</th>
-                                <th width="15%">좋아요</th>
+                                <th width="15%">작성자</th>
                             </tr>
                         </thead>
                         <tbody>

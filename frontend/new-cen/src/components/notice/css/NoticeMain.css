@@ -5,37 +5,6 @@
     margin: 70px auto;  
 }
 
-.justify {
-    display: flex;
-    justify-content: space-between;
-}
-
-/* 추가 버튼 */
-#notice_insert_btn_main {
-    text-align: right;
-
-    margin-bottom: 10px;
-}
-
-#notice_header_txt {
-    font-size: 17px;
-    font-weight: 550;
-}
-
-/* button className-- */
-.btn_orange {
-    background-color: #E9460A;
-    border: none;
-}
-.btn_orange:hover, .btn_orange:active, .btn_orange:focus {
-    background-color: #b43102;
-}
-
-.btn_size_100 {
-    width: 100px;
-}
-/* --button */
-
 #notice_table_main {
     border-radius: 10px;
 
@@ -61,4 +30,14 @@
     margin-top: 10px;
     background-color: #F3F6F9;
     text-align: center;
+}
+
+#notice_main_tbody {
+    text-align: center;
+}
+
+#notice_main_tbody_th {
+    color: black;
+    font-size: 15px;
+    cursor: pointer;
 }

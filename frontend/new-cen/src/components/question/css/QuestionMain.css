@@ -45,3 +45,13 @@
     background-color: #F3F6F9;
     text-align: center;
 }
+
+#question_main_tbody {
+    text-align: center;
+}
+
+#question_main_tbody_th {
+    color: black;
+    font-size: 15px;
+    cursor: pointer;
+}
