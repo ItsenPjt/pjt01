@@ -1,0 +1,78 @@
+#faq_insert_div {
+    /* margin: 60px 2%; */
+    width: 60%;
+    margin: 60px auto;
+}
+
+.justify {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* 자주 묻는 질문 제목 입력 */
+#faq_insert_title {
+    height: 60px;
+    width: 250px;
+
+    text-align: center;
+
+    font-size: 25px;
+    font-weight: 550;
+}
+#faq_insert_title::placeholder {
+    color: #D0D0D0;
+}
+
+#faq_insert_footer_div {
+    margin-top: 10px;
+    float: right;
+}
+
+/* button className-- */
+.btn_gray {
+    background-color: #717172;
+    border: none;
+}
+.btn_gray:hover, .btn_gray:active, .btn_gray:focus {
+    background-color: #5e5e5e;
+}
+
+.btn_orange {
+    background-color: #E9460A;
+    border: none;
+}
+.btn_orange:hover, .btn_orange:active, .btn_orange:focus {
+    background-color: #b43102;
+}
+
+.faq_btn {
+    width: 80px;
+}
+
+.btn_size_100 {
+    width: 100px;
+}
+/* --button */
+
+#faq_insert_btn {
+    margin-left: 10px;
+}
+
+/* Modal */
+#faq_insert_modal {
+    width: 400px;
+
+    border: 1px solid black;
+    border-radius: 10px;
+}
+
+#faq_insert_modal_body {
+    text-align: center;
+    
+    font-size: 17px;
+    font-weight: 550;
+}
+
+#faq_insert_modal_content {
+    margin-top: 40px;
+}

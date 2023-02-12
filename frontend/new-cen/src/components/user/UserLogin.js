@@ -5,6 +5,7 @@ import Form from 'react-bootstrap/Form';
 
 import './css/UserLogin.css';
 
+// 로그인
 const UserLogin = () => {
 
     // 비밀번호 찾기 버튼 클릭 시
@@ -36,7 +37,7 @@ const UserLogin = () => {
                     </Form.Group>
                 </Form>
 
-                <div id = 'login_div'>
+                <div id = 'login_footer_div'>
                     <Button className='btn_orange' id='login_btn'>
                         로그인
                     </Button> 

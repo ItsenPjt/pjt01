@@ -1,15 +1,20 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom';
 
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form'
 
 import './css/UserFindPw.css'
+
+// 비밀번호 변경
 const UserFindPw = () => {
 
+    const navigate = useNavigate();
     const onLoginPage = () => {
-        window.location.href = "/login";
-    }
-    
+        const path = `/`;
+        navigate(path);
+    };
+
     return (
         <div id='find_pw_main'>
             <div id='find_pw_logo_position'>
@@ -49,7 +54,7 @@ const UserFindPw = () => {
                     </Form.Group>
                 </Form>
 
-                <div id = 'find_pw_div'>
+                <div id = 'find_pw_footer_div'>
                     <Button onClick={onLoginPage} className="btn_gray find_pw_btn btn_size_100">
                         취소
                     </Button> 

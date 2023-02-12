@@ -1,5 +1,7 @@
-#insert_div {
-    margin: 60px 2%;
+#notice_insert_div {
+    /* margin: 60px 2%; */
+    width: 60%;
+    margin: 60px auto;
 }
 
 .justify {
@@ -7,19 +9,26 @@
     justify-content: space-between;
 }
 
-#insert_title {
+/* 공지사항 제목 입력 */
+#notice_insert_title {
     height: 60px;
     width: 250px;
-    
+
     text-align: center;
-    font-size: 20px;
+
+    font-size: 25px;
+    font-weight: 550;
+}
+#notice_insert_title::placeholder {
+    color: #D0D0D0;
 }
 
-#notice_insert_div {
+#notice_insert_footer_div {
     margin-top: 10px;
     float: right;
 }
 
+/* button className-- */
 .btn_gray {
     background-color: #717172;
     border: none;
@@ -43,30 +52,27 @@
 .btn_size_100 {
     width: 100px;
 }
+/* --button */
 
 #notice_insert_btn {
     margin-left: 10px;
 }
 
-/* 모달 */
-#notice_modal {
+/* Modal */
+#notice_insert_modal {
     width: 400px;
 
     border: 1px solid black;
     border-radius: 10px;
 }
 
-#notice_modal_body {
+#notice_insert_modal_body {
     text-align: center;
     
     font-size: 17px;
     font-weight: 550;
 }
 
-#notice_modal_content {
+#notice_insert_modal_content {
     margin-top: 40px;
-}
-
-#notice_insert_btn {
-    margin-left: 10px;
 }

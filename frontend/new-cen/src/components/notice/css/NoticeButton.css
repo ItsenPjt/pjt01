@@ -1,0 +1,32 @@
+.justify {
+    display: flex;
+    justify-content: space-between;
+}
+
+#notice_button_txt {
+    font-size: 17px;
+    font-weight: 550;
+}
+
+#notice_button_group {
+    text-align: right;
+    margin-bottom: 10px;
+}
+
+/* button className-- */
+.btn_orange {
+    background-color: #E9460A;
+    border: none;
+}
+.btn_orange:hover, .btn_orange:active, .btn_orange:focus {
+    background-color: #b43102;
+}
+
+.btn_size_100 {
+    width: 100px;
+}
+/* --button */
+
+#notice_button_insert {
+    margin-left: 10px;
+}
