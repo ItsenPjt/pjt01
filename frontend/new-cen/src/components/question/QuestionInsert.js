@@ -1,4 +1,5 @@
 import React, { useState }  from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
@@ -29,9 +30,11 @@ const QuestionInsert = () => {
     };
 
     // 문의사항 목록 페이지로
+    const navigate = useNavigate();
     const onQuestionPage = () => {
-        window.location.href = "/question";
-    }
+        const path = `/question`;
+        navigate(path);
+    };
 
     return (
         <>

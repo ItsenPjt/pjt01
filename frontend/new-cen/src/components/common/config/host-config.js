@@ -15,4 +15,5 @@ export const BASE_URL = backendHost;
 export const NOTICE = '/api/notices';
 export const QUESTION = '/api/questions';
 export const USER = '/api/users';
-export const Message = '/api/messages';
+export const MESSAGE = '/api/messages';
+export const ADMIN = '/api/admins';

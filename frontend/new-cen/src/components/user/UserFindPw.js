@@ -1,4 +1,5 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom';
 
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form'
@@ -8,10 +9,12 @@ import './css/UserFindPw.css'
 // 비밀번호 변경
 const UserFindPw = () => {
 
+    const navigate = useNavigate();
     const onLoginPage = () => {
-        window.location.href = "/";
-    }
-    
+        const path = `/`;
+        navigate(path);
+    };
+
     return (
         <div id='find_pw_main'>
             <div id='find_pw_logo_position'>

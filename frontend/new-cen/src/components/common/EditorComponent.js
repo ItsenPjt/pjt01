@@ -40,6 +40,7 @@ class EditorComponent extends Component {
                     theme="snow" 
                     modules={this.modules} 
                     formats={this.formats} 
+                    defaultValue={''}
                     value={value || ''} 
                     onChange={
                         (content, delta, source, editor) => onChange(editor.getHTML())

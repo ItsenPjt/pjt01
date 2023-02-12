@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
+
+import { BASE_URL, QUESTION } from '../common/config/host-config';
+import { getToken } from '../common/util/login-util';
 
 import './css/QuestionContent.css';
 
@@ -11,7 +14,44 @@ import './css/QuestionContent.css';
 const QuestionContent = () => {
     var questionId = useParams().questionId;
     
+    const API_BASE_URL = BASE_URL + QUESTION;
+    const ACCESS_TOKEN = getToken();
+
+    // 문의사항 api 데이터 
+    const [noticeContents, setNoticeContents] = useState([]);
+
     const [modal, setModal] = useState(false); 
+
+    // headers
+    const headerInfo = {
+        'content-type': 'application/json',
+        'Authorization': 'Bearer ' + ACCESS_TOKEN
+    }
+
+    // 렌더링 되자마자 할 일 => 공지사항 api GET 목록 호출
+    useEffect(() => {
+        fetch(`${API_BASE_URL}/${questionId}`, {
+            method: 'GET',
+            headers: headerInfo
+        })
+            .then(res => {
+                // if (res.status === 403) {
+                //     alert('로그인이 필요한 서비스입니다');
+
+                //     window.location.href = '/';
+                //     return;
+                // } 
+                // else if (res.status === 500) {
+                //     alert('서버가 불안정합니다');
+                //     return;
+                // }
+                return res.json();
+            })
+            .then(result => {
+                console.log(result);
+                setNoticeContents(result);
+            });
+    }, [API_BASE_URL]);
 
     // 모달 닫기
     const handleClose = () => {
@@ -29,9 +69,11 @@ const QuestionContent = () => {
     }
 
     // 문의사항 수정 페이지로
+    const navigate = useNavigate();
     const onUpdatePage = () => {
-        window.location.href = `/question/update/${questionId}`;
-    }
+        const path = `/question/update/${questionId}`;
+        navigate(path);
+    };
 
     return (
         <>
@@ -39,11 +81,11 @@ const QuestionContent = () => {
                 <div className='justify'>
                     <div>
                         <Form id='question_content_title'>
-                            (제목)
+                            {noticeContents.boardTitle}
                         </Form>
 
                         <div id='question_content_write'>
-                            작성자 : | 작성일 :
+                            작성자 : {noticeContents.boardWriter} | 작성일 : {noticeContents.createDate}
                         </div>
                     </div>
 
@@ -55,7 +97,7 @@ const QuestionContent = () => {
 
                 <div>
                     <Form id='question_contents'>
-                        (내용)
+                        {noticeContents.boardContent}
                     </Form>
                 </div>
 

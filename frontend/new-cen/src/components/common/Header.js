@@ -16,7 +16,7 @@ const Header = () => {
     // userRole 가 ADMIN 인 경우에만 관리자 버튼 확인 가능
     useEffect(() => {
         // DB에서 읽어온 후 set 해주기
-        setUserRole('MEMBER');
+        setUserRole('ADMIN');
     })
 
     var textSize1, fontWeight1, textSize2, fontWeight2,  textSize3, fontWeight3, textSize4, fontWeight4, textSize5, fontWeight5;
@@ -29,7 +29,7 @@ const Header = () => {
     } else if (window.location.pathname === '/faq') {
         textSize3 = '18px';
         fontWeight3 = 700;
-    } else if (window.location.pathname === '/management') {
+    } else if (window.location.pathname === '/admin') {
         textSize4 = '18px';
         fontWeight4 = 700;
     } else if (window.location.pathname === '/mypage' || window.location.pathname === '/message') {
@@ -61,7 +61,7 @@ const Header = () => {
                         
                         {/* // userRole 가 ADMIN 인 경우에만 관리자 버튼 확인 가능 */}
                         {(userRole === 'ADMIN') &&
-                            <Nav.Link style={{fontSize: textSize4, fontWeight: fontWeight4}} onClick={() => {document.location.href = '/management'}} className='header_nav_link'>관리자</Nav.Link>
+                            <Nav.Link style={{fontSize: textSize4, fontWeight: fontWeight4}} onClick={() => {document.location.href = '/admin'}} className='header_nav_link'>관리자</Nav.Link>
                         }
 
                         <NavDropdown style={{fontSize: textSize5, fontWeight: fontWeight5}} title="내정보" id="basic-nav-dropdown">

@@ -1,9 +1,12 @@
-import React, { useState }  from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
+
+import { BASE_URL, NOTICE } from '../common/config/host-config';
+import { getToken } from '../common/util/login-util';
 
 import Editor from '../common/EditorComponent';
 import CommentRadioBtn from '../common/CommentRadioBtn';
@@ -14,8 +17,45 @@ import './css/NoticeUpdate.css';
 const NoticeUpdate = () => {
     var noticeId = useParams().noticeId;
 
+    const API_BASE_URL = BASE_URL + NOTICE;
+    const ACCESS_TOKEN = getToken();
+
+    // 공지사항 api 데이터 
+    const [noticeContents, setNoticeContents] = useState([]);
+
     const [modal, setModal] = useState(false); 
     const [desc, setDesc] = useState('');
+
+    // headers
+    const headerInfo = {
+        'content-type': 'application/json',
+        'Authorization': 'Bearer ' + ACCESS_TOKEN
+    }
+
+    // 렌더링 되자마자 할 일 => 공지사항 api GET 목록 호출
+    useEffect(() => {
+        fetch(`${API_BASE_URL}/${noticeId}`, {
+            method: 'GET',
+            headers: headerInfo
+        })
+            .then(res => {
+                // if (res.status === 403) {
+                //     alert('로그인이 필요한 서비스입니다');
+
+                //     window.location.href = '/';
+                //     return;
+                // } 
+                // else if (res.status === 500) {
+                //     alert('서버가 불안정합니다');
+                //     return;
+                // }
+                return res.json();
+            })
+            .then(result => {
+                console.log(result.noticeDetails[0]);
+                setNoticeContents(result.noticeDetails[0]);
+            });
+    }, [API_BASE_URL]);
 
     // 모달 닫기
     const handleClose = () => {
@@ -32,9 +72,11 @@ const NoticeUpdate = () => {
     };
 
     // 공지사항 내용 페이지로
+    const navigate = useNavigate();
     const onNoticeContentPage = () => {
-        window.location.href = `/notice/${noticeId}`;
-    }
+        const path = `/notice/${noticeId}`;
+        navigate(path);
+    };
 
     return (
         <>
@@ -42,16 +84,16 @@ const NoticeUpdate = () => {
                 <div className='justify'>
                     <Form>
                         <Form.Group className='mb-3'>
-                            <Form.Control id='notice_update_title' autoFocus type='text'/>
+                            <Form.Control id='notice_update_title' autoFocus type='text' defaultValue={noticeContents.boardTitle}/>
                         </Form.Group>
                     </Form>
 
                      {/* 라디오 버튼 */} 
-                    <CommentRadioBtn />
+                    <CommentRadioBtn comment={noticeContents.boardCommentIs}/>
                 </div>
 
                 <div>
-                    <Editor value={desc} onChange={onEditorChange} />
+                    <Editor value={desc} onChange={onEditorChange} defaultValue={noticeContents.boardContent}/>
                 </div>
 
                 <div id='notice_update_footer_div'>

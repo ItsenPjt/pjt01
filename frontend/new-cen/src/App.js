@@ -26,7 +26,7 @@ import FAQUpdate from "./components/faq/FAQUpdate";
 
 import MessageTemplate from './components/message/MessageTemplate';
 
-import ManagementTemplate from "./components/management/ManagementTemplate";
+import AdminTemplate from "./components/admin/AdminTemplate";
 
 function App() {
 
@@ -53,7 +53,7 @@ function App() {
         <>
             {
                 isLogin ?
-                (
+                (   // 로그인 후
                     <>
                         <Header />
                 
@@ -75,7 +75,7 @@ function App() {
                             <Route path="/faq/:faqId" element={<FAQContent />}/>
                             <Route path="/faq/update/:faqId" element={<FAQUpdate />}/>
 
-                            <Route path="/management" element={<ManagementTemplate />} />
+                            <Route path="/admin" element={<AdminTemplate />} />
 
                             <Route path="/mypage" element={<MyPage />} />
 
@@ -85,7 +85,7 @@ function App() {
                     </>
                 )
                 :
-                (
+                (   // 로그인 전
                     <>
                     <Routes>
                         <Route path="/" element={<UserLogin />} />

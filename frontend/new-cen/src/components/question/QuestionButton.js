@@ -1,4 +1,6 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import Button from 'react-bootstrap/Button';
 
 import './css/QuestionButton.css';
@@ -6,9 +8,11 @@ import './css/QuestionButton.css';
 // 문의사항 버튼들
 const QuestionButton = () => {
 
+    const navigate = useNavigate();
     const onInsertPage = () => {
-        window.location.href = "/question/insert";
-    }
+        const path = `/question/insert`;
+        navigate(path);
+    };
 
     return (
         <div className='justify'>

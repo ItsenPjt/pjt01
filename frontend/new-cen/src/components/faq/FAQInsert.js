@@ -1,4 +1,5 @@
 import React, { useState }  from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
@@ -29,9 +30,11 @@ const FAQInsert = () => {
     };
 
     // 자주 묻는 질문 목록 페이지로
+    const navigate = useNavigate();
     const onFaqPage = () => {
-        window.location.href = "/faq";
-    }
+        const path = `/faq`;
+        navigate(path);
+    };
 
     return (
         <>

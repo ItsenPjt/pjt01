@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+
 
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
+
+import { BASE_URL, NOTICE } from '../common/config/host-config';
+import { getToken } from '../common/util/login-util';
 
 import './css/NoticeContent.css';
 import NoticeNoComment from './NoticeNoComment';
@@ -14,7 +18,44 @@ import NoticeYseCommentAfter from './NoticeYseCommentAfter';
 const NoticeContent = () => {
     var noticeId = useParams().noticeId;
     
+    const API_BASE_URL = BASE_URL + NOTICE;
+    const ACCESS_TOKEN = getToken();
+
+    // 공지사항 api 데이터 
+    const [noticeContents, setNoticeContents] = useState([]);
+
     const [modal, setModal] = useState(false); 
+
+    // headers
+    const headerInfo = {
+        'content-type': 'application/json',
+        'Authorization': 'Bearer ' + ACCESS_TOKEN
+    }
+
+    // 렌더링 되자마자 할 일 => 공지사항 api GET 목록 호출
+    useEffect(() => {
+        fetch(`${API_BASE_URL}/${noticeId}`, {
+            method: 'GET',
+            headers: headerInfo
+        })
+            .then(res => {
+                // if (res.status === 403) {
+                //     alert('로그인이 필요한 서비스입니다');
+
+                //     window.location.href = '/';
+                //     return;
+                // } 
+                // else if (res.status === 500) {
+                //     alert('서버가 불안정합니다');
+                //     return;
+                // }
+                return res.json();
+            })
+            .then(result => {
+                console.log(result.noticeDetails[0]);
+                setNoticeContents(result.noticeDetails[0]);
+            });
+    }, [API_BASE_URL]);
 
     // 모달 닫기
     const handleClose = () => {
@@ -32,9 +73,11 @@ const NoticeContent = () => {
     }
 
     // 공지사항 수정 페이지로
+    const navigate = useNavigate();
     const onUpdatePage = () => {
-        window.location.href = `/notice/update/${noticeId}`;
-    }
+        const path = `/notice/update/${noticeId}`;
+        navigate(path);
+    };
 
     return (
         <>
@@ -42,11 +85,11 @@ const NoticeContent = () => {
                 <div className='justify'>
                     <div>
                         <Form id='notice_content_title'>
-                            (제목)
+                            {noticeContents.boardTitle}
                         </Form>
 
                         <div id='notice_content_write'>
-                            작성자 : | 작성일 :
+                            작성자 : {noticeContents.boardWriter} | 작성일 : {noticeContents.createDate}
                         </div>
                     </div>
 
@@ -58,7 +101,7 @@ const NoticeContent = () => {
 
                 <div>
                     <Form id='notice_contents'>
-                        (내용)
+                        {noticeContents.boardContent}
                     </Form>
                 </div>
 

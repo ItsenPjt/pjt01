@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
@@ -11,9 +11,11 @@ const NoticeYseCommentAfter = () => {
     var noticeId = useParams().noticeId;
 
     // 댓글 작성 전 화면으로
+    const navigate = useNavigate();
     const onNoticeComment = () => {
-        window.location.href = `/notice/${noticeId}`;
-    }
+        const path = `/notice/${noticeId}`;
+        navigate(path);
+    };
 
     // 공지사항 목록 페이지로
     const onNoticePage = () => {

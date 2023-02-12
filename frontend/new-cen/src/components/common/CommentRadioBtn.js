@@ -2,9 +2,14 @@ import React, { useState } from 'react';
 
 import './css/CommentRadioBtn.css';
 
-const CommentRadioBtn = () => {
+const CommentRadioBtn = (comment) => {
     
-    const [ radioStatus, setRadioStatus ] = useState('ON');     // default : ON
+    // console.log(comment);
+
+    const [ radioStatus, setRadioStatus ] = useState(comment);     // default : ON
+
+    // console.log(radioStatus);
+
     const handleClickRadioButton = (radioBtnName) => {
         setRadioStatus(radioBtnName)
     };

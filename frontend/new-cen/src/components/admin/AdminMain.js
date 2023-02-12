@@ -1,11 +1,52 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react';
+
+import { BASE_URL, ADMIN } from '../common/config/host-config';
+import { getToken } from '../common/util/login-util';
 
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
 
-import './css/ManagementMain.css';
+import './css/AdminMain.css';
 
-const ManagementMain = () => {
+const AdminMain = () => {
+
+    const API_BASE_URL = BASE_URL + ADMIN;
+    const ACCESS_TOKEN = getToken();
+
+    // 직원 목록 api 데이터 
+    const [users, setUsers] = useState([]);
+
+    // headers
+    const headerInfo = {
+        'content-type': 'application/json',
+        'Authorization': 'Bearer ' + ACCESS_TOKEN
+    }
+
+    // 렌더링 되자마자 할 일 => 공지사항 api GET 목록 호출
+    useEffect(() => {
+        fetch(API_BASE_URL, {
+            method: 'GET',
+            headers: headerInfo
+        })
+            .then(res => {
+                // if (res.status === 403) {
+                //     alert('로그인이 필요한 서비스입니다');
+
+                //     window.location.href = '/';
+                //     return;
+                // } 
+                // else if (res.status === 500) {
+                //     alert('서버가 불안정합니다');
+                //     return;
+                // }
+                return res.json();
+            })
+            .then(result => {
+                console.log(result);
+                setUsers(result.notices);
+            });
+    }, [API_BASE_URL]);
+
 
     // 직원 정보 변경 모달
     const handleChangeModal = (userId) => {
@@ -18,7 +59,7 @@ const ManagementMain = () => {
     }
 
     return (
-        <div id='management_main'>
+        <div id='admin_main'>
             <Table responsive>
                 <thead>
                     <tr>
@@ -53,4 +94,4 @@ const ManagementMain = () => {
     )
 }
 
-export default ManagementMain
+export default AdminMain

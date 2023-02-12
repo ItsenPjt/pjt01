@@ -1,4 +1,6 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import Button from 'react-bootstrap/Button';
 
 import './css/FAQButton.css';
@@ -6,9 +8,12 @@ import './css/FAQButton.css';
 // 자주 묻는 질문 버튼들
 const FAQButton = () => {
 
+
+    const navigate = useNavigate();
     const onInsertPage = () => {
-        window.location.href = "/faq/insert";
-    }
+        const path = `/faq/insert`;
+        navigate(path);
+    };
 
     return (
         <div className='justify'>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import Button from 'react-bootstrap/Button';
 
@@ -8,9 +9,11 @@ import './css/NoticeContent.css'
 const NoticeNoComment = () => {
 
     // 공지사항 목록 페이지로
+    const navigate = useNavigate();
     const onNoticePage = () => {
-        window.location.href = "/notice";
-    }
+        const path = `/notice`;
+        navigate(path);
+    };
 
     return (
         <div id='notice_content_footer_div'>

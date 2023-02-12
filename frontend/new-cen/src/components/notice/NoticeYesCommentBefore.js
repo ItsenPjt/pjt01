@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
@@ -9,10 +10,12 @@ import './css/NoticeContent.css'
 const NoticeYesCommentBefore = () => {
     
     // 공지사항 목록 페이지로
+    const navigate = useNavigate();
     const onNoticePage = () => {
-        window.location.href = "/notice";
-    }
-
+        const path = `/notice`;
+        navigate(path);
+    };
+    
     return (
         <>
             <div>

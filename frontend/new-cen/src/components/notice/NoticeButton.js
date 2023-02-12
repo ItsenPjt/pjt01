@@ -1,12 +1,16 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom';
+
 import Button from 'react-bootstrap/Button';
 
 import './css/NoticeButton.css';
 const NoticeButton = () => {
 
+    const navigate = useNavigate();
     const onInsertPage = () => {
-        window.location.href = "/notice/insert";
-    }
+        const path = `/notice/insert`;
+        navigate(path);
+    };
 
     return (
         <div className='justify'>
