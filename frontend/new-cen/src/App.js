@@ -46,7 +46,7 @@ function App() {
         */
 
         // 로그인 기능 구현 전까지만 아래 코드로 사용
-        setIsLogin(true);
+        setIsLogin(false);
     }, []);
 
     return (
