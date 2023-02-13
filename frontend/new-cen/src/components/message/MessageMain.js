@@ -27,6 +27,31 @@ const MessageMain = () => {
         'Authorization': 'Bearer ' + ACCESS_TOKEN
     }
 
+    // 전체 선택 여부
+    const [selectAll, setSelectAll] = useState(true);
+
+    // 전체 선택 / 해제
+    const handleSelectAll = () => {
+        let i = 0;
+        const check_boxes = document.querySelectorAll(".message_select_checkbox");
+        console.log(selectAll);
+        console.log(check_boxes);
+        if(selectAll) {
+            while(i < check_boxes.length) {
+                console.log(check_boxes[i]);
+                check_boxes[i].checked = true;
+                i++;
+            }
+            setSelectAll(false);
+        }else {
+            while(i < check_boxes.length) {
+                check_boxes[i].checked = false;
+                i++;
+            }
+            setSelectAll(true);
+        }
+    }
+
     // 받은 메세지 모달
     const [receiveModal, setReceiveModal] = useState(false); 
 
@@ -86,7 +111,7 @@ const MessageMain = () => {
                                 <th width="10%">보낸 사람</th>
                                 <th width="20%">제목</th>
                                 <th width="15%">날짜</th>
-                                <th width="15%" id='message_main_all_select'>전체 선택</th>
+                                <th width="15%" id='message_main_all_select' onClick={handleSelectAll}>전체 선택</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -110,13 +135,13 @@ const MessageMain = () => {
                                     <td>허진영</td>
                                     <th onClick={handleShowReceiveModal} id='message_main_tbody_th'>연봉은 대체 얼마인가요?</th>
                                     <td>2023-01-18</td>
-                                    <td><input type='checkbox' id='message_select_checkbox' /></td>
+                                    <td><input type='checkbox' className='message_select_checkbox' /></td>
                                 </tr>
                                 <tr id='message_main_tbody'>
                                     <td>이진행</td>
                                     <th onClick={handleShowReceiveModal} id='message_main_tbody_th'>회사 발령은 언제 결정되나요?</th>
                                     <td>2023-01-18</td>
-                                    <td><input type='checkbox' id='message_select_checkbox' /></td>
+                                    <td><input type='checkbox' className='message_select_checkbox' /></td>
                                 </tr>
                         </tbody>
                     </Table >   
