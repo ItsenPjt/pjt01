@@ -4,10 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form'
 
-import './css/UserFindPw.css'
+import './css/UserFindInfo.css'
 
 // 비밀번호 변경
-const UserFindPw = () => {
+const UserFindInfo = () => {
 
     const navigate = useNavigate();
     const onLoginPage = () => {
@@ -68,4 +68,4 @@ const UserFindPw = () => {
     )
 }
 
-export default UserFindPw
+export default UserFindInfo

@@ -4,10 +4,10 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 
-import './css/MyPage.css';
+import './css/UserSignSet.css';
 
 // 내 정보
-const MyPage = () => {
+const UserSignSet = () => {
 
     const [modal, setModal] = useState(false); 
 
@@ -94,4 +94,4 @@ const MyPage = () => {
     )
 }
 
-export default MyPage;
+export default UserSignSet;
