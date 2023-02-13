@@ -60,7 +60,7 @@
     cursor: pointer;
 }
 
-#message_select_checkbox {
+.message_select_checkbox {
     height: 20px;
     width: 20px;
 }

@@ -17,3 +17,4 @@ export const QUESTION = '/api/questions';
 export const USER = '/api/user';
 export const MESSAGE = '/api/messages';
 export const ADMIN = '/api/admins';
+export const FAQ = '/api/faqs';

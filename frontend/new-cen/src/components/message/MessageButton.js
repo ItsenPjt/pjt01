@@ -4,10 +4,21 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 
+import { BASE_URL, MESSAGE } from '../common/config/host-config';
+import { getToken } from '../common/util/login-util';
+
 import './css/MessageButton.css';
 
 // 메세지 버튼
 const MessageButton = () => {
+
+    const API_BASE_URL = BASE_URL + MESSAGE;
+    const ACCESS_TOKEN = getToken();
+
+    const headerInfo = {
+        'content-type' : 'application/json',
+        'Authorization': 'Bearer ' + ACCESS_TOKEN
+    }
 
     const [modal, setModal] = useState(false); 
 
@@ -20,6 +31,30 @@ const MessageButton = () => {
     const handleSendModal = () => {
         setModal(true);     // 모달 열기
     }
+
+    const [searchReceiverList, setSearchReceiverList] = useState([]);
+
+    const handleSearchReceiver = (e) => {
+        console.log(e.target.value);
+
+        fetch(API_BASE_URL+"/receiver?username="+e.target.value, {
+            headers: headerInfo,
+        })
+        .then(res => res.json)
+        .then(res => {
+            setSearchReceiverList(res);
+        })
+    }
+
+    const receiverList = useState([]);
+
+    const handleAddReceiver = (userId) => {
+        receiverList.push(userId);
+    }
+
+
+
+
 
     return (
         <>
@@ -39,7 +74,16 @@ const MessageButton = () => {
                     <div id='message_send_modal_body'>
                         <Form.Group className='mb-3'>
                             <Form.Label id='message_form_label'>받는 사람</Form.Label>
-                            <Form.Control autoFocus type='text' className='message_form_control' placeholder='받는 사람'/>
+                            <Form.Control autoFocus type='text' className='message_form_control' placeholder='받는 사람' id='message_receiver' onChange={handleSearchReceiver}/>
+
+                            <datalist id="receiverListOptions">
+                                {searchReceiverList.map((item) => {
+                                    return (
+                                        console.log(item)
+                                        // <option key={item.userId}  value={item.UserName} + "(" + {item.UserEmail} + ")" onClick={handleAddReceiver({item.userId})} />
+                                    )
+                                })}
+                            </datalist>
                         </Form.Group>
                         <Form.Group className='mb-3'>
                             <Form.Label id='message_form_label'>제목</Form.Label>
