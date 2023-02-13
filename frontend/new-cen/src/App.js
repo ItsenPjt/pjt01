@@ -28,6 +28,8 @@ import MessageTemplate from './components/message/MessageTemplate';
 
 import AdminTemplate from "./components/admin/AdminTemplate";
 
+import NotFound from "./components/common/NotFound";
+
 function App() {
 
     // 로그인 상태 관리 
@@ -46,7 +48,7 @@ function App() {
         */
 
         // 로그인 기능 구현 전까지만 아래 코드로 사용
-        setIsLogin(false);
+        setIsLogin(true);
     }, []);
 
     return (
@@ -80,7 +82,7 @@ function App() {
                             <Route path="/mypage" element={<MyPage />} />
 
                             <Route path="/message" element={<MessageTemplate />} />
-
+                            <Route path={"*"} element={<NotFound />}/>
                         </Routes>
                     </>
                 )

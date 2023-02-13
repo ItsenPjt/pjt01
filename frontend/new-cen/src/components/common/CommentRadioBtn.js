@@ -2,16 +2,13 @@ import React, { useState } from 'react';
 
 import './css/CommentRadioBtn.css';
 
-const CommentRadioBtn = (comment) => {
+const CommentRadioBtn = ( { commentStatus } ) => {      // commentStatus : 부모(NoticeInsert.js)가 보낸 commentChangeHandler 함수
     
-    // console.log(comment);
-
-    const [ radioStatus, setRadioStatus ] = useState(comment);     // default : ON
-
-    // console.log(radioStatus);
+    const [ radioStatus, setRadioStatus ] = useState('ON');     // default : ON
 
     const handleClickRadioButton = (radioBtnName) => {
-        setRadioStatus(radioBtnName)
+        commentStatus(radioBtnName);        // 부모에게 radio 값 넘김
+        setRadioStatus(radioBtnName);
     };
 
     return (
