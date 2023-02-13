@@ -62,19 +62,25 @@ const UserJoin = () => {
 
     }; // loginHandler()
 
+
+    // 로고 클릭 시
+    const onLogo = () => {
+        window.location.href = "/";
+    };
+
     // 비밀번호 찾기 버튼 클릭 시
     const onFindPwPage = () => {
         window.location.href = "/findpw";
-    }
+    };
 
     // 회원가입 버튼 클릭 시
     const onJoinPage = () => {
         window.location.href = "/signup";
-    }
+    };
 
     return (
         <div id='login_main'>
-            <div id='login_logo_position'>
+            <div id='login_logo_position' onClick={onLogo}>
                 <img id='login_logo_img' alt='logo' src="/img/logo_title.png"/>
             </div>
 
@@ -104,6 +110,6 @@ const UserJoin = () => {
             </div>
         </div>
     )
-}
+};
 
 export default UserJoin;
