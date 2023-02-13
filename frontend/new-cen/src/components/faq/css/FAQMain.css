@@ -45,3 +45,13 @@
     background-color: #F3F6F9;
     text-align: center;
 }
+
+#faq_main_rows {
+    margin-top: 10px;
+    background-color: #F3F6F9;
+    text-align: center;
+}
+
+#faq_main_rows:hover {
+    cursor: pointer;
+}
