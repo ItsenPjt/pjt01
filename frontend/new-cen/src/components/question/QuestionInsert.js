@@ -26,47 +26,48 @@ const QuestionInsert = () => {
 
     const [modal, setModal] = useState(false); 
     const [questionData, setQuestionData] = useState({          // 문의사항 입력 데이터
-        title: '',          // 문의사항 제목
-        isComment: 'ON',      // 문의사항 댓글 여부 - 문의사항 댓글 항상 ON
-        content: '',        // 문의사항 내용
+        boardTitle: '',          // 문의사항 제목
+        boardCommentIs: 'ON',      // 문의사항 댓글 여부 - 문의사항 댓글 항상 ON
+        boardContent: '',        // 문의사항 내용
     });
 
     // title
     const titleChangeHandler = e => {
         setQuestionData({
-            ...questionData,        // 기존 todo데이터 복사 후 title 추가
-            title: e.target.value,
+            ...questionData,        // 기존 todo데이터 복사 후 boardTitle 추가
+            boardTitle: e.target.value,
         });
     };
 
     // 내용
     const contentChangeHandler = value => {
         setQuestionData({
-            ...questionData,        // 기존 todo데이터 복사 후 content 추가
-            content: value,
+            ...questionData,        // 기존 todo데이터 복사 후 boardContent 추가
+            boardContent: value,
         });
     };
 
     // 문의사항 등록 서버 요청  (POST에 대한 응답처리)
     const handleInsertNotice = () => {
         console.log(questionData);
-
+        console.log(ACCESS_TOKEN);
+        
         fetch(API_BASE_URL, {
             method: 'POST',
             headers: headerInfo,
             body: JSON.stringify(questionData)
         })
         .then(res => {
-            // if (res.status === 406) {
-            //     alert('로그인이 필요한 서비스입니다');
+            if (res.status === 406) {
+                alert('로그인이 필요한 서비스입니다');
 
-            //     window.location.href = '/';
-            //     return;
-            // } 
-            // else if (res.status === 500) {
-            //     alert('서버가 불안정합니다');
-            //     return;
-            // }
+                window.location.href = '/join';
+                return;
+            } 
+            else if (res.status === 500) {
+                alert('서버가 불안정합니다');
+                return;
+            }
             return res.json();
         })
         .then(result => {
@@ -98,13 +99,13 @@ const QuestionInsert = () => {
                 <div className='justify'>
                     <Form>
                         <Form.Group className='mb-3'>
-                            <Form.Control onChange={titleChangeHandler} id='question_insert_title' autoFocus type='text' placeholder='문의사항 제목 입력' />
+                            <Form.Control onChange={titleChangeHandler} value={questionData.boardTitle} id='question_insert_title' autoFocus type='text' placeholder='문의사항 제목 입력' />
                         </Form.Group>
                     </Form>
                 </div>
 
                 <div>
-                    <Editor onChange={contentChangeHandler} value={questionData.content} />
+                    <Editor onChange={contentChangeHandler} value={questionData.boardContent} />
                 </div>
 
                 <div id='question_insert_footer_div'>
