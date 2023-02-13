@@ -5,9 +5,9 @@ import Header from './components/common/Header';
 
 import MainTemplate from './components/main/MainTemplate';
 import UserJoin from './components/user/UserJoin';
-import UserLogin from './components/user/UserLogin';
-import UserFindPw from './components/user/UserFindPw';
-import MyPage from './components/user/MyPage';
+import UserSignUp from './components/user/UserSignUp';
+import UserSignSet from './components/user/UserSignSet';
+import UserFindInfo from './components/user/UserFindInfo';
 
 import NoticeTemplate from './components/notice/NoticeTemplate';
 import NoticeInsert from './components/notice/NoticeInsert';
@@ -28,6 +28,7 @@ import MessageTemplate from './components/message/MessageTemplate';
 
 import AdminTemplate from "./components/admin/AdminTemplate";
 
+
 function App() {
 
     // 로그인 상태 관리 
@@ -35,7 +36,6 @@ function App() {
     
     useEffect(() => {
 
-        /*
         if (localStorage.getItem("ACCESS_TOKEN") === null || localStorage.getItem("LOGIN_USERNAME") === null) {
             // localStorage 에 ACCESS_TOKEN이나 LOGIN_USERNAME의 key 값으로 저장된 값이 없다면
             setIsLogin(false);
@@ -43,10 +43,6 @@ function App() {
             // localStorage 에 ACCESS_TOKEN이나 LOGIN_USERNAME의 key 값으로 저장된 값이 있다면
             setIsLogin(true);   // 로그인 상태 변경
         }
-        */
-
-        // 로그인 기능 구현 전까지만 아래 코드로 사용
-        setIsLogin(false);
     }, []);
 
     return (
@@ -77,7 +73,7 @@ function App() {
 
                             <Route path="/admin" element={<AdminTemplate />} />
 
-                            <Route path="/mypage" element={<MyPage />} />
+                            <Route path="/signset" element={<UserSignSet />} />
 
                             <Route path="/message" element={<MessageTemplate />} />
 
@@ -88,9 +84,9 @@ function App() {
                 (   // 로그인 전
                     <>
                     <Routes>
-                        <Route path="/" element={<UserLogin />} />
                         <Route path="/join" element={<UserJoin />} />
-                        <Route path="/findpw" element={<UserFindPw />} />
+                        <Route path="/signup" element={<UserSignUp />} />
+                        <Route path="/findinfo" element={<UserFindInfo />} />
                     </Routes>
                     </>
                 )  
