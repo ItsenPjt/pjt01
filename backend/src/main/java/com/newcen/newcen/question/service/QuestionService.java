@@ -133,7 +133,7 @@ public class QuestionService {
         return new QuestionsOneResponseDTO(savedBoard);
     }
     //게시물 파일 수정
-    public QuestionResponseDTO updateFile(String userId, Long boardId, String boardFilePath, String boardFileId){
+    public QuestionsOneResponseDTO updateFile(String userId, Long boardId, String boardFilePath, String boardFileId){
         UserEntity user = null;
         BoardEntity board = questionsRepositorySupport.findBoardByUserIdAndBoardId(userId,boardId);
         user = userRepository.findById(userId).get();
@@ -146,7 +146,7 @@ public class QuestionService {
         questionsFileRepository.save(boardFileGetById);
 
         BoardEntity savedBoard = questionsRepository.save(board);
-        return new QuestionResponseDTO(savedBoard);
+        return new QuestionsOneResponseDTO(savedBoard);
     }
     //게시물 파일 삭제
     public QuestionResponseDTO deleteFile(String userId, Long boardId, String boardFileId){

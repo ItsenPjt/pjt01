@@ -22,6 +22,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -61,7 +62,7 @@ public class CommentService {
 
     public PageImpl<CommentResponseDTO> getCommentListPage(Pageable pageable,Long boardId){
         PageImpl<CommentResponseDTO> result = commentRepositorySupport.getCommentListPage(pageable,boardId);
-
+        return result;
     }
 
     //댓글 생성
@@ -69,14 +70,17 @@ public class CommentService {
         UserEntity user = null;
         user = userRepository.findById(userId).get();
         Optional<BoardEntity> board = questionsRepository.findById(boardId);
+        System.out.println(board.get());
         if (user == null) {
             throw new RuntimeException("해당 유저가 없습니다.");
         }
         if (board == null) {
             throw new RuntimeException("해당 게시글이 없습니다.");
         }
-        CommentEntity comment = dto.toEntity(board.get(), user);
-        CommentEntity savedComment = commentRepository.save(comment);
+
+        CommentEntity commentEntity = dto.toEntity(board.get(), user);
+        System.out.println(commentEntity);
+        CommentEntity savedComment = commentRepository.save(commentEntity);
         return retrive(boardId);
     }
     //댓글 수정

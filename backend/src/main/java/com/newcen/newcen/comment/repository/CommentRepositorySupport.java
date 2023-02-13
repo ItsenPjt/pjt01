@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Repository
-@RequiredArgsConstructor
 public class CommentRepositorySupport  extends QuerydslRepositorySupport {
 
     private final JPAQueryFactory jpaQueryFactory;
