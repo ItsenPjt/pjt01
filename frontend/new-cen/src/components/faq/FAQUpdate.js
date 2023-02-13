@@ -1,4 +1,4 @@
-import React, { useState }  from 'react';
+import React, { useState, useEffect }  from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
 
@@ -10,12 +10,46 @@ import Editor from '../common/EditorComponent';
 
 import './css/FAQUpdate.css';
 
+import { BASE_URL, FAQ } from '../common/config/host-config';
+import { getToken } from '../common/util/login-util';
+
 // 자주 묻는 질문 수정
 const FAQUpdate = () => {
-    var faqId = useParams().faqId;
+    
+    const API_BASE_URL = BASE_URL + FAQ;
+    const ACCESS_TOKEN = getToken();
+    const headerInfo = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + ACCESS_TOKEN
+    }
+    const navigate = useNavigate();
+
+
+    // 자주 묻는 질문 상세 
+    const [faqContent, setFaqContent] = useState({});
+
+
+    // FAQ 번호
+    const faqId = useParams().faqId;
+
+    // 렌더링 되자마자 할 일 => FAQ api GET 상세 호출
+    useEffect(() => {
+        
+        fetch(`${API_BASE_URL}/${faqId}`)
+        .then(res => {
+            if (res.status === 500) {
+                alert('서버가 불안정합니다');
+                return;
+            }
+            return res.json();
+        })
+        .then(res => {
+            setFaqContent(res);
+        })
+    }, [API_BASE_URL]); 
+
 
     const [modal, setModal] = useState(false); 
-    const [desc, setDesc] = useState('');
 
     // 모달 닫기
     const handleClose = () => {
@@ -26,13 +60,8 @@ const FAQUpdate = () => {
     const handleShowCancelModal = () => {
         setModal(true);     // 모달 열기
     }
-    
-    function onEditorChange(value) {
-        setDesc(value);
-    };
 
     // 자주 묻는 질문 내용 페이지로
-    const navigate = useNavigate();
     const onFaqContentPage = () => {
         const path = `/faq/${faqId}`;
         navigate(path);
@@ -44,13 +73,14 @@ const FAQUpdate = () => {
                 <div className='justify'>
                     <Form>
                         <Form.Group className='mb-3'>
-                            <Form.Control id='faq_update_title' autoFocus type='text'/>
+                            <Form.Control id='faq_update_title' autoFocus type='text' defaultValue={faqContent.boardTitle}/>
                         </Form.Group>
                     </Form>
                 </div>
 
                 <div>
-                    <Editor value={desc} onChange={onEditorChange} />
+                    <Editor id='faq_update_content' defaultValue={faqContent.boardContent}/>
+                        
                 </div>
 
                 <div id='faq_update_footer_div'>
