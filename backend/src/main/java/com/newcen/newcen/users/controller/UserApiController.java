@@ -26,6 +26,20 @@ public class UserApiController {
 
     private final UserService userService;
 
+
+    // ValidUser 회원정보 조회하기
+    @GetMapping("/api/user/valid/{email}")
+    public ResponseEntity<?> findValidUserInfo(
+            @PathVariable("email") String email // URL 경로에서 email 을 가져옴
+    ){
+        log.info("/api/user/valid GET request...!!");
+
+        ValidUserResponseDTO responseDTO = userService.findValidUser(email);
+
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+
     // 회원가입 요청처리
     @PostMapping("/api/user/signup")
     public ResponseEntity<?> signup(
