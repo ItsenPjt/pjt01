@@ -12,6 +12,7 @@ import Editor from '../common/EditorComponent';
 import CommentRadioBtn from '../common/CommentRadioBtn';
 
 import './css/NoticeInsert.css';
+import NoticeMain from './NoticeMain';
 
 // 공지사항 추가
 const NoticeInsert = () => {
@@ -67,23 +68,20 @@ const NoticeInsert = () => {
             body: JSON.stringify(noticeData)
         })
         .then(res => {
-            console.log(res);
+            if (res.status === 406) {
+                alert('로그인이 필요한 서비스입니다');
 
-            // if (res.status === 406) {
-            //     alert('로그인이 필요한 서비스입니다');
-
-            //     window.location.href = '/join';
-            //     return;
-            // } 
-            // else if (res.status === 500) {
-            //     alert('서버가 불안정합니다');
-            //     return;
-            // }
-            // return res.json();
+                window.location.href = '/join';
+                return;
+            } 
+            else if (res.status === 500) {
+                alert('서버가 불안정합니다');
+                return;
+            }
+            return res.json();
         })
-        .then(result => {
-            //console.log(result);
-            // setTodos(result.todos);     // json 갱신
+        .then(() => {
+            window.location.href = "/notice";       // 공지사항 메인 페이지로 이동
         });
     };
 

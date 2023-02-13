@@ -42,19 +42,22 @@ const UserJoin = () => {
         })
         .then(res => res.json())
         .then(result => {
-            // console.log(result);
+            console.log(result);
+            
             if (result.message) {
                 // 로그인 실패
                 alert(result.message);
             }
             else {
-                // alert('로그인 성공..!!');
+                alert('로그인 성공..!!');
 
                 // 발급받은 토큰을 저장, 회원정보 저장
                 // 브라우저가 제공하는 로컬스토리지에 저장(브라우저가 종료되어도 남아있음) - 서버X 로컬O
                 // 세션스토리지(브라우저가 종료되면 사라짐) - 서버X 로컬O
                 localStorage.setItem('ACCESS_TOKEN', result.token);
                 localStorage.setItem('LOGIN_USERNAME', result.userName);
+                localStorage.setItem('LOGIN_USEREMAIL', result.userEmail);
+                localStorage.setItem('LOGIN_USERROLE', result.userRole);
 
                 window.location.href='/';
             }

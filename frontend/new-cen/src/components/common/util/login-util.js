@@ -8,6 +8,16 @@ export const getUsername = () => {
     return localStorage.getItem('LOGIN_USERNAME');
 };
 
+// 로그인 유저의 이메일을 반환하는 함수
+export const getUserEmail = () => {
+    return localStorage.getItem('LOGIN_USEREMAIL');
+};
+
+// 로그인 유저의 권한을 반환하는 함수
+export const getUserRole = () => {
+    return localStorage.getItem('LOGIN_USERROLE');
+};
+
 // 로그인 상태인지 검증해주는 함수
 export const isLogin = () => {
     return !!getUsername();      // getUsername() !== null
