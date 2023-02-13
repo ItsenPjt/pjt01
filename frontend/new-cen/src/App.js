@@ -60,6 +60,10 @@ function App() {
                         <Routes>
                             <Route path="/" element={<MainTemplate />} />
                             
+                            <Route path="/join" element={<UserJoin />} />
+                            <Route path="/signup" element={<UserSignUp />} />
+                            <Route path="/findinfo" element={<UserFindInfo />} />
+
                             <Route path="/notice" element={<NoticeTemplate />} />
                             <Route path="/notice/insert" element={<NoticeInsert />} />
                             <Route path="/notice/:noticeId" element={<NoticeContent />}/>
@@ -85,12 +89,30 @@ function App() {
                     </>
                 )
                 :
-                (   // 로그인 전
+                (   // 로그인 전 - insert, update 불가
                     <>
+                    <Header />
+
                     <Routes>
+                        <Route path="/" element={<MainTemplate />} />
+
                         <Route path="/join" element={<UserJoin />} />
                         <Route path="/signup" element={<UserSignUp />} />
                         <Route path="/findinfo" element={<UserFindInfo />} />
+
+                        <Route path="/notice" element={<NoticeTemplate />} />
+                        <Route path="/notice/:noticeId" element={<NoticeContent />}/>
+                
+                        <Route path="/question" element={<QuestionTemplate />} />
+                        <Route path="/question/:questionId" element={<QuestionContent />}/>
+
+                        <Route path="/faq" element={<FAQTemplate />} />
+                        <Route path="/faq/:faqId" element={<FAQContent />}/>
+
+                        <Route path="/admin" element={<AdminTemplate />} />
+
+                        <Route path="/message" element={<MessageTemplate />} />
+                        <Route path={"*"} element={<NotFound />}/>
                     </Routes>
                     </>
                 )  
