@@ -26,13 +26,6 @@ const NoticeMain = () => {
         'Authorization': 'Bearer ' + ACCESS_TOKEN
     }
 
-    // 제목 클릭 시 url 변경
-    const navigate = useNavigate();
-    const onTitleClick = (id) => {
-        const path = `/notice/${id}`;
-        navigate(path);
-    };
-
     // 렌더링 되자마자 할 일 => 공지사항 api GET 목록 호출
     useEffect(() => {
         fetch(API_BASE_URL, {
@@ -57,6 +50,13 @@ const NoticeMain = () => {
                 setNotices(result.notices);
             });
     }, [API_BASE_URL]);
+
+    // 제목 클릭 시 url 변경
+    const navigate = useNavigate();
+    const onTitleClick = (id) => {
+        const path = `/notice/${id}`;
+        navigate(path);
+    };
 
     return (
         <>
