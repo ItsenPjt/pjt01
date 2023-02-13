@@ -50,8 +50,14 @@ public class NoticeService {
                 .notices(dtoList)
                 .build();
     }
-    public PageImpl<NoticeDetailResponseDTO> getPageList(SearchCondition searchCondition, Pageable pageable){
-        PageImpl<NoticeDetailResponseDTO> result = noticeRepositorySupport.getPageNoticeList(searchCondition, pageable);
+
+    public PageImpl<NoticeDetailResponseDTO> getNoticeList(Pageable pageable){
+        PageImpl<NoticeDetailResponseDTO> result = noticeRepositorySupport.getNoticeList(pageable);
+        return result;
+    }
+    //공지사항 검색 및 페이지 제네이션
+    public PageImpl<NoticeDetailResponseDTO> getPageListWithSearch(SearchCondition searchCondition, Pageable pageable){
+        PageImpl<NoticeDetailResponseDTO> result = noticeRepositorySupport.getPageNoticeListWithSearch(searchCondition, pageable);
         return result;
     }
 

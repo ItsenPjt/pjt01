@@ -43,10 +43,10 @@ public class NoticeApiController {
     private final CommentFileService commentFileService;
     // 공지사항 목록 요청 (GET)
     @GetMapping()
-    public ResponseEntity<?> listNotice() {
-        log.info("/api/notices GET request");
+    public ResponseEntity<?> listNotice(Pageable pageable) {
 
-        NoticeListResponseDTO responseDTO = noticeService.retrieve();
+
+        PageImpl<NoticeDetailResponseDTO> responseDTO = noticeService.getNoticeList(pageable);
 
         return ResponseEntity
                 .ok()
@@ -56,7 +56,7 @@ public class NoticeApiController {
     public ResponseEntity<?> getPageListNotice(@RequestBody SearchCondition searchCondition, Pageable pageable) {
         log.info("/api/notices GET request");
 
-        PageImpl<NoticeDetailResponseDTO> responseDTO = noticeService.getPageList(searchCondition, pageable);
+        PageImpl<NoticeDetailResponseDTO> responseDTO = noticeService.getPageListWithSearch(searchCondition, pageable);
 
         return ResponseEntity
                 .ok()

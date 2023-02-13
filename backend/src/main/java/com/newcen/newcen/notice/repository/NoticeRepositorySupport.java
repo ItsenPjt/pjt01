@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -43,8 +44,25 @@ public class NoticeRepositorySupport  extends QuerydslRepositorySupport {
                 .where(qBoardEntity.boardType.eq(BoardType.NOTICE))
                 .fetch();
     }
+    //목록조회
+    public PageImpl<NoticeDetailResponseDTO> getNoticeList(Pageable pageable){
+        JPQLQuery<BoardEntity> query = jpaQueryFactory
+                .select(qBoardEntity)
+                .from(qBoardEntity)
+                .where(qBoardEntity.boardType.eq(BoardType.NOTICE))
+                .orderBy(qBoardEntity.createDate.desc());
+        long totalCount = query.fetchCount();
+        List<BoardEntity> results = getQuerydsl().applyPagination(pageable,query).fetch();
+        List<NoticeDetailResponseDTO> dtoList = results.stream()
+                .map(NoticeDetailResponseDTO::new)
+                .collect(Collectors.toList());
+        Pageable pageRequest = new FixedPageRequest(pageable, totalCount);
+        // 2. NoticeDetailResponseDTO 를 NoticeListResponseDTO 로 변경
+        return new PageImpl<>(dtoList, pageRequest, totalCount);
 
-    public PageImpl<NoticeDetailResponseDTO> getPageNoticeList(SearchCondition searchCondition, Pageable pageable){
+    }
+    //목록 검색 및 조회
+    public PageImpl<NoticeDetailResponseDTO> getPageNoticeListWithSearch(SearchCondition searchCondition,Pageable pageable){
         JPQLQuery<BoardEntity> query = jpaQueryFactory
                 .select(qBoardEntity)
                 .from(qBoardEntity)
@@ -55,14 +73,14 @@ public class NoticeRepositorySupport  extends QuerydslRepositorySupport {
                 .orderBy(qBoardEntity.createDate.desc());
         long totalCount = query.fetchCount();
         List<BoardEntity> results = getQuerydsl().applyPagination(pageable,query).fetch();
-        System.out.println(results);
+        System.out.println(pageable);
         List<NoticeDetailResponseDTO> dtoList = results.stream()
                 .map(NoticeDetailResponseDTO::new)
                 .collect(Collectors.toList());
         Pageable pageRequest = new FixedPageRequest(pageable, totalCount);
         // 2. NoticeDetailResponseDTO 를 NoticeListResponseDTO 로 변경
 
-        return new PageImpl<>(dtoList, pageable, totalCount);
+        return new PageImpl<>(dtoList, pageRequest, totalCount);
 
     }
 

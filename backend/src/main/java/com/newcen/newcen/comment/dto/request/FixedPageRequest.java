@@ -5,7 +5,7 @@ import org.springframework.data.domain.Pageable;
 
 public class FixedPageRequest extends PageRequest {
 
-    protected FixedPageRequest(Pageable pageable, long totalCount) {
+    public FixedPageRequest(Pageable pageable, long totalCount) {
         super(getPageNo(pageable, totalCount), pageable.getPageSize(), pageable.getSort());
     }
 
