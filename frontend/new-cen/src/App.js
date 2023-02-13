@@ -29,6 +29,9 @@ import MessageTemplate from './components/message/MessageTemplate';
 import AdminTemplate from "./components/admin/AdminTemplate";
 
 
+import NotFound from "./components/common/NotFound";
+
+
 function App() {
 
     // 로그인 상태 관리 
@@ -76,7 +79,7 @@ function App() {
                             <Route path="/signset" element={<UserSignSet />} />
 
                             <Route path="/message" element={<MessageTemplate />} />
-
+                            <Route path={"*"} element={<NotFound />}/>
                         </Routes>
                     </>
                 )

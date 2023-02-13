@@ -5,15 +5,75 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 
+import { BASE_URL, QUESTION } from '../common/config/host-config';
+import { getToken } from '../common/util/login-util';
+
 import Editor from '../common/EditorComponent';
 
 import './css/QuestionInsert.css';
 
 // 문의사항 추가
 const QuestionInsert = () => {
+    
+    const API_BASE_URL = BASE_URL + QUESTION;
+    const ACCESS_TOKEN = getToken();
+
+    // headers
+    const headerInfo = {
+        'content-type': 'application/json',
+        'Authorization': 'Bearer ' + ACCESS_TOKEN
+    }
 
     const [modal, setModal] = useState(false); 
-    const [desc, setDesc] = useState('');
+    const [questionData, setQuestionData] = useState({          // 문의사항 입력 데이터
+        title: '',          // 문의사항 제목
+        isComment: 'ON',      // 문의사항 댓글 여부 - 문의사항 댓글 항상 ON
+        content: '',        // 문의사항 내용
+    });
+
+    // title
+    const titleChangeHandler = e => {
+        setQuestionData({
+            ...questionData,        // 기존 todo데이터 복사 후 title 추가
+            title: e.target.value,
+        });
+    };
+
+    // 내용
+    const contentChangeHandler = value => {
+        setQuestionData({
+            ...questionData,        // 기존 todo데이터 복사 후 content 추가
+            content: value,
+        });
+    };
+
+    // 문의사항 등록 서버 요청  (POST에 대한 응답처리)
+    const handleInsertNotice = () => {
+        console.log(questionData);
+
+        fetch(API_BASE_URL, {
+            method: 'POST',
+            headers: headerInfo,
+            body: JSON.stringify(questionData)
+        })
+        .then(res => {
+            // if (res.status === 406) {
+            //     alert('로그인이 필요한 서비스입니다');
+
+            //     window.location.href = '/';
+            //     return;
+            // } 
+            // else if (res.status === 500) {
+            //     alert('서버가 불안정합니다');
+            //     return;
+            // }
+            return res.json();
+        })
+        .then(result => {
+            console.log(result);
+            // setTodos(result.todos);     // json 갱신
+        });
+    };
 
     // 모달 닫기
     const handleClose = () => {
@@ -24,10 +84,6 @@ const QuestionInsert = () => {
     const handleShowCancelModal = () => {
         setModal(true);     // 모달 열기
     }
-    
-    function onEditorChange(value) {
-        setDesc(value);
-    };
 
     // 문의사항 목록 페이지로
     const navigate = useNavigate();
@@ -42,18 +98,18 @@ const QuestionInsert = () => {
                 <div className='justify'>
                     <Form>
                         <Form.Group className='mb-3'>
-                            <Form.Control id='question_insert_title' autoFocus type='text' placeholder='문의사항 제목 입력' />
+                            <Form.Control onChange={titleChangeHandler} id='question_insert_title' autoFocus type='text' placeholder='문의사항 제목 입력' />
                         </Form.Group>
                     </Form>
                 </div>
 
                 <div>
-                    <Editor value={desc} onChange={onEditorChange} />
+                    <Editor onChange={contentChangeHandler} value={questionData.content} />
                 </div>
 
                 <div id='question_insert_footer_div'>
-                    <Button className='btn_gray btn_size_100' onClick={handleShowCancelModal}>취소</Button>
-                    <Button className='btn_orange btn_size_100' id='question_insert_btn'>등록</Button>
+                    <Button onClick={handleShowCancelModal} className='btn_gray btn_size_100'>취소</Button>
+                    <Button onClick={handleInsertNotice} className='btn_orange btn_size_100' id='question_insert_btn'>등록</Button>
                 </div>
             </div>
 

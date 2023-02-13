@@ -5,6 +5,9 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 
+import { BASE_URL, NOTICE } from '../common/config/host-config';
+import { getToken } from '../common/util/login-util';
+
 import Editor from '../common/EditorComponent';
 import CommentRadioBtn from '../common/CommentRadioBtn';
 
@@ -13,8 +16,73 @@ import './css/NoticeInsert.css';
 // 공지사항 추가
 const NoticeInsert = () => {
 
+    const API_BASE_URL = BASE_URL + NOTICE;
+    const ACCESS_TOKEN = getToken();
+
+    // headers
+    const headerInfo = {
+        'content-type': 'application/json',
+        'Authorization': 'Bearer ' + ACCESS_TOKEN
+    }
+
     const [modal, setModal] = useState(false); 
-    const [desc, setDesc] = useState('');
+    const [noticeData, setNoticeData] = useState({          // 공지사항 입력 데이터
+        title: '',          // 공지사항 제목
+        isComment: 'ON',      // 공지사항 댓글 여부 (default: ON)
+        content: '',        // 공지사항 내용
+    });
+
+    // title
+    const titleChangeHandler = e => {
+        setNoticeData({
+            ...noticeData,        // 기존 todo데이터 복사 후 title 추가
+            title: e.target.value,
+        });
+    };
+
+    // 댓글 허용 여부 (radio)
+    const commentChangeHandler = commentStatus => {
+        setNoticeData({
+            ...noticeData,        // 기존 todo데이터 복사 후 isComment 추가
+            isComment: commentStatus,
+        });
+    }
+
+    // 내용
+    const contentChangeHandler = value => {
+        setNoticeData({
+            ...noticeData,        // 기존 todo데이터 복사 후 content 추가
+            content: value,
+        });
+    };
+
+    // 공지사항 등록 서버 요청  (POST에 대한 응답처리)
+    const handleInsertNotice = () => {
+        console.log(noticeData);
+
+        fetch(API_BASE_URL, {
+            method: 'POST',
+            headers: headerInfo,
+            body: JSON.stringify(noticeData)
+        })
+        .then(res => {
+            if (res.status === 406) {
+                alert('로그인이 필요한 서비스입니다');
+
+                window.location.href = '/';
+                return;
+            } 
+            else if (res.status === 500) {
+                alert('서버가 불안정합니다');
+                return;
+            }
+            return res.json();
+        })
+        .then(result => {
+            console.log(result);
+            // setTodos(result.todos);     // json 갱신
+        });
+    };
 
     // 모달 닫기
     const handleClose = () => {
@@ -25,10 +93,6 @@ const NoticeInsert = () => {
     const handleShowCancelModal = () => {
         setModal(true);     // 모달 열기
     }
-    
-    function onEditorChange(value) {
-        setDesc(value);
-    };
 
     // 공지사항 목록 페이지로
     const navigate = useNavigate();
@@ -43,21 +107,21 @@ const NoticeInsert = () => {
                 <div className='justify'>
                     <Form>
                         <Form.Group className='mb-3'>
-                            <Form.Control id='notice_insert_title' autoFocus type='text' placeholder='공지사항 제목 입력' />
+                            <Form.Control onChange={titleChangeHandler} value={noticeData.title} id='notice_insert_title' autoFocus type='text' placeholder='공지사항 제목 입력' />
                         </Form.Group>
                     </Form>
 
                      {/* 라디오 버튼 */} 
-                    <CommentRadioBtn />
+                    <CommentRadioBtn commentStatus={commentChangeHandler}/>
                 </div>
 
                 <div>
-                    <Editor value={desc} onChange={onEditorChange} />
+                    <Editor onChange={contentChangeHandler} value={noticeData.content} />
                 </div>
 
                 <div id='notice_insert_footer_div'>
-                    <Button className='btn_gray btn_size_100' onClick={handleShowCancelModal}>취소</Button>
-                    <Button className='btn_orange btn_size_100' id='notice_insert_btn'>등록</Button>
+                    <Button onClick={handleShowCancelModal} className='btn_gray btn_size_100'>취소</Button>
+                    <Button onClick={handleInsertNotice} className='btn_orange btn_size_100' id='notice_insert_btn'>등록</Button>
                 </div>
             </div>
 

@@ -55,7 +55,7 @@ const NoticeContent = () => {
                 console.log(result.noticeDetails[0]);
                 setNoticeContents(result.noticeDetails[0]);
             });
-    }, [API_BASE_URL]);
+    }, [API_BASE_URL, noticeId]);
 
     // 모달 닫기
     const handleClose = () => {
