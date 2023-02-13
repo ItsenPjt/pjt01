@@ -1,0 +1,89 @@
+#find_pw_main {
+    width: 30%;
+    height: 740px;
+    /* height: 95%; */
+
+    border: 1px solid #aaa;
+    border-radius: 10px;
+
+    /* 음영처리 */ 
+    /* x축, y축, 블러크기, 색상*/
+    box-shadow: 0 0 8px #aaa;
+
+    /* 박스 x축 중앙 정렬 : margin 좌우값을 auto로 설정*/
+    margin: 55px auto;  
+}
+
+/* 로고 이미지 위치 (가운데 정렬) */
+#find_pw_logo_position {
+    text-align: center;
+}
+
+/* 로고 이미지 크기 */
+#find_pw_logo_img {
+    margin-top: 20px;
+    height: 80px;
+}
+
+#find_pw_main_content {
+    width: 50%;
+    margin: 20px auto;
+}
+
+#user_find_title {
+    font-weight: 600;
+    font-size: 20px;
+    text-align: center;
+
+    margin-bottom: 20px;
+}
+
+#find_pw_form_label {
+    font-weight: 600;
+}
+
+.find_pw_form_control {
+    text-align: center;
+
+    box-shadow: 3px 3px #D0D0D0;
+}
+.find_pw_form_control::placeholder {
+    color: #D0D0D0;
+}
+
+/* footer */
+#find_pw_footer_div {
+    text-align: center;
+    margin-top: 40px; 
+}
+
+/* button className-- */
+.btn_gray {
+    background-color: #717172;
+    border: none;
+}
+.btn_gray:hover, .btn_gray:active, .btn_gray:focus {
+    background-color: #5e5e5e;
+}
+
+.btn_orange {
+    background-color: #E9460A;
+    border: none;
+}
+.btn_orange:hover, .btn_orange:active, .btn_orange:focus {
+    background-color: #b43102;
+}
+
+.find_pw_btn {
+    width: 80px;
+}
+
+.btn_size_100 {
+    width: 100px;
+}
+/* --button */
+
+#user_find_change_btn {
+    margin-left: 10px;
+}
+

@@ -1,0 +1,98 @@
+#message_btn_main {
+    width: 60%;
+
+    /* 박스 x축 중앙 정렬 : margin 좌우값을 auto로 설정*/
+    margin: 70px auto;  
+}
+
+/* button className-- */
+.btn_orange {
+    background-color: #E9460A;
+    border: none;
+}
+.btn_orange:hover, .btn_orange:active, .btn_orange:focus {
+    background-color: #b43102;
+}
+
+.btn_size_100 {
+    width: 100px;
+}
+/* --button */
+
+#message_table_main {
+    border-radius: 10px;
+
+    height: 600px;
+
+    /* 음영처리 */ 
+    /* x축, y축, 블러크기, 색상*/
+    box-shadow: 0 0 8px #aaa;
+}
+
+/* table */
+#message_table {
+    /* 테이블 내부 간격 */
+    border-collapse: separate;
+    border-spacing: 0 20px;
+}
+
+#message_table th, #message_table td {
+    border-style: hidden;
+}
+
+#message_main_thead {
+    margin-top: 10px;
+    background-color: #F3F6F9;
+    text-align: center;
+}
+
+#message_main_all_select {
+    cursor: pointer;
+}
+
+#message_main_tbody {
+    text-align: center;
+}
+
+#message_main_tbody_th {
+    color: black;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.message_select_checkbox {
+    height: 20px;
+    width: 20px;
+}
+
+/* Modal */
+#message_send_modal {
+    border: 1px solid black;
+    border-radius: 10px;
+}
+
+#message_send_modal_body {
+    font-size: 17px;
+    font-weight: 550;
+    margin: 0px 50px;
+}
+
+.message_form_label {
+    font-weight: 600;
+}
+
+.message_form_control {
+    box-shadow: 3px 3px #D0D0D0;
+}
+.message_form_control::placeholder {
+    color: #D0D0D0;
+}
+
+#message_send_content {
+    box-shadow: 3px 3px #D0D0D0;
+    height: 200px;
+}
+
+#message_send_modal_footer {
+    text-align: center;
+}

@@ -1,0 +1,47 @@
+.header_nav_bar {
+    background: #5D5A5A;
+
+    /* 고정 */
+    /* position: fixed;
+    top: 0;
+    left: 0;
+    right: 0; */
+}
+
+.header_title {
+    color: white;
+    font-weight: 650;
+    font-size: 25px;
+    margin-left: 5%;
+}
+
+.header_title_eng {
+    color: white;
+    font-size: 15px;
+    margin-left: 5%;
+}
+
+.cen_logo {
+    height: 50px;
+}
+
+.me-auto {
+    margin-left: 5%;
+}
+
+.header_nav_link {
+    margin-right: 20px;
+    color: white;
+}
+.header_nav_link:hover {
+    color: rgb(199, 198, 198);
+}
+
+#basic-nav-dropdown, .header_nav_dropdown_link {
+    color: white;
+}
+
+.dropdown-menu {
+    background-color: #5D5A5A;
+    opacity:0.8; 
+}
