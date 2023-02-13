@@ -73,7 +73,10 @@ public class UserApiController {
             log.warn(result.toString());
             return ResponseEntity
                     .badRequest()
-                    .body(result.toString());
+                    .body(LoginResponseDTO.builder()
+                            .message("로그인 에러")
+                            .build()
+                    );
         }
 
         try {
