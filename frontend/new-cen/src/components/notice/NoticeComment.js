@@ -102,13 +102,6 @@ const NoticeComment = ( { noticeId }) => {      // NoticeContent.js 에서 받�
             }
         }
     }
-
-    // 공지사항 목록 페이지로
-    const navigate = useNavigate();
-    const onNoticePage = () => {
-        const path = `/notice`;
-        navigate(path);
-    };
     
     return (
         <>
@@ -128,10 +121,6 @@ const NoticeComment = ( { noticeId }) => {      // NoticeContent.js 에서 받�
                         </div>         
                     </Form.Group>
                 </Form>
-            </div>
-
-            <div id='notice_content_footer_div'>
-                <Button onClick={onNoticePage} className='btn_gray btn_size_100'>목록</Button>
             </div>
         </>
     )

@@ -62,6 +62,9 @@
     margin-left: 10px;
 }
 
+#notice_content_list {
+    margin-left: 10px;
+}
 /* 공지사항 내용 */
 #notice_contents {
     height: 500px;
@@ -71,12 +74,6 @@
 
     border: 1px solid #aaa;
     border-radius: 10px;
-}
-
-/* footer */
-#notice_content_footer_div {
-    margin-top: 10px;
-    float: right;
 }
 
 /* Modal */

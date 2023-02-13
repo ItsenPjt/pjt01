@@ -91,6 +91,12 @@ const NoticeContent = () => {
         navigate(path);
     };
 
+    // 공지사항 목록 페이지로
+    const onNoticePage = () => {
+        const path = `/notice`;
+        navigate(path);
+    };
+       
     return (
         <>
             <div id='notice_content_main'>
@@ -105,13 +111,23 @@ const NoticeContent = () => {
                         </div>
                     </div>
 
-                    {/* 권한이 ADMIN 인 경우에만 '수정','삭제' 버튼 보이도록 */}
-                    {USER_ROLE === 'ADMIN' && 
-                        <div id='notice_content_body_div'>
-                            <Button className='btn_gray btn_size_100' onClick={onUpdatePage}>수정</Button>
-                            <Button className='btn_orange btn_size_100' id='notice_content_delete_btn' onClick={handleShowDeleteModal}>삭제</Button>
-                        </div>
-                    }
+                    <>
+                        {/* 권한이 ADMIN 인 경우에만 '수정','삭제' 버튼 보이도록 */}
+                        {USER_ROLE === 'ADMIN' 
+                        ? 
+                            <div id='notice_content_body_div'>
+                                <Button onClick={onUpdatePage} className='btn_gray btn_size_100'>수정</Button>
+                                <Button onClick={handleShowDeleteModal} className='btn_orange btn_size_100' id='notice_content_delete_btn'>삭제</Button>
+                                <Button onClick={onNoticePage} className='btn_indigo btn_size_100' id='notice_content_list'>목록</Button>
+                            </div>
+                            :
+                            <div id='notice_content_body_div'>
+                                <Button onClick={onNoticePage} className='btn_indigo btn_size_100'>목록</Button>
+                            </div>
+                        }
+
+                        
+                    </>
                 </div>
 
                 {/* dangerouslySetInnerHTML : String형태를 html로 */}
