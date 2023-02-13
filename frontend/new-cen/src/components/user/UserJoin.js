@@ -1,16 +1,20 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 
 import './css/UserJoin.css';
 
+// 회원가입
 const UserJoin = () => {
 
     // 취소 버튼 클릭 시
+    const navigate = useNavigate();
     const onLoginPage = () => {
-        window.location.href = "/login";
-    }
+        const path = `/`;
+        navigate(path);
+    };
     
     return (
         <div id='join_main'>

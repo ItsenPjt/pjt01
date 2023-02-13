@@ -36,7 +36,7 @@ public class QuestionService {
 
     //문의사항 목록조회
     public QuestionListResponseDTO retrieve(){
-        List<BoardEntity> entityList = questionsRepository.findAll();
+        List<BoardEntity> entityList = questionsRepositorySupport.getQueestionList();
         List<QuestionResponseDTO> responseDTO = entityList.stream()
                 .map(QuestionResponseDTO::new)
                 .collect(Collectors.toList());

@@ -1,0 +1,164 @@
+#notice_content_main {
+    width: 60%;
+    margin: 60px auto;
+}
+
+.justify {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* 공지사항 제목 */
+#notice_content_title {
+    height: 60px;
+    /* width: 900px; */
+    
+    font-size: 25px;
+    font-weight: 550;
+
+    padding: 10px 0px;
+}
+
+/* 공지사항 작성자/작성일 */
+#notice_content_write {
+    color: #6d6c6c;
+
+    margin-top: 5px;
+    font-size: 15px;
+}
+
+/* 수정/삭제 버튼 */
+#notice_content_body_div {
+    padding-top: 50px;      /* (아래 정렬로 바꿀 수 있음 바꾸기) */
+}
+
+/* button className-- */
+.btn_gray {
+    background-color: #717172;
+    border: none;
+}
+.btn_gray:hover, .btn_gray:active, .btn_gray:focus {
+    background-color: #5e5e5e;
+}
+
+.btn_orange {
+    background-color: #E9460A;
+    border: none;
+}
+.btn_orange:hover, .btn_orange:active, .btn_orange:focus {
+    background-color: #b43102;
+}
+
+.notice_btn {
+    width: 80px;
+}
+
+.btn_size_100 {
+    width: 100px;
+}
+/* --button */
+
+#notice_content_delete_btn {
+    margin-left: 10px;
+}
+
+/* 공지사항 내용 */
+#notice_contents {
+    height: 500px;
+
+    margin-top: 20px;
+    padding: 30px 20px;
+
+    border: 1px solid #aaa;
+    border-radius: 10px;
+}
+
+/* footer */
+#notice_content_footer_div {
+    margin-top: 10px;
+    float: right;
+}
+
+/* Modal */
+#notice_delete_modal {
+    width: 280px;
+
+    border: 1px solid black;
+    border-radius: 10px;
+}
+
+#notice_delete_modal_body {
+    text-align: center;
+    
+    font-size: 17px;
+    font-weight: 550;
+}
+
+#notice_delete_modal_content {
+    margin-top: 40px;
+}
+
+/* 댓글 */
+
+.justify {
+    display: flex;
+    justify-content: space-between;
+}
+
+#notice_content_comment_insert_div {
+    margin-top: 10px;
+}
+
+#notice_content_comment_insert::placeholder {
+    color: #D0D0D0;
+}
+
+#notice_content_comment_writer {    /* 댓글 작성자 */
+    height: 60px;
+    
+    padding: 10px 0px;
+
+    float: left;
+}
+
+#notice_content_comment_detail {    /* 댓글 내용 */
+    height: 60px;
+    
+    padding: 10px 0px;
+
+    float: left;
+}
+
+#notice_content_comment_update {    /* 댓글 수정하기 */
+    margin-left: 10px;
+}
+#notice_content_comment_delete {    /* 댓글 삭제하기 */
+    margin-left: 10px;
+}
+
+/* 댓글 - 파일첨부 */
+#notice_content_comment_file {
+    margin-left: 10px;
+}
+
+#notice_content_comment_file::file-selector-button {
+    width: 100px;
+    height: 35px;
+        
+    background: #58657F;
+    color: white;
+
+    border: none;
+    border-radius: 5px;
+
+    cursor: pointer;
+}
+
+#notice_content_comment_file::file-selector-button:hover {
+    background: #414858;
+    color: white;
+}
+
+#notice_content_comment_insert_btn {
+    margin-left: 10px;
+}

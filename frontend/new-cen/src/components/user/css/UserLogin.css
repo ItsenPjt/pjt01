@@ -6,10 +6,12 @@
     margin: 100px auto;  
 }
 
+/* 로고 이미지 위치 (가운데 정렬) */
 #login_logo_position {
     text-align: center;
 }
 
+/* 로고 이미지 크기 */
 #login_logo_img {
     margin-top: 20px;
     height: 120px;
@@ -34,11 +36,13 @@
     color: #D0D0D0;
 }
 
-#login_div {
+/* footer */
+#login_footer_div {
     text-align: center;
     margin-top: 40px; 
 }
 
+/* button className-- */
 .btn_orange {
     background-color: #E9460A;
     border: none;
@@ -46,6 +50,7 @@
 .btn_orange:hover, .btn_orange:active, .btn_orange:focus {
     background-color: #b43102;
 }
+/* --button */
 
 #login_btn {
     width: 100%;
@@ -64,6 +69,7 @@
     margin-top: 7px;
 }
 
+/* 마우스 커서 */
 .on_pointer {
     cursor: pointer;
 }

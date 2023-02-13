@@ -5,6 +5,7 @@ import com.newcen.newcen.users.dto.request.LoginRequestDTO;
 import com.newcen.newcen.users.dto.request.UserModifyRequestDTO;
 import com.newcen.newcen.users.dto.request.UserSignUpRequestDTO;
 import com.newcen.newcen.users.dto.response.*;
+import com.newcen.newcen.users.exception.DuplicatedEmailException;
 import com.newcen.newcen.users.exception.NoRegisteredArgumentsException;
 import com.newcen.newcen.users.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -110,6 +111,10 @@ public class UserApiController {
             , HttpServletRequest request    // PUT 인지, PATCH 인지 요청정보 알 수 있음
             ) {
 
+        if (userId.equals("anonymousUser")) {
+            throw new DuplicatedEmailException("로그인이 필요한 서비스입니다.");
+        }
+
         if (result.hasErrors()) {
             return ResponseEntity.badRequest()
                     .body(result.getFieldError());
@@ -161,22 +166,23 @@ public class UserApiController {
 
 
     // 회원탈퇴(UserEntity, ValidUserEntity 회원정보 삭제)
-    @DeleteMapping("/api/user/{id}")
+    @DeleteMapping("/api/user/signout/{id}")
     public ResponseEntity<?> deleteUser(
             @AuthenticationPrincipal String userId  // @AuthenticationPrincipal 로그인 정보를 받아옴
+            , @PathVariable("id") String deleteId  // URL 경로에서 id를 가져옴
     ) {
 
         log.info("/api/user/{} DELETE request", userId);
 
-        if (userId == null || userId.trim().equals("")) {
+        if (deleteId == null || deleteId.trim().equals("")) {
             return ResponseEntity
                     .badRequest()
-                    .body(UserListResponseDTO.builder().error("ID를 전달해주세요"));
+                    .body(UserListResponseDTO.builder().error("삭제하려는 ID를 전달해주세요"));
         }
 
         try {
 
-            UserDeleteResponseDTO responseDTO = userService.delete(userId);
+            UserDeleteResponseDTO responseDTO = userService.delete(deleteId);
 
             return ResponseEntity.ok()
                     .body(responseDTO);
@@ -189,8 +195,8 @@ public class UserApiController {
 
         }
 
-
     } // deleteUser()
+
 
 } // UserApiController()
 

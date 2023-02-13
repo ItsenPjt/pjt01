@@ -57,7 +57,7 @@ class UserServiceTest {
         // given
         UserSignUpRequestDTO dto = UserSignUpRequestDTO.builder()
                 .userEmail("postman@naver.com")
-                .userPassword("abc1234")
+                .userPassword("abcd1234")
                 .userName("암호맨")
                 .validCode("XY2baJQ")
                 .build();
@@ -93,14 +93,14 @@ class UserServiceTest {
     @DisplayName("정확한 정보로 로그인을 시도하면 회원정보가 반환되어야 한다.")
     void loginTest() {
         // given
-        String email = "postman@naver.com";
+        String email = "testman@naver.com";
         String password = "abc1234";
 
         // when
         LoginResponseDTO loginUser = userService.getByCredentials(email, password);
 
         // then
-        assertEquals("암호맨", loginUser.getUserName());
+        assertEquals("관리자", loginUser.getUserName());
 
     }
 

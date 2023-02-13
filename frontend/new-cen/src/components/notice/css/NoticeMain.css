@@ -1,27 +1,23 @@
-.btn_orange {
-    background-color: #E9460A;
-    border: none;
-}
-.btn_orange:hover, .btn_orange:active, .btn_orange:focus {
-    background-color: #b43102;
-}
-
-#notice_main {
+#notice_btn_main {
     width: 60%;
-    height: 600px;
 
-    border: 1px solid black;
+    /* 박스 x축 중앙 정렬 : margin 좌우값을 auto로 설정*/
+    margin: 70px auto;  
+}
+
+#notice_table_main {
     border-radius: 10px;
+
+    height: 600px;
 
     /* 음영처리 */ 
     /* x축, y축, 블러크기, 색상*/
     box-shadow: 0 0 8px #aaa;
-
-    /* 박스 x축 중앙 정렬 : margin 좌우값을 auto로 설정*/
-    margin: 100px auto;    
 }
 
+/* table */
 #notice_table {
+    /* 테이블 내부 간격 */
     border-collapse: separate;
     border-spacing: 0 20px;
 }
@@ -34,4 +30,14 @@
     margin-top: 10px;
     background-color: #F3F6F9;
     text-align: center;
+}
+
+#notice_main_tbody {
+    text-align: center;
+}
+
+#notice_main_tbody_th {
+    color: black;
+    font-size: 15px;
+    cursor: pointer;
 }

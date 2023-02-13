@@ -13,10 +13,12 @@
     margin: 100px auto; 
 }
 
+/* 로고 이미지 위치 (가운데 정렬) */
 #mypage_logo_position {
     text-align: center;
 }
 
+/* 로고 이미지 크기 */
 #mypage_logo_img {
     margin-top: 20px;
     height: 80px;
@@ -40,11 +42,13 @@
     color: #D0D0D0;
 }
 
-#mypage_div {
+/* footer */
+#mypage_footer_div {
     text-align: center;
     margin-top: 40px; 
 }
 
+/* button className-- */
 .btn_gray {
     background-color: #717172;
     border: none;
@@ -68,6 +72,7 @@
 .btn_size_100 {
     width: 100px;
 }
+/* --button */
 
 #mypage_btn {
     margin-left: 10px;
@@ -86,7 +91,7 @@
     font-weight: 600;
 }
 
-/* 모달 */
+/* Modal */
 #mypage_modal {
     width: 400px;
     border-radius: 10px;

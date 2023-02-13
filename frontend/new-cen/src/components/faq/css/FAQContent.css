@@ -1,0 +1,164 @@
+#faq_content_main {
+    width: 60%;
+    margin: 60px auto;
+}
+
+.justify {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* 자주 묻는 질문 제목 */
+#faq_content_title {
+    height: 60px;
+    /* width: 900px; */
+    
+    font-size: 25px;
+    font-weight: 550;
+
+    padding: 10px 0px;
+}
+
+/* 자주 묻는 질문 작성자/작성일 */
+#faq_content_write {
+    color: #6d6c6c;
+
+    margin-top: 5px;
+    font-size: 15px;
+}
+
+/* 수정/삭제 버튼 */
+#faq_content_body_div {
+    padding-top: 50px;      /* (아래 정렬로 바꿀 수 있음 바꾸기) */
+}
+
+/* button className-- */
+.btn_gray {
+    background-color: #717172;
+    border: none;
+}
+.btn_gray:hover, .btn_gray:active, .btn_gray:focus {
+    background-color: #5e5e5e;
+}
+
+.btn_orange {
+    background-color: #E9460A;
+    border: none;
+}
+.btn_orange:hover, .btn_orange:active, .btn_orange:focus {
+    background-color: #b43102;
+}
+
+.faq_btn {
+    width: 80px;
+}
+
+.btn_size_100 {
+    width: 100px;
+}
+/* --button */
+
+#faq_content_delete_btn {
+    margin-left: 10px;
+}
+
+/* 자주 묻는 질문 내용 */
+#faq_contents {
+    height: 500px;
+
+    margin-top: 20px;
+    padding: 30px 20px;
+
+    border: 1px solid #aaa;
+    border-radius: 10px;
+}
+
+/* footer */
+#faq_content_footer_div {
+    margin-top: 10px;
+    float: right;
+}
+
+/* Modal */
+#faq_delete_modal {
+    width: 280px;
+
+    border: 1px solid black;
+    border-radius: 10px;
+}
+
+#faq_delete_modal_body {
+    text-align: center;
+    
+    font-size: 17px;
+    font-weight: 550;
+}
+
+#faq_delete_modal_content {
+    margin-top: 40px;
+}
+
+/* 댓글 */
+
+.justify {
+    display: flex;
+    justify-content: space-between;
+}
+
+#faq_content_comment_insert_div {
+    margin-top: 10px;
+}
+
+#faq_content_comment_insert::placeholder {
+    color: #D0D0D0;
+}
+
+#faq_content_comment_writer {    /* 댓글 작성자 */
+    height: 60px;
+    
+    padding: 10px 0px;
+
+    float: left;
+}
+
+#faq_content_comment_detail {    /* 댓글 내용 */
+    height: 60px;
+    
+    padding: 10px 0px;
+
+    float: left;
+}
+
+#faq_content_comment_update {    /* 댓글 수정하기 */
+    margin-left: 10px;
+}
+#faq_content_comment_delete {    /* 댓글 삭제하기 */
+    margin-left: 10px;
+}
+
+/* 댓글 - 파일첨부 */
+#faq_content_comment_file {
+    margin-left: 10px;
+}
+
+#faq_content_comment_file::file-selector-button {
+    width: 100px;
+    height: 35px;
+        
+    background: #58657F;
+    color: white;
+
+    border: none;
+    border-radius: 5px;
+
+    cursor: pointer;
+}
+
+#faq_content_comment_file::file-selector-button:hover {
+    background: #414858;
+    color: white;
+}
+
+#faq_content_comment_insert_btn {
+    margin-left: 10px;
+}
