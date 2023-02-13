@@ -12,7 +12,6 @@ import Editor from '../common/EditorComponent';
 import CommentRadioBtn from '../common/CommentRadioBtn';
 
 import './css/NoticeInsert.css';
-import NoticeMain from './NoticeMain';
 
 // 공지사항 추가
 const NoticeInsert = () => {
@@ -36,7 +35,7 @@ const NoticeInsert = () => {
     // title
     const titleChangeHandler = e => {
         setNoticeData({
-            ...noticeData,        // 기존 todo데이터 복사 후 boardTitle 추가
+            ...noticeData,        // 기존 noticeData 복사 후 boardTitle 추가
             boardTitle: e.target.value,
         });
     };
@@ -44,7 +43,7 @@ const NoticeInsert = () => {
     // 댓글 허용 여부 (radio)
     const commentChangeHandler = commentStatus => {
         setNoticeData({
-            ...noticeData,        // 기존 todo데이터 복사 후 boardCommentIs 추가
+            ...noticeData,        // 기존 noticeData 복사 후 boardCommentIs 추가
             boardCommentIs: commentStatus,
         });
     }
@@ -52,37 +51,45 @@ const NoticeInsert = () => {
     // 내용
     const contentChangeHandler = value => {
         setNoticeData({
-            ...noticeData,        // 기존 todo데이터 복사 후 boardContent 추가
+            ...noticeData,        // 기존 noticeData 복사 후 boardContent 추가
             boardContent: value,
         });
     };
 
     // 공지사항 등록 서버 요청  (POST에 대한 응답처리)
     const handleInsertNotice = () => {
-        console.log(noticeData);
-        console.log(ACCESS_TOKEN);
-
-        fetch(API_BASE_URL, {
-            method: 'POST',
-            headers: headerInfo,
-            body: JSON.stringify(noticeData)
-        })
-        .then(res => {
-            if (res.status === 406) {
-                alert('로그인이 필요한 서비스입니다');
-
-                window.location.href = '/join';
-                return;
-            } 
-            else if (res.status === 500) {
-                alert('서버가 불안정합니다');
-                return;
-            }
-            return res.json();
-        })
-        .then(() => {
-            window.location.href = "/notice";       // 공지사항 메인 페이지로 이동
-        });
+        if (noticeData.boardTitle === '') {
+            alert('제목을 입력해주세요.');
+        } else if (noticeData.boardContent === '') {
+            alert('내용을 입력해주세요.');
+        }
+        else {
+            fetch(API_BASE_URL, {
+                method: 'POST',
+                headers: headerInfo,
+                body: JSON.stringify(noticeData)
+            })
+            .then(res => {
+                if (res.status === 406) {
+                    if (ACCESS_TOKEN === '') {
+                        alert('로그인이 필요한 서비스입니다');
+                        window.location.href = '/join';
+                    } else {
+                        alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
+                        return;
+                    }
+                    return;
+                } 
+                else if (res.status === 500) {
+                    alert('서버가 불안정합니다');
+                    return;
+                }
+                return res.json();
+            })
+            .then(() => {
+                window.location.href = "/notice";       // 공지사항 목록 페이지로 이동
+            });
+        }
     };
 
     // 모달 닫기
@@ -112,7 +119,7 @@ const NoticeInsert = () => {
                         </Form.Group>
                     </Form>
 
-                     {/* 라디오 버튼 */} 
+                    {/* 라디오 버튼 */} 
                     <CommentRadioBtn commentStatus={commentChangeHandler}/>
                 </div>
 

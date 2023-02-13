@@ -137,20 +137,11 @@ public class NoticeApiController {
                     .body(NoticeListResponseDTO.builder()
                             .error("Board ID를 전달해주세요"));
         }
-
-        try {
-            NoticeListResponseDTO responseDTO = noticeService.delete(boardId, userId);
-            return ResponseEntity
-                    .ok()
-                    .body(responseDTO);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-
-            return ResponseEntity
-                    .internalServerError()
-                    .body(NoticeListResponseDTO
-                            .builder()
-                            .error(e.getMessage()));
+        boolean deleted = noticeService.delete(boardId, userId);
+        if (deleted){
+            return ResponseEntity.ok().body("게시글이 삭제되었습니다.");
+        }else {
+            return ResponseEntity.internalServerError().body("게시글 삭제에 실패했습니다.");
         }
     }
 

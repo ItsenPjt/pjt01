@@ -34,7 +34,7 @@ const QuestionInsert = () => {
     // title
     const titleChangeHandler = e => {
         setQuestionData({
-            ...questionData,        // 기존 todo데이터 복사 후 boardTitle 추가
+            ...questionData,        // 기존 questionData 복사 후 boardTitle 추가
             boardTitle: e.target.value,
         });
     };
@@ -42,38 +42,43 @@ const QuestionInsert = () => {
     // 내용
     const contentChangeHandler = value => {
         setQuestionData({
-            ...questionData,        // 기존 todo데이터 복사 후 boardContent 추가
+            ...questionData,        // 기존 questionData 복사 후 boardContent 추가
             boardContent: value,
         });
     };
 
     // 문의사항 등록 서버 요청  (POST에 대한 응답처리)
     const handleInsertNotice = () => {
-        console.log(questionData);
-        console.log(ACCESS_TOKEN);
-        
-        fetch(API_BASE_URL, {
-            method: 'POST',
-            headers: headerInfo,
-            body: JSON.stringify(questionData)
-        })
-        .then(res => {
-            if (res.status === 406) {
-                alert('로그인이 필요한 서비스입니다');
-
-                window.location.href = '/join';
-                return;
-            } 
-            else if (res.status === 500) {
-                alert('서버가 불안정합니다');
-                return;
-            }
-            return res.json();
-        })
-        .then(result => {
-            console.log(result);
-            // setTodos(result.todos);     // json 갱신
-        });
+        if (questionData.boardTitle === '') {
+            alert('제목을 입력해주세요.');
+        } else if (questionData.boardContent === '') {
+            alert('내용을 입력해주세요.');
+        } else {
+            console.log(questionData);
+            console.log(ACCESS_TOKEN);
+            
+            fetch(API_BASE_URL, {
+                method: 'POST',
+                headers: headerInfo,
+                body: JSON.stringify(questionData)
+            })
+            .then(res => {
+                if (res.status === 406) {
+                    alert('로그인이 필요한 서비스입니다');
+    
+                    window.location.href = '/join';
+                    return;
+                } 
+                else if (res.status === 500) {
+                    alert('서버가 불안정합니다');
+                    return;
+                }
+                return res.json();
+            })
+            .then(() => {
+                window.location.href = "/question";       // 문의사항 목록 페이지로 이동
+            });
+        }
     };
 
     // 모달 닫기
