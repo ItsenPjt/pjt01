@@ -1,13 +1,17 @@
 package com.newcen.newcen.users.service;
 
+import com.newcen.newcen.admin.exception.AdminCustomException;
+import com.newcen.newcen.admin.exception.AdminExceptionEnum;
 import com.newcen.newcen.common.config.security.TokenProvider;
 import com.newcen.newcen.common.entity.UserEntity;
+import com.newcen.newcen.common.entity.UserRole;
 import com.newcen.newcen.common.entity.ValidUserEntity;
 import com.newcen.newcen.common.repository.ValidUserRepository;
 import com.newcen.newcen.users.dto.request.AnonymousReviseRequestDTO;
 import com.newcen.newcen.users.dto.request.UserModifyRequestDTO;
 import com.newcen.newcen.users.dto.request.UserSignUpRequestDTO;
 import com.newcen.newcen.users.dto.response.*;
+import com.newcen.newcen.users.exception.DuplicatedEmailException;
 import com.newcen.newcen.users.exception.NoRegisteredArgumentsException;
 import com.newcen.newcen.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -66,8 +70,13 @@ public class UserService {
 
         log.info("********** - User ActiveValue Change Complete - valid_user_active : {}", updatedActive);
 
-        return new UserSignUpResponseDTO(savedUser);
+        return retrieve(email);
 
+    }
+
+    private UserSignUpResponseDTO retrieve(String email) {
+        UserEntity user = userRepository.findByUserEmail(email);
+        return new UserSignUpResponseDTO(user);
     }
 
 
@@ -91,7 +100,7 @@ public class UserService {
 
         // 토큰 발급
         String token = tokenProvider.createToken(originalUser);
-        log.info(token);
+        log.info("{}님의 토큰 : {}",originalUser.getUserName(), token);
         return new LoginResponseDTO(originalUser, token);
 
     }
@@ -179,37 +188,35 @@ public class UserService {
     }
 
     // 회원 탈퇴 (회원정보 삭제)
+    @Transactional
     public UserDeleteResponseDTO delete(
-            final String userId) {
+            final String deleteId) {
 
         try {
 
-            String delEmail = userRepository.selectUserEmail(userId);
+            String delEmail = userRepository.selectUserEmail(deleteId);
 
-            userRepository.deleteById(userId);  // 회원 UUID로 회원정보 삭제
+            userRepository.deleteById(deleteId);  // 로그인된 회원 UUID로 회원정보 삭제
+            log.info("User Delete Complete - UserId : {}", deleteId);
 
-            boolean nonexistentId = userRepository.existsById(userId); // 삭제된 UUID 조회
+            boolean nonExistentId = userRepository.existsById(deleteId); // 삭제된 UUID 존재 여부 조회
 
-            if (!nonexistentId) {
-                log.info("User Delete Complete - UserId : {}", userId);
-
-
+            if (!nonExistentId) {
 
                 validUserRepository.deleteByValidUserEmail(delEmail);
                 log.info("validUserEmail Delete Complete - ValidUserEmail : {}", delEmail);
 
-
             }
 
         } catch (Exception e) {
-            log.error("UserId가 존재하지 않아 삭제에 실패했습니다. - ID: {}, err: {}"
-                    , userId, e.getMessage());
+            log.error("delEmail 이 존재하지 않아 삭제에 실패했습니다. - ID: {}, err: {}"
+                    , deleteId, e.getMessage());
 
-            throw new RuntimeException("UserId가 존재하지 않아 삭제에 실패했습니다.");
+            throw new RuntimeException("delEmail 이 존재하지 않아 삭제에 실패했습니다.");
 
         }
 
-        Optional<ValidUserEntity> endUser = validUserRepository.findById(userId);
+        Optional<ValidUserEntity> endUser = validUserRepository.findById(deleteId);
 
         String message = "";
 

@@ -57,7 +57,7 @@ class UserServiceTest {
         // given
         UserSignUpRequestDTO dto = UserSignUpRequestDTO.builder()
                 .userEmail("postman@naver.com")
-                .userPassword("abc1234")
+                .userPassword("abcd1234")
                 .userName("암호맨")
                 .validCode("XY2baJQ")
                 .build();

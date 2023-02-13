@@ -43,7 +43,7 @@ public interface ValidUserRepository extends JpaRepository<ValidUserEntity, Stri
     boolean existsById(String validUserId);
 
     // 삭제된 회원 UUID 조회
-    Optional<ValidUserEntity> findById(String validUserId);
+//    Optional<ValidUserEntity> findByValidUserEmail(String validUserEmail);
 
 
 }
