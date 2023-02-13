@@ -1,5 +1,8 @@
 package com.newcen.newcen.message.service;
 
+import com.newcen.newcen.common.dto.request.SearchCondition;
+import com.newcen.newcen.common.dto.request.SearchReceivedMessageCondition;
+import com.newcen.newcen.common.dto.request.SearchSentMessageCondition;
 import com.newcen.newcen.common.entity.UserEntity;
 import com.newcen.newcen.message.dto.request.MessageSendRequestDTO;
 import com.newcen.newcen.message.dto.response.*;
@@ -7,9 +10,13 @@ import com.newcen.newcen.message.entity.MessageEntity;
 import com.newcen.newcen.message.exception.MessageCustomException;
 import com.newcen.newcen.message.exception.MessageExceptionEnum;
 import com.newcen.newcen.message.repository.MessageRepository;
+import com.newcen.newcen.message.repository.MessageRepositorySupport;
+import com.newcen.newcen.question.response.QuestionResponseDTO;
 import com.newcen.newcen.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +31,8 @@ public class MessageService {
 
     private final MessageRepository messageRepository;
 
+    private final MessageRepositorySupport messageRepositorySupport;
+
     private final UserRepository userRepository;
 
 
@@ -33,8 +42,6 @@ public class MessageService {
         userRepository.findByUserId(userId).orElseThrow(() -> {
             throw new MessageCustomException(MessageExceptionEnum.UNAUTHORIZED_ACCESS);
         });
-
-        log.info("=====================================================");
 
         List<MessageEntity> receivedMessageEntityList = messageRepository.findByReceiverId(userId);
 
@@ -47,6 +54,26 @@ public class MessageService {
         return MessageReceivedListResponseDTO.builder()
                 .receivedMessageList(receivedMessageList)
                 .build();
+    }
+    // 받은 메세지 목록 조회 페이지 제네이션
+    public PageImpl<MessageReceivedResponseDTO> getReceivedMessagePageList(Pageable pageable, String userId){
+        PageImpl<MessageReceivedResponseDTO> result = messageRepositorySupport.getReceivedMessage(pageable,userId);
+        return result;
+    }
+    // 보낸 메세지 목록 조회 페이지 제네이션
+    public PageImpl<MessageSentResponseDTO> getSentMessagePageList(Pageable pageable, String userId){
+        PageImpl<MessageSentResponseDTO> result = messageRepositorySupport.getSentMessage(pageable,userId);
+        return result;
+    }
+    //받은 메세지 목록 검색 조회 페이지 제네이션
+    public PageImpl<MessageReceivedResponseDTO> getReceivedMessagePageListWithSearch(SearchReceivedMessageCondition searchReceivedMessageCondition, Pageable pageable, String userId){
+        PageImpl<MessageReceivedResponseDTO> result = messageRepositorySupport.getReceivedMessageWithSearch(searchReceivedMessageCondition,pageable,userId);
+        return result;
+    }
+    //보낸 메세지 목록 검색 조회 페이지 제네이션
+    public PageImpl<MessageSentResponseDTO> getSentMessagePageListWithSearch(SearchSentMessageCondition searchSentMessageCondition, Pageable pageable, String userId){
+        PageImpl<MessageSentResponseDTO> result = messageRepositorySupport.getSentMessageWithSearch(searchSentMessageCondition,pageable,userId);
+        return result;
     }
 
     // 받은 메세지 상세

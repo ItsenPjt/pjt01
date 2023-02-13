@@ -1,6 +1,7 @@
 package com.newcen.newcen.question.service;
 
 import com.newcen.newcen.common.config.security.TokenProvider;
+import com.newcen.newcen.common.dto.request.SearchCondition;
 import com.newcen.newcen.common.entity.BoardEntity;
 import com.newcen.newcen.common.entity.BoardFileEntity;
 import com.newcen.newcen.common.entity.UserEntity;
@@ -15,11 +16,12 @@ import com.newcen.newcen.question.response.QuestionsOneResponseDTO;
 import com.newcen.newcen.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,7 +38,7 @@ public class QuestionService {
 
     //문의사항 목록조회
     public QuestionListResponseDTO retrieve(){
-        List<BoardEntity> entityList = questionsRepositorySupport.getQueestionList();
+        List<BoardEntity> entityList = questionsRepositorySupport.getQuestionList();
         List<QuestionResponseDTO> responseDTO = entityList.stream()
                 .map(QuestionResponseDTO::new)
                 .collect(Collectors.toList());
@@ -44,6 +46,17 @@ public class QuestionService {
                 .data(responseDTO)
                 .build();
     }
+    //문의사항 목록조회
+    public PageImpl<QuestionResponseDTO> getPageList(Pageable pageable){
+        PageImpl<QuestionResponseDTO> result = questionsRepositorySupport.getQuestionListPage(pageable);
+        return result;
+    }
+    //문의사항 검색 및 페이지 제네이션
+    public PageImpl<QuestionResponseDTO> getPageListWithSearch(SearchCondition searchCondition, Pageable pageable){
+        PageImpl<QuestionResponseDTO> result = questionsRepositorySupport.getQuestionListPageWithSearch(searchCondition, pageable);
+        return result;
+    }
+
     //문의사항 상세조회
     public QuestionsOneResponseDTO questionDetail(Long boardId){
         BoardEntity boardGet = questionsRepository.getById(boardId);
