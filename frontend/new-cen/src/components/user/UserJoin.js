@@ -12,6 +12,7 @@ const UserJoin = () => {
 
     const API_BASE_URL = BASE_URL + USER;
 
+    // 엔터 키 눌렀을 때 동작하는 핸들러
     const onKeyPress = (e) => {
         console.log(e.key);
         if (e.key === 'Enter') {
@@ -27,8 +28,8 @@ const UserJoin = () => {
         const $email = document.getElementById('loginId');
         const $password = document.getElementById('loginPw');
 
-        console.log($email.value);
-        console.log($password.value);
+        // console.log($email.value);
+        // console.log($password.value);
 
         // 서버에 로그인 요청
         fetch(`${API_BASE_URL}/join`, {
@@ -41,13 +42,13 @@ const UserJoin = () => {
         })
         .then(res => res.json())
         .then(result => {
-            console.log(result);
+            // console.log(result);
             if (result.message) {
                 // 로그인 실패
                 alert(result.message);
             }
             else {
-                alert('로그인 성공..!!');
+                // alert('로그인 성공..!!');
 
                 // 발급받은 토큰을 저장, 회원정보 저장
                 // 브라우저가 제공하는 로컬스토리지에 저장(브라우저가 종료되어도 남아있음) - 서버X 로컬O
@@ -80,8 +81,8 @@ const UserJoin = () => {
 
     return (
         <div id='login_main'>
-            <div id='login_logo_position' onClick={onLogo}>
-                <img id='login_logo_img' alt='logo' src="/img/logo_title.png"/>
+            <div id='login_logo_position'>
+                <img id='login_logo_img' alt='logo' src="/img/logo_title.png" onClick={onLogo}/>
             </div>
 
             <div id='login_main_content'>
