@@ -20,14 +20,12 @@ public class AdminValidUserSaveRequestDTO {
 
     private String validCode;
 
-    private int validActive = 1;
-
 
     public ValidUserEntity toEntity() {
         return ValidUserEntity.builder()
                 .validUserEmail(this.validUserEmail)
                 .validCode(this.validCode)
-                .validActive(validActive)
+                .validActive(1)
                 .build();
     }
 

@@ -6,6 +6,7 @@ import com.newcen.newcen.admin.dto.response.AdminValidUserResponseDTO;
 import com.newcen.newcen.admin.exception.AdminCustomException;
 import com.newcen.newcen.admin.exception.AdminExceptionEnum;
 import com.newcen.newcen.admin.service.AdminService;
+import com.newcen.newcen.admin.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
