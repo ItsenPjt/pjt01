@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
 
-import '../css/common/CommentRadioBtn.css';
+import './css/CommentRadioBtn.css';
 
-const CommentRadioBtn = () => {
+const CommentRadioBtn = ( { commentStatus } ) => {      // commentStatus : 부모(NoticeInsert.js)가 보낸 commentChangeHandler 함수
     
     const [ radioStatus, setRadioStatus ] = useState('ON');     // default : ON
+
     const handleClickRadioButton = (radioBtnName) => {
-        setRadioStatus(radioBtnName)
+        commentStatus(radioBtnName);        // 부모에게 radio 값 넘김
+        setRadioStatus(radioBtnName);
     };
 
     return (
-        <div className='comment_justify'>
-            <label className='comment_radio_label'>
-                <span className='comment_radio_span' htmlFor='ON'>댓글 허용</span>
+        <div id='comment_radio_main'>
+            <label id='comment_radio_label'>
+                <span id='comment_radio_span' htmlFor='ON'>댓글 허용</span>
                 <input 
                     className='comment_radio'
                     type='radio' 
@@ -21,8 +23,8 @@ const CommentRadioBtn = () => {
                     onChange={() => handleClickRadioButton('ON')} 
                 />
             </label>
-            <label className='comment_radio_label'>
-                <span className='comment_radio_span' htmlFor='OFF'>댓글 비허용</span>
+            <label id='comment_radio_label'>
+                <span id='comment_radio_span' htmlFor='OFF'>댓글 비허용</span>
                 <input 
                     className='comment_radio'
                     type='radio' 

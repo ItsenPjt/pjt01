@@ -11,6 +11,7 @@ import com.newcen.newcen.question.request.QuestionCreateRequestDTO;
 import com.newcen.newcen.question.request.QuestionUpdateRequestDTO;
 import com.newcen.newcen.question.response.QuestionListResponseDTO;
 import com.newcen.newcen.question.response.QuestionResponseDTO;
+import com.newcen.newcen.question.response.QuestionsOneResponseDTO;
 import com.newcen.newcen.users.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -66,7 +67,7 @@ class QuestionServiceTest {
     @Transactional(readOnly = true)
     void viewDetail(){
         Long board= 1L;
-        QuestionResponseDTO questionResponseDTO = questionService.questionDetail(1L);
+        QuestionsOneResponseDTO questionResponseDTO = questionService.questionDetail(1L);
         assertEquals("김진행1",questionResponseDTO.getBoardWriter());
     }
 

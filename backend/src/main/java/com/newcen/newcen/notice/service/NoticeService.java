@@ -10,6 +10,7 @@ import com.newcen.newcen.notice.dto.response.NoticeListResponseDTO;
 import com.newcen.newcen.notice.dto.response.NoticeOneResponseDTO;
 import com.newcen.newcen.notice.repository.NoticeFileRepository;
 import com.newcen.newcen.notice.repository.NoticeRepository;
+import com.newcen.newcen.notice.repository.NoticeRepositorySupport;
 import com.newcen.newcen.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,10 +30,11 @@ public class NoticeService {
     private final NoticeRepository noticeRepository;
     private final NoticeFileRepository noticeFileRepository;
 
+    private final NoticeRepositorySupport noticeRepositorySupport;
+
     // 공지사항 목록 조회
     public NoticeListResponseDTO retrieve() {
-        List<BoardEntity> entityList = noticeRepository.findAll();      // BoardEntity 를 NoticeListResponseDTO 로 변경해서 return 해줘야함
-
+        List<BoardEntity> entityList = noticeRepositorySupport.getNoticeList();      // BoardEntity 를 NoticeListResponseDTO 로 변경해서 return 해줘야함
         // 1. BoardEntity 를 NoticeDetailResponseDTO 로 우선 변경
         List<NoticeDetailResponseDTO> dtoList = entityList.stream()
                 .map(NoticeDetailResponseDTO::new)
@@ -234,4 +236,12 @@ public class NoticeService {
 
         return retrieveOne(boardId);
     }
+
+    //공지사항 댓글 목록 조회
+
+    //공지사항 댓글 작성
+
+    //공지사항 댓글 수정
+
+    //공지사항 댓글 삭제
 }

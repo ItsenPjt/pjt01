@@ -1,20 +1,87 @@
-import React, { useState}  from 'react';
+import React, { useState }  from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 
+import { BASE_URL, NOTICE } from '../common/config/host-config';
+import { getToken } from '../common/util/login-util';
+
 import Editor from '../common/EditorComponent';
 import CommentRadioBtn from '../common/CommentRadioBtn';
 
-import '../css/notice/NoticeInsert.css';
+import './css/NoticeInsert.css';
 
+// 공지사항 추가
 const NoticeInsert = () => {
 
+    const API_BASE_URL = BASE_URL + NOTICE;
+    const ACCESS_TOKEN = getToken();
+
+    // headers
+    const headerInfo = {
+        'content-type': 'application/json',
+        'Authorization': 'Bearer ' + ACCESS_TOKEN
+    }
+
     const [modal, setModal] = useState(false); 
-    const [desc, setDesc] = useState('');
-    function onEditorChange(value) {
-        setDesc(value);
+    const [noticeData, setNoticeData] = useState({          // 공지사항 입력 데이터
+        title: '',          // 공지사항 제목
+        isComment: 'ON',      // 공지사항 댓글 여부 (default: ON)
+        content: '',        // 공지사항 내용
+    });
+
+    // title
+    const titleChangeHandler = e => {
+        setNoticeData({
+            ...noticeData,        // 기존 todo데이터 복사 후 title 추가
+            title: e.target.value,
+        });
+    };
+
+    // 댓글 허용 여부 (radio)
+    const commentChangeHandler = commentStatus => {
+        setNoticeData({
+            ...noticeData,        // 기존 todo데이터 복사 후 isComment 추가
+            isComment: commentStatus,
+        });
+    }
+
+    // 내용
+    const contentChangeHandler = value => {
+        setNoticeData({
+            ...noticeData,        // 기존 todo데이터 복사 후 content 추가
+            content: value,
+        });
+    };
+
+    // 공지사항 등록 서버 요청  (POST에 대한 응답처리)
+    const handleInsertNotice = () => {
+        console.log(noticeData);
+
+        fetch(API_BASE_URL, {
+            method: 'POST',
+            headers: headerInfo,
+            body: JSON.stringify(noticeData)
+        })
+        .then(res => {
+            if (res.status === 406) {
+                alert('로그인이 필요한 서비스입니다');
+
+                window.location.href = '/';
+                return;
+            } 
+            else if (res.status === 500) {
+                alert('서버가 불안정합니다');
+                return;
+            }
+            return res.json();
+        })
+        .then(result => {
+            console.log(result);
+            // setTodos(result.todos);     // json 갱신
+        });
     };
 
     // 모달 닫기
@@ -23,51 +90,54 @@ const NoticeInsert = () => {
     };
 
     // 취소 클릭 시 경고 모달
-    const handleShowCalcelModal = () => {
+    const handleShowCancelModal = () => {
         setModal(true);     // 모달 열기
     }
 
+    // 공지사항 목록 페이지로
+    const navigate = useNavigate();
     const onNoticePage = () => {
-        window.location.href = "/notice";
-    }
+        const path = `/notice`;
+        navigate(path);
+    };
 
     return (
         <>
-            <div className='insert_div'>
-
-                <div className='insert_justify'>
+            <div id='notice_insert_div'>
+                <div className='justify'>
                     <Form>
                         <Form.Group className='mb-3'>
-                            <Form.Control className='insert_title' type='text' placeholder='공지사항 제목 입력' />
+                            <Form.Control onChange={titleChangeHandler} value={noticeData.title} id='notice_insert_title' autoFocus type='text' placeholder='공지사항 제목 입력' />
                         </Form.Group>
                     </Form>
 
                      {/* 라디오 버튼 */} 
-                    <CommentRadioBtn />
+                    <CommentRadioBtn commentStatus={commentChangeHandler}/>
                 </div>
 
                 <div>
-                    <Editor value={desc} onChange={onEditorChange} />
+                    <Editor onChange={contentChangeHandler} value={noticeData.content} />
                 </div>
 
-                <div className='insert_btn'>
-                    <Button className='notice_btn_gray btn_size' onClick={handleShowCalcelModal}>취소</Button>
-                    <Button className='notice_btn_orange btn_size'>등록</Button>
+                <div id='notice_insert_footer_div'>
+                    <Button onClick={handleShowCancelModal} className='btn_gray btn_size_100'>취소</Button>
+                    <Button onClick={handleInsertNotice} className='btn_orange btn_size_100' id='notice_insert_btn'>등록</Button>
                 </div>
             </div>
 
-            <Modal show={modal} onHide={handleClose} id="header-modal">
-                <Modal.Body className='notice_modal_body'>
-                    <div className='notice_modal_content'>
+{/* Modal */}
+            <Modal show={modal} onHide={handleClose} id="notice_insert_modal">
+                <Modal.Body id='notice_insert_modal_body'>
+                    <div id='notice_insert_modal_content'>
                         작성하신 글을 취소하시면 저장되지 않습니다. <br />
                         그래도 취소하시겠습니까?
                     </div>
 
-                    <div className="notice_modal_content">
-                        <Button className='notice_btn_gray notice_btn btn_size' id="userInformation_modalSearch" onClick={handleClose}>
+                    <div id="notice_insert_modal_content">
+                        <Button className='btn_gray notice_btn btn_size_100' onClick={handleClose}>
                             아니오
                         </Button>
-                        <Button className='notice_btn_orange notice_btn btn_size' id="userInformation_modalClose" onClick={onNoticePage}>
+                        <Button className='btn_orange notice_btn btn_size_100' id="notice_insert_btn" onClick={onNoticePage}>
                             네
                         </Button>
                     </div>

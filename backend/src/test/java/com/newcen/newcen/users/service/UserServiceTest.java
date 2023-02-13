@@ -1,21 +1,18 @@
 package com.newcen.newcen.users.service;
 
 import com.newcen.newcen.common.entity.UserEntity;
+import com.newcen.newcen.common.repository.ValidUserRepository;
 import com.newcen.newcen.users.dto.request.AnonymousReviseRequestDTO;
 import com.newcen.newcen.users.dto.request.UserModifyRequestDTO;
 import com.newcen.newcen.users.dto.request.UserSignUpRequestDTO;
-import com.newcen.newcen.users.dto.response.AnonymousReviseResponseDTO;
-import com.newcen.newcen.users.dto.response.LoginResponseDTO;
-import com.newcen.newcen.users.dto.response.UserModifyResponseDTO;
-import com.newcen.newcen.users.dto.response.UserSignUpResponseDTO;
+import com.newcen.newcen.users.dto.response.*;
 import com.newcen.newcen.users.repository.UserRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -27,6 +24,9 @@ class UserServiceTest {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    ValidUserRepository validUserRepository;
 
     @Test
     @Order(1)
@@ -57,7 +57,7 @@ class UserServiceTest {
         // given
         UserSignUpRequestDTO dto = UserSignUpRequestDTO.builder()
                 .userEmail("postman@naver.com")
-                .userPassword("abc1234")
+                .userPassword("abcd1234")
                 .userName("암호맨")
                 .validCode("XY2baJQ")
                 .build();
@@ -93,14 +93,14 @@ class UserServiceTest {
     @DisplayName("정확한 정보로 로그인을 시도하면 회원정보가 반환되어야 한다.")
     void loginTest() {
         // given
-        String email = "postman@naver.com";
+        String email = "testman@naver.com";
         String password = "abc1234";
 
         // when
         LoginResponseDTO loginUser = userService.getByCredentials(email, password);
 
         // then
-        assertEquals("암호맨", loginUser.getUserName());
+        assertEquals("관리자", loginUser.getUserName());
 
     }
 
@@ -140,6 +140,24 @@ class UserServiceTest {
 
         // then
         assertEquals("암호맨", anonymousDto.getUserName());
+    }
+
+    @Test
+    @Order(7)
+    @DisplayName("삭제하려는 회원의 UserId를 받아 validUserEmail값으로 회원정보를 삭제해야 한다.")
+    @Transactional
+    void validUserDeleteTest() {
+        // given
+        String UserId = "402880b6862ff68b01862ff696530000";
+
+        String validUserId = "402880b6862fa0f601862fa101410000";
+
+        // when
+        userService.delete(UserId);
+
+        // given
+        assertFalse(validUserRepository.existsById(validUserId));
+
     }
 
 }

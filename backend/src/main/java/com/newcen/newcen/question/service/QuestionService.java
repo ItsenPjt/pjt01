@@ -11,6 +11,7 @@ import com.newcen.newcen.question.request.QuestionCreateRequestDTO;
 import com.newcen.newcen.question.request.QuestionUpdateRequestDTO;
 import com.newcen.newcen.question.response.QuestionListResponseDTO;
 import com.newcen.newcen.question.response.QuestionResponseDTO;
+import com.newcen.newcen.question.response.QuestionsOneResponseDTO;
 import com.newcen.newcen.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +36,7 @@ public class QuestionService {
 
     //문의사항 목록조회
     public QuestionListResponseDTO retrieve(){
-        List<BoardEntity> entityList = questionsRepository.findAll();
+        List<BoardEntity> entityList = questionsRepositorySupport.getQueestionList();
         List<QuestionResponseDTO> responseDTO = entityList.stream()
                 .map(QuestionResponseDTO::new)
                 .collect(Collectors.toList());
@@ -44,10 +45,10 @@ public class QuestionService {
                 .build();
     }
     //문의사항 상세조회
-    public QuestionResponseDTO questionDetail(Long boardId){
+    public QuestionsOneResponseDTO questionDetail(Long boardId){
         BoardEntity boardGet = questionsRepository.getById(boardId);
 //        BoardEntity boardGet = questionsRepository.getById(boardId);
-        return new QuestionResponseDTO(boardGet);
+        return new QuestionsOneResponseDTO(boardGet);
     }
 
     //문의사항 등록
@@ -98,7 +99,7 @@ public class QuestionService {
     }
 
     // 게시물 파일 등록
-    public QuestionResponseDTO createFile(String userId, Long boardId, String boardFilePath){
+    public QuestionsOneResponseDTO createFile(String userId, Long boardId, String boardFilePath){
         UserEntity user = null;
         user = userRepository.findById(userId).get();
         BoardEntity board = questionsRepositorySupport.findBoardByUserIdAndBoardId(userId,boardId);
@@ -116,7 +117,7 @@ public class QuestionService {
         BoardFileEntity savedFileEntity = questionsFileRepository.save(boardFileEntity);
         board.getBoardFileEntityList().add(savedFileEntity);
         BoardEntity savedBoard = questionsRepository.save(board);
-        return new QuestionResponseDTO(savedBoard);
+        return new QuestionsOneResponseDTO(savedBoard);
     }
     //게시물 파일 수정
     public QuestionResponseDTO updateFile(String userId, Long boardId, String boardFilePath, String boardFileId){
