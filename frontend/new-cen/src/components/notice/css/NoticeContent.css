@@ -1,6 +1,6 @@
 #notice_content_main {
     width: 60%;
-    margin: 60px auto;
+    margin: 30px auto;
 }
 
 .justify {
@@ -117,6 +117,10 @@
     color: #D0D0D0;
 }
 
+#notice_content_comment_size {
+    height: 70px;
+}
+
 #notice_content_comment_writer {    /* 댓글 작성자 */
     height: 60px;
     
@@ -133,11 +137,11 @@
     float: left;
 }
 
-#notice_content_comment_update {    /* 댓글 수정하기 */
+#notice_content_comment_update, #notice_content_comment_delete {    /* 댓글 수정, 삭제하기 */
+    margin-top: 10px;
     margin-left: 10px;
-}
-#notice_content_comment_delete {    /* 댓글 삭제하기 */
-    margin-left: 10px;
+    font-size: 11px;
+    width: 70px;
 }
 
 /* 댓글 - 파일첨부 */
@@ -164,5 +168,6 @@
 }
 
 #notice_content_comment_insert_btn {
+    width: 150px;
     margin-left: 10px;
 }

@@ -10,8 +10,7 @@ import { BASE_URL, NOTICE } from '../common/config/host-config';
 import { getToken, getUserRole } from '../common/util/login-util';
 
 import NoticeNoComment from './NoticeNoComment';
-import NoticeYesCommentBefore from './NoticeYesCommentBefore';
-import NoticeYseCommentAfter from './NoticeYseCommentAfter';
+import NoticeComment from './NoticeComment';
 
 import './css/NoticeContent.css';
 
@@ -130,9 +129,7 @@ const NoticeContent = () => {
                     (
                         <>
                             <div id='notice_content_comment_txt'>댓글</div>
-                            {/* !!! 전/후 나누지 말고, 한번에 표현하기 (댓글 작성 칸 아래에 댓글들 보이게끔) */}
-                            <NoticeYesCommentBefore />      {/* 댓글 작성 전 */}
-                            {/* <NoticeYseCommentAfter />       댓글 작성 후 */}
+                            <NoticeComment noticeId = {noticeId} />
                         </>
                     )
                     : <NoticeNoComment />       // 댓글 X

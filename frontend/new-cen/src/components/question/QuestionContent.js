@@ -8,8 +8,7 @@ import Modal from 'react-bootstrap/Modal';
 import { BASE_URL, QUESTION } from '../common/config/host-config';
 import { getToken } from '../common/util/login-util';
 
-import QuestionYesCommentBefore from './QuestionYesCommentBefore';
-import QuestionYesCommentAfter from './QuestionYesCommentAfter';
+import QuestionComment from './QuestionComment';
 
 import './css/QuestionContent.css';
 
@@ -115,8 +114,7 @@ const QuestionContent = () => {
 
                 {/* 댓글 */}
                 <div id='question_content_comment_txt'>댓글</div>
-                <QuestionYesCommentBefore />      {/* 댓글 작성 전 */}
-                 {/*<QuestionYesCommentAfter />       댓글 작성 후 */}
+                <QuestionComment questionId = {questionId}/>
             </div>
 
             {/* Modal */}
