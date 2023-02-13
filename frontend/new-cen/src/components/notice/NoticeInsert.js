@@ -18,7 +18,7 @@ const NoticeInsert = () => {
 
     const API_BASE_URL = BASE_URL + NOTICE;
     const ACCESS_TOKEN = getToken();
-
+    
     // headers
     const headerInfo = {
         'content-type': 'application/json',
@@ -27,38 +27,39 @@ const NoticeInsert = () => {
 
     const [modal, setModal] = useState(false); 
     const [noticeData, setNoticeData] = useState({          // 공지사항 입력 데이터
-        title: '',          // 공지사항 제목
-        isComment: 'ON',      // 공지사항 댓글 여부 (default: ON)
-        content: '',        // 공지사항 내용
+        boardTitle: '',          // 공지사항 제목
+        boardCommentIs: 'ON',      // 공지사항 댓글 여부 (default: ON)
+        boardContent: '',        // 공지사항 내용
     });
 
     // title
     const titleChangeHandler = e => {
         setNoticeData({
-            ...noticeData,        // 기존 todo데이터 복사 후 title 추가
-            title: e.target.value,
+            ...noticeData,        // 기존 todo데이터 복사 후 boardTitle 추가
+            boardTitle: e.target.value,
         });
     };
 
     // 댓글 허용 여부 (radio)
     const commentChangeHandler = commentStatus => {
         setNoticeData({
-            ...noticeData,        // 기존 todo데이터 복사 후 isComment 추가
-            isComment: commentStatus,
+            ...noticeData,        // 기존 todo데이터 복사 후 boardCommentIs 추가
+            boardCommentIs: commentStatus,
         });
     }
 
     // 내용
     const contentChangeHandler = value => {
         setNoticeData({
-            ...noticeData,        // 기존 todo데이터 복사 후 content 추가
-            content: value,
+            ...noticeData,        // 기존 todo데이터 복사 후 boardContent 추가
+            boardContent: value,
         });
     };
 
     // 공지사항 등록 서버 요청  (POST에 대한 응답처리)
     const handleInsertNotice = () => {
         console.log(noticeData);
+        console.log(ACCESS_TOKEN);
 
         fetch(API_BASE_URL, {
             method: 'POST',
@@ -66,20 +67,22 @@ const NoticeInsert = () => {
             body: JSON.stringify(noticeData)
         })
         .then(res => {
-            if (res.status === 406) {
-                alert('로그인이 필요한 서비스입니다');
+            console.log(res);
 
-                window.location.href = '/';
-                return;
-            } 
-            else if (res.status === 500) {
-                alert('서버가 불안정합니다');
-                return;
-            }
-            return res.json();
+            // if (res.status === 406) {
+            //     alert('로그인이 필요한 서비스입니다');
+
+            //     window.location.href = '/join';
+            //     return;
+            // } 
+            // else if (res.status === 500) {
+            //     alert('서버가 불안정합니다');
+            //     return;
+            // }
+            // return res.json();
         })
         .then(result => {
-            console.log(result);
+            //console.log(result);
             // setTodos(result.todos);     // json 갱신
         });
     };
@@ -107,7 +110,7 @@ const NoticeInsert = () => {
                 <div className='justify'>
                     <Form>
                         <Form.Group className='mb-3'>
-                            <Form.Control onChange={titleChangeHandler} value={noticeData.title} id='notice_insert_title' autoFocus type='text' placeholder='공지사항 제목 입력' />
+                            <Form.Control onChange={titleChangeHandler} value={noticeData.boardTitle} id='notice_insert_title' autoFocus type='text' placeholder='공지사항 제목 입력' />
                         </Form.Group>
                     </Form>
 
@@ -116,7 +119,7 @@ const NoticeInsert = () => {
                 </div>
 
                 <div>
-                    <Editor onChange={contentChangeHandler} value={noticeData.content} />
+                    <Editor onChange={contentChangeHandler} value={noticeData.boardContent} />
                 </div>
 
                 <div id='notice_insert_footer_div'>
