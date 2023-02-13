@@ -70,7 +70,9 @@ public class AdminService {
             throw new AdminCustomException(AdminExceptionEnum.USER_NOT_EXIST);
         });
 
+        String email = user.getUserEmail();
         adminRepository.deleteById(deleteId);
+        validUserRepository.deleteByValidUserEmail(email);
 
         return userList(userId);
     }

@@ -18,8 +18,8 @@ public class SendEmailDTO {
 
     public SendEmailDTO(AdminValidUserSaveRequestDTO requestDTO) {
         this.address = requestDTO.getValidUserEmail();
-        this.title = "아이티센 인사팀입니다.";
-        this.content = "최종 합격을 축하드립니다.\n 신입 사원 전용 사이트 가입 시 필요한 코드입니다: " + requestDTO.getValidCode();
+        this.title = "아이티센 인사팀입니다";
+        this.content = "최종 합격을 축하드립니다!\n 신입 사원 전용 사이트 가입 시 필요한 코드입니다:\n" + requestDTO.getValidCode();
 
 
     }
