@@ -99,6 +99,10 @@
 }
 
 /* 댓글 */
+#notice_content_comment_txt {
+    margin-top: 15px;
+    font-weight: 600;
+}
 
 .justify {
     display: flex;
@@ -106,7 +110,7 @@
 }
 
 #notice_content_comment_insert_div {
-    margin-top: 10px;
+    margin-top: 5px;
 }
 
 #notice_content_comment_insert::placeholder {

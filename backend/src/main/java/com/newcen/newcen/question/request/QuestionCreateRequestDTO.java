@@ -32,7 +32,7 @@ public class QuestionCreateRequestDTO {
                 .boardTitle(this.boardTitle)
                 .boardContent(this.boardContent)
                 .boardCommentIs(this.boardCommentIs)
-                .boardType(this.boardType)
+                .boardType(BoardType.QUESTION)
                 .user(user)
                 .userId(user.getUserId())
                 .build();

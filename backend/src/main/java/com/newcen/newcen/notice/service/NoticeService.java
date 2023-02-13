@@ -134,7 +134,7 @@ public class NoticeService {
     }
 
     // 공지사항 삭제
-    public NoticeListResponseDTO delete (final Long boardId, final String userId) {
+    public boolean delete (final Long boardId, final String userId) {
 
         Optional<UserEntity> userEntity = userRepository.findById(userId);
         if (!userEntity.get().getUserRole().equals(UserRole.ADMIN)) {
@@ -148,7 +148,7 @@ public class NoticeService {
 
             throw new RuntimeException("삭제할 공지사항이 존재하지 않아 삭제에 실패했습니다.");      // [클라이언트에게 전달할 메세지]
         }
-        return retrieve();      // 공지사항 목록으로
+        return true;
     }
 
     // 공지사항 파일 등록
