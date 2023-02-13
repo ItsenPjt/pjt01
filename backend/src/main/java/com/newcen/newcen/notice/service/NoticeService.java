@@ -51,6 +51,7 @@ public class NoticeService {
                 .build();
     }
 
+    //공지사항 목록 조회 페이지네이션
     public PageImpl<NoticeDetailResponseDTO> getNoticeList(Pageable pageable){
         PageImpl<NoticeDetailResponseDTO> result = noticeRepositorySupport.getNoticeList(pageable);
         return result;
@@ -251,11 +252,4 @@ public class NoticeService {
         return retrieveOne(boardId);
     }
 
-    //공지사항 댓글 목록 조회
-
-    //공지사항 댓글 작성
-
-    //공지사항 댓글 수정
-
-    //공지사항 댓글 삭제
 }

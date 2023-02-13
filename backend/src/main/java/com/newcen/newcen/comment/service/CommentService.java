@@ -10,6 +10,7 @@ import com.newcen.newcen.comment.repository.CommentRepositorySupport;
 import com.newcen.newcen.common.entity.BoardEntity;
 import com.newcen.newcen.common.entity.CommentEntity;
 import com.newcen.newcen.common.entity.UserEntity;
+import com.newcen.newcen.notice.dto.response.NoticeDetailResponseDTO;
 import com.newcen.newcen.notice.repository.NoticeRepository;
 import com.newcen.newcen.question.repository.QuestionsRepository;
 import com.newcen.newcen.question.repository.QuestionsRepositorySupport;
@@ -17,6 +18,8 @@ import com.newcen.newcen.question.response.QuestionListResponseDTO;
 import com.newcen.newcen.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -51,6 +54,14 @@ public class CommentService {
         return CommentListResponseDTO.builder()
                 .data(responseDTO)
                 .build();
+
+    }
+
+    //댓글 목록 조회 페이지 제네이션
+
+    public PageImpl<CommentResponseDTO> getCommentListPage(Pageable pageable,Long boardId){
+        PageImpl<CommentResponseDTO> result = commentRepositorySupport.getCommentListPage(pageable,boardId);
+
     }
 
     //댓글 생성
