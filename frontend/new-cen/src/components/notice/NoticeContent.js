@@ -39,16 +39,16 @@ const NoticeContent = () => {
             headers: headerInfo
         })
             .then(res => {
-                // if (res.status === 403) {
-                //     alert('로그인이 필요한 서비스입니다');
+                if (res.status === 403) {
+                    alert('로그인이 필요한 서비스입니다');
 
-                //     window.location.href = '/';
-                //     return;
-                // } 
-                // else if (res.status === 500) {
-                //     alert('서버가 불안정합니다');
-                //     return;
-                // }
+                    window.location.href = '/';
+                    return;
+                } 
+                else if (res.status === 500) {
+                    alert('서버가 불안정합니다');
+                    return;
+                }
                 return res.json();
             })
             .then(result => {
@@ -93,27 +93,34 @@ const NoticeContent = () => {
                         </div>
                     </div>
 
+                    
                     <div id='notice_content_body_div'>
                         <Button className='btn_gray btn_size_100' onClick={onUpdatePage}>수정</Button>
                         <Button className='btn_orange btn_size_100' id='notice_content_delete_btn' onClick={handleShowDeleteModal}>삭제</Button>
                     </div>
                 </div>
 
+                {/* dangerouslySetInnerHTML : String형태를 html로 */}
                 <div>
-                    <Form id='notice_contents'>
-                        {noticeContents.boardContent}
-                    </Form>
+                    <Form id='notice_contents'
+                        dangerouslySetInnerHTML={{
+                            __html: noticeContents.boardContent
+                        }} 
+                    />
                 </div>
 
-{/* 아래 3개 컴포넌트 DB 에서 데이터에 따라 이용 */}
-                {/* 댓글 X */}
-                <NoticeNoComment />
-<br /><br /><br /><br /><hr />
-                {/* 댓글 O - 댓글 작성 전 */}
-                <NoticeYesCommentBefore />
-<br /><br /><br /><br /><hr />
-                {/* 댓글 O - 댓글 작성 후 */}
-                <NoticeYseCommentAfter />
+                {/* 댓글 */}
+                {console.log(noticeContents)}
+                {noticeContents.boardCommentIs === 'ON'
+                    ? 
+                    (
+                        <>
+                            <NoticeYesCommentBefore />      {/* 댓글 작성 전 */}
+                            {/* <NoticeYseCommentAfter />       댓글 작성 후 */}
+                        </>
+                    )
+                    : <NoticeNoComment />       // 댓글 X
+                }
             </div>
 
             {/* Modal */}
