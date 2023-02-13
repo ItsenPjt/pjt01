@@ -1,5 +1,6 @@
 package com.newcen.newcen.notice.service;
 
+import com.newcen.newcen.common.dto.request.SearchCondition;
 import com.newcen.newcen.common.entity.*;
 import com.newcen.newcen.notice.dto.request.NoticeCreateFileRequestDTO;
 import com.newcen.newcen.notice.dto.request.NoticeCreateRequestDTO;
@@ -14,6 +15,9 @@ import com.newcen.newcen.notice.repository.NoticeRepositorySupport;
 import com.newcen.newcen.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -45,6 +49,10 @@ public class NoticeService {
                 .builder()
                 .notices(dtoList)
                 .build();
+    }
+    public PageImpl<NoticeDetailResponseDTO> getPageList(SearchCondition searchCondition, Pageable pageable){
+        PageImpl<NoticeDetailResponseDTO> result = noticeRepositorySupport.getPageNoticeList(searchCondition, pageable);
+        return result;
     }
 
     // 공지사항 한개 조회 (해당 공지사항의 첨부된 파일 list 조회)

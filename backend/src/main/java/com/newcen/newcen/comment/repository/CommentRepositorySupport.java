@@ -22,6 +22,7 @@ public class CommentRepositorySupport {
         List<CommentEntity> fetch = jpaQueryFactory.select(qCommentEntity)
                 .from(qCommentEntity)
                 .where(qCommentEntity.boardId.eq(boardId))
+                .orderBy(qCommentEntity.commentCreateDate.asc())
                 .fetch();
         if (fetch ==null){
             fetch = new ArrayList<>();

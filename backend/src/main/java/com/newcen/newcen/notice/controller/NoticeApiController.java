@@ -8,18 +8,22 @@ import com.newcen.newcen.commentFile.dto.request.CommentFileCreateRequest;
 import com.newcen.newcen.commentFile.dto.request.CommentFileUpdateRequest;
 import com.newcen.newcen.commentFile.dto.response.CommentFileListResponseDTO;
 import com.newcen.newcen.commentFile.service.CommentFileService;
+import com.newcen.newcen.common.dto.request.SearchCondition;
 import com.newcen.newcen.common.entity.BoardEntity;
 import com.newcen.newcen.common.entity.UserEntity;
 import com.newcen.newcen.notice.dto.request.NoticeCreateFileRequestDTO;
 import com.newcen.newcen.notice.dto.request.NoticeCreateRequestDTO;
 import com.newcen.newcen.notice.dto.request.NoticeUpdateFileRequestDTO;
 import com.newcen.newcen.notice.dto.request.NoticeUpdateRequestDTO;
+import com.newcen.newcen.notice.dto.response.NoticeDetailResponseDTO;
 import com.newcen.newcen.notice.dto.response.NoticeListResponseDTO;
 import com.newcen.newcen.notice.dto.response.NoticeOneResponseDTO;
 import com.newcen.newcen.notice.repository.NoticeRepository;
 import com.newcen.newcen.notice.service.NoticeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
@@ -43,6 +47,16 @@ public class NoticeApiController {
         log.info("/api/notices GET request");
 
         NoticeListResponseDTO responseDTO = noticeService.retrieve();
+
+        return ResponseEntity
+                .ok()
+                .body(responseDTO);
+    }
+    @PostMapping("/search")
+    public ResponseEntity<?> getPageListNotice(@RequestBody SearchCondition searchCondition, Pageable pageable) {
+        log.info("/api/notices GET request");
+
+        PageImpl<NoticeDetailResponseDTO> responseDTO = noticeService.getPageList(searchCondition, pageable);
 
         return ResponseEntity
                 .ok()
