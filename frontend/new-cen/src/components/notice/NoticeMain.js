@@ -78,7 +78,7 @@ const NoticeMain = () => {
                                     return (
                                         <tr key={item.boardId} id='notice_main_tbody'>
                                             <td>{item.boardId}</td>
-                                            <th id='notice_main_tbody_th' onClick={() => onTitleClick(1)}>{item.boardTitle}</th>
+                                            <th id='notice_main_tbody_th' onClick={() => onTitleClick(item.boardId)}>{item.boardTitle}</th>
                                             <td>{item.createDate.substring(0, 10)}</td>
                                             <td>{item.boardWriter}</td>
                                         </tr>
