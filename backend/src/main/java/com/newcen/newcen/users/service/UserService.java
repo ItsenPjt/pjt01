@@ -21,7 +21,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -34,6 +36,19 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
 
+
+    // Valid 회원 목록 조회
+    @Transactional
+    public ValidUserResponseDTO findValidUser(String email) {
+
+        ValidUserEntity validUserEntityUser = validUserRepository.findByValidUserEmail(email);
+
+        ValidUserResponseDTO dtoUser = new ValidUserResponseDTO(validUserEntityUser);
+
+        log.info("********** - UserFind ValidUserInfo - {}", dtoUser);
+
+        return dtoUser;
+    }
 
     // 회원가입 처리
     @Transactional

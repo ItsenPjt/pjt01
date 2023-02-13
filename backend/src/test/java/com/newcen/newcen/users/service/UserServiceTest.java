@@ -160,5 +160,23 @@ class UserServiceTest {
 
     }
 
+
+    @Test
+    @Order(8)
+    @DisplayName("valid user email로 valid 회원 정보를 조회해야한다.")
+    @Transactional
+    void findByValidUserEmailTest() {
+        // given
+        String validUserEmail = "postman@naver.com";
+        String validCode = "XY2baJQ";
+
+        // when
+        userService.findValidUser(validUserEmail);
+
+        // given
+        assertTrue(validUserRepository.existsByValidUserEmail(validUserEmail));
+
+    }
+
 }
 
