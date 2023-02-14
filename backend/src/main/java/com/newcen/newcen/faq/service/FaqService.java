@@ -1,5 +1,6 @@
 package com.newcen.newcen.faq.service;
 
+import com.newcen.newcen.common.dto.request.SearchCondition;
 import com.newcen.newcen.common.entity.BoardEntity;
 import com.newcen.newcen.common.entity.BoardType;
 import com.newcen.newcen.common.entity.UserEntity;
@@ -11,9 +12,13 @@ import com.newcen.newcen.faq.dto.response.FaqResponseDTO;
 import com.newcen.newcen.faq.exception.FaqCustomException;
 import com.newcen.newcen.faq.exception.FaqExceptionEnum;
 import com.newcen.newcen.faq.repository.FaqRepository;
+import com.newcen.newcen.faq.repository.FaqRepositorySupport;
+import com.newcen.newcen.notice.dto.response.NoticeDetailResponseDTO;
 import com.newcen.newcen.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -26,6 +31,8 @@ import java.util.Optional;
 public class FaqService {
 
     private final FaqRepository faqRepository;
+
+    private final FaqRepositorySupport faqRepositorySupport;
 
     private final UserRepository userRepository;
 
@@ -47,6 +54,15 @@ public class FaqService {
         return faqList;
     }
 
+    public PageImpl<FaqDetailResponseDTO> getFaqListPage(Pageable pageable){
+        PageImpl<FaqDetailResponseDTO> result = faqRepositorySupport.getFaqListPage(pageable);
+        return result;
+    }
+    //공지사항 검색 및 페이지 제네이션
+    public PageImpl<FaqDetailResponseDTO> getFaqListPageWithSearch(SearchCondition searchCondition, Pageable pageable){
+        PageImpl<FaqDetailResponseDTO> result = faqRepositorySupport.getPageNoticeListWithSearch(searchCondition,pageable);
+        return result;
+    }
     // FAQ 상세 조회
     public FaqDetailResponseDTO faqDetail(final Long boardId) {
 
@@ -58,7 +74,7 @@ public class FaqService {
     }
 
     // FAQ 등록
-    public List<FaqResponseDTO> faqSave(final String userId, final FaqSaveRequestDTO faqSaveRequestDTO) {
+    public boolean faqSave(final String userId, final FaqSaveRequestDTO faqSaveRequestDTO) {
 
         UserEntity user = userRepository.findByUserId(userId).orElseThrow(() -> {
             throw new FaqCustomException(FaqExceptionEnum.USER_NOT_EXIST);
@@ -71,11 +87,11 @@ public class FaqService {
         BoardEntity faq  = faqSaveRequestDTO.toEntity(user);
         faqRepository.save(faq);
 
-        return faqList();
+        return true;
     }
 
     // FAQ 수정
-    public FaqDetailResponseDTO faqUpdate(final String userId, final FaqUpdateRequestDTO faqUpdateRequestDTO) {
+    public Boolean faqUpdate(final String userId, final FaqUpdateRequestDTO faqUpdateRequestDTO) {
 
         UserEntity user = userRepository.findByUserId(userId).orElseThrow(() -> {
             throw new FaqCustomException(FaqExceptionEnum.USER_NOT_EXIST);
@@ -92,11 +108,11 @@ public class FaqService {
         faq.updateBoard(faqUpdateRequestDTO.getBoardTitle(), faqUpdateRequestDTO.getBoardContent());
         Long newFaqId = faqRepository.save(faq).getBoardId();
 
-        return faqDetail(newFaqId);
+        return true;
     }
 
     // FAQ 삭제
-    public List<FaqResponseDTO> faqDelete(final String userId, final Long boardId) {
+    public Boolean faqDelete(final String userId, final Long boardId) {
 
         UserEntity user = userRepository.findByUserId(userId).orElseThrow(() -> {
             throw new FaqCustomException(FaqExceptionEnum.USER_NOT_EXIST);
@@ -108,7 +124,7 @@ public class FaqService {
 
         faqRepository.deleteById(boardId);
 
-        return faqList();
+        return true;
     }
 
 
