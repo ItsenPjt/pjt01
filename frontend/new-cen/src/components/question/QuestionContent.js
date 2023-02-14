@@ -37,22 +37,22 @@ const QuestionContent = () => {
             method: 'GET',
             headers: headerInfo
         })
-            .then(res => {
-                if (res.status === 403) {
-                    alert('로그인이 필요한 서비스입니다');
+        .then(res => {
+            if (res.status === 403) {
+                alert('로그인이 필요한 서비스입니다');
 
-                    window.location.href = '/join';
-                    return;
-                } 
-                else if (res.status === 500) {
-                    alert('서버가 불안정합니다');
-                    return;
-                }
-                return res.json();
-            })
-            .then(result => {
-                setQuestionContents(result);
-            });
+                window.location.href = '/join';
+                return;
+            } 
+            else if (res.status === 500) {
+                alert('서버가 불안정합니다');
+                return;
+            }
+            return res.json();
+        })
+        .then(result => {
+            setQuestionContents(result);
+        });
     }, [API_BASE_URL]);
 
     // 모달 닫기
@@ -71,9 +71,29 @@ const QuestionContent = () => {
             method: 'DELETE',
             headers: headerInfo,
         })
-        .then(() => {
-            window.location.href = "/question";       // 문의사항 목록 페이지로 이동
-        });
+        .then(res => {
+            if (res.status === 404) {
+                alert('다시 시도해주세요');
+                return;
+            }
+            else if (res.status === 406) {
+                if (ACCESS_TOKEN === '') {
+                    alert('로그인이 필요한 서비스입니다');
+                    window.location.href = '/join';
+                } else {
+                    alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
+                    return;
+                }
+                return;
+            } 
+            else if (res.status === 500) {
+                alert('서버가 불안정합니다');
+                return;
+            }
+            else {
+                window.location.href = "/question";       // 공지사항 목록 페이지로 이동
+            }
+        })
     }
 
     // 문의사항 수정 페이지로

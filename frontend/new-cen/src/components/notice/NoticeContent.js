@@ -20,10 +20,10 @@ const NoticeContent = () => {
     const API_BASE_URL = BASE_URL + NOTICE;
     const ACCESS_TOKEN = getToken();        // 토큰값
     const USER_ROLE = getUserRole();        // 권한
-
     
     // 공지사항 api 데이터 
     const [noticeContents, setNoticeContents] = useState([]);
+    const [isComment, setIsComment] = useState('');
 
     const [modal, setModal] = useState(false); 
 
@@ -57,7 +57,10 @@ const NoticeContent = () => {
                 return res.json();
             })
             .then(result => {
-                setNoticeContents(result.noticeDetails[0]);
+                if (!!result) {
+                    setIsComment(result.noticeDetails[0]["boardCommentIs"]);
+                    setNoticeContents(result.noticeDetails[0]);
+                }
             });
     }, [API_BASE_URL]);
 
@@ -77,17 +80,40 @@ const NoticeContent = () => {
             method: 'DELETE',
             headers: headerInfo,
         })
-        //  .then(res => res.json())
-        .then(() => {
-            window.location.href = "/notice";       // 공지사항 목록 페이지로 이동
-        });
+        .then(res => {
+            if (res.status === 404) {
+                alert('다시 시도해주세요');
+                return;
+            }
+            else if (res.status === 406) {
+                if (ACCESS_TOKEN === '') {
+                    alert('로그인이 필요한 서비스입니다');
+                    window.location.href = '/join';
+                } else {
+                    alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
+                    return;
+                }
+                return;
+            } 
+            else if (res.status === 500) {
+                alert('서버가 불안정합니다');
+                return;
+            }
+            else {
+                window.location.href = "/notice";       // 공지사항 목록 페이지로 이동
+            }
+        })
     }
 
     // 공지사항 수정 페이지로
     const navigate = useNavigate();
     const onUpdatePage = () => {
         const path = `/notice/update/${noticeId}`;
-        navigate(path);
+        navigate(path, {
+            state: {
+                comment: isComment      // NoticeUpdate.js에 댓글여부 값 보내기
+            }
+        });
     };
 
     // 공지사항 목록 페이지로

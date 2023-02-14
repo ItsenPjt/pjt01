@@ -60,8 +60,9 @@ const NoticeComment = ( { noticeId }) => {      // NoticeContent.js 에서 받�
             return res.json();
         })
         .then(result => {
-            console.log(result.data);
-            setNoticeComments(result.data);
+            if (!!result) {
+                setNoticeComments(result.data);
+            }
         });
     }, [API_BASE_URL]);
 
