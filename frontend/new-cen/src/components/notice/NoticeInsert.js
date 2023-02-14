@@ -54,6 +54,7 @@ const NoticeInsert = () => {
             ...noticeData,        // 기존 noticeData 복사 후 boardContent 추가
             boardContent: value,
         });
+        console.log(noticeData.boardContent);
     };
 
     // 공지사항 등록 서버 요청  (POST에 대한 응답처리)

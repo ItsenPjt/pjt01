@@ -38,20 +38,19 @@ const QuestionContent = () => {
             headers: headerInfo
         })
             .then(res => {
-                // if (res.status === 403) {
-                //     alert('로그인이 필요한 서비스입니다');
+                if (res.status === 403) {
+                    alert('로그인이 필요한 서비스입니다');
 
-                //     window.location.href = '/';
-                //     return;
-                // } 
-                // else if (res.status === 500) {
-                //     alert('서버가 불안정합니다');
-                //     return;
-                // }
+                    window.location.href = '/join';
+                    return;
+                } 
+                else if (res.status === 500) {
+                    alert('서버가 불안정합니다');
+                    return;
+                }
                 return res.json();
             })
             .then(result => {
-                console.log(result);
                 setQuestionContents(result);
             });
     }, [API_BASE_URL]);
