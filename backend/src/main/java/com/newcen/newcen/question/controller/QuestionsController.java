@@ -38,6 +38,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -162,12 +163,14 @@ public class QuestionsController {
 //        }
         try {
 
-//            multipartFile.forEach(f -> {
-//                System.out.println("f.getOriginalFilename() = " + f.getOriginalFilename());
-//            });
+
+            multipartFile.forEach(f -> {
+                System.out.println("f.getOriginalFilename() = " + f.getOriginalFilename());
+            });
 
 //            QuestionsOneResponseDTO questionResponseDTO = questionService.createFile(userId,boardId,questionFileRequestDTO.getBoardFilePath());
             List<String> uploaded = awsS3Service.uploadFile(multipartFile);
+
             for (int i=0;i<uploaded.size();i++){
                 questionService.createFile(userId,boardId,uploaded.get(i));
             }
@@ -215,6 +218,19 @@ public class QuestionsController {
         }else {
             return ResponseEntity.ok().body(deleted);
         }
+    }
+
+    /**
+     * Amazon S3에 업로드 된 파일을 삭제
+     * @return 성공 시 200 Success
+     */
+    @ApiOperation(value = "Amazon S3에 업로드 된 파일을 삭제", notes = "Amazon S3에 업로드된 파일 삭제")
+    @DeleteMapping("/file")
+    public ResponseEntity<?> deleteFile(@ApiParam(value="파일 하나 삭제", required = true) @RequestParam String fileName) {
+        awsS3Service.deleteFile(fileName);
+        return ResponseEntity
+                .ok()
+                .body(true);
     }
     //문의사항 댓글 조회
     @GetMapping("/{boardId}/comments")
@@ -359,6 +375,11 @@ public class QuestionsController {
                     .internalServerError()
                     .body("서버에러입니다.");
         }
+    }
+
+    @GetMapping("/download/{fileName}")
+    public ResponseEntity<byte[]> download(@PathVariable String fileName) throws IOException {
+        return awsS3Service.getObject(fileName);
     }
 }
 
