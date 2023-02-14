@@ -295,7 +295,7 @@ public class NoticeApiController {
     }
     //공지사항 댓글조회
     @GetMapping("/{boardId}/comments")
-    private  ResponseEntity<?> getCommentList(@PathVariable("boardId") Long boardId){
+    private  ResponseEntity<?> getCommentList(@PathVariable Long boardId){
         CommentListResponseDTO retrived = commentService.retrive(boardId);
         return ResponseEntity.ok()
                 .body(retrived);
