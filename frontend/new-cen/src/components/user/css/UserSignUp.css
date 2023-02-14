@@ -15,11 +15,13 @@
 
 #join_logo_position {
     text-align: center;
+    margin-right: 20px;
 }
 
 #join_logo_img {
     margin-top: 20px;
     height: 80px;
+    cursor: pointer;
 }
 
 #join_main_content {
