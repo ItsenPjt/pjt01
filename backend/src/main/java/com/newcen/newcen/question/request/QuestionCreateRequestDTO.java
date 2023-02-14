@@ -24,7 +24,7 @@ public class QuestionCreateRequestDTO {
 
     private BoardCommentIs boardCommentIs;
 
-    private BoardType boardType;
+
 
     public BoardEntity toEntity(UserEntity user){
         return BoardEntity.builder()

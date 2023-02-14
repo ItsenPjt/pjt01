@@ -3,6 +3,7 @@ package com.newcen.newcen.question.controller;
 import com.newcen.newcen.comment.dto.request.CommentCreateRequest;
 import com.newcen.newcen.comment.dto.request.CommentUpdateRequest;
 import com.newcen.newcen.comment.dto.response.CommentListResponseDTO;
+import com.newcen.newcen.comment.dto.response.CommentResponseDTO;
 import com.newcen.newcen.comment.repository.CommentRepository;
 import com.newcen.newcen.comment.service.CommentService;
 import com.newcen.newcen.commentFile.dto.request.CommentFileCreateRequest;
@@ -171,7 +172,7 @@ public class QuestionsController {
                     .body(result.getFieldError());
         }
         try {
-            QuestionResponseDTO questionResponseDTO = questionService.updateFile(userId,boardId,questionFileRequestDTO.getBoardFilePath(),boardFileId);
+            QuestionsOneResponseDTO questionResponseDTO = questionService.updateFile(userId,boardId,questionFileRequestDTO.getBoardFilePath(),boardFileId);
             return ResponseEntity
                     .ok()
                     .body(questionResponseDTO);
@@ -194,8 +195,9 @@ public class QuestionsController {
     }
     //문의사항 댓글 조회
     @GetMapping("/{boardId}/comments")
-    private  ResponseEntity<?> getCommentList(Long boardId){
-        CommentListResponseDTO retrived = commentService.retrive(boardId);
+    private  ResponseEntity<?> getCommentList(Pageable pageable, @PathVariable Long boardId){
+//        CommentListResponseDTO retrived = commentService.retrive(boardId);
+        PageImpl<CommentResponseDTO> retrived = commentService.getCommentListPage(pageable,boardId);
         return ResponseEntity.ok()
                 .body(retrived);
     }
@@ -210,7 +212,7 @@ public class QuestionsController {
                     .body(result.getFieldError());
         }
         BoardEntity board = questionsRepository.findById(boardId).get();
-        if (board ==null){
+        if (board == null){
             log.warn("해당 글이 없습니다.");
             return ResponseEntity
                     .badRequest()
