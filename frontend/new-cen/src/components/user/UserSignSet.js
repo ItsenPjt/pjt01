@@ -11,7 +11,6 @@ import { BASE_URL, USER } from "../common/config/host-config";
 import { getToken } from '../common/util/login-util';
 import { getUserEmail } from '../common/util/login-util';
 import { getUsername } from '../common/util/login-util';
-import { getUserId } from '../common/util/login-util';
 
 // 내 정보 수정
 const UserSignSet = () => {
@@ -26,8 +25,6 @@ const UserSignSet = () => {
     const ACCESS_EMAIL = getUserEmail();
 
     const ACCESS_NAME = getUsername();
-
-    const ACCESS_UUID = getUserId();
 
     const headerInfo = {
         'content-type': 'application/json'
@@ -144,16 +141,15 @@ const UserSignSet = () => {
 
     // 내 정보 수정 요청 처리
     const updateUserPw = e => {
-        //console.log(`${ACCESS_UUID}`);
 
         if (isValid()) {
-            fetch(`${API_BASE_URL}/signset/${ACCESS_UUID}`, {
+            fetch(`${API_BASE_URL}/signset`, {
                 method: 'PATCH',
                 headers: headerInfo,
                 body: JSON.stringify(userValue)
             })
             .then(res => {
-                //console.log(res.status);
+                // console.log(res.status);
                 if (res.status === 200) {
                     alert(`회원정보가 정상적으로 변경되었습니다.`);
                     // 메인 페이지로 리다이렉트
