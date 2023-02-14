@@ -172,14 +172,10 @@ class NoticeServiceTest {
         // when
         Long deleteId = noticeService.retrieve().getNotices().get(index).getBoardId();  // 2번 index : 3번째 data get
 
-        NoticeListResponseDTO deleteDTO = noticeService.delete(deleteId, userId);
+        boolean delete = noticeService.delete(deleteId, userId);
 
         // then
-        List<NoticeDetailResponseDTO> notices = deleteDTO.getNotices();
-        assertEquals(2, notices.size());
-
-        System.out.println("==========================");
-        deleteDTO.getNotices().forEach(System.out::println);
+        assertEquals(true, delete);
     }
 
     // --- File Test --- //

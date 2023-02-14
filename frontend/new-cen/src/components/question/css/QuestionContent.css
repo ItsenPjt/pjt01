@@ -99,6 +99,10 @@
 }
 
 /* 댓글 */
+#question_content_comment_txt {
+    margin-top: 15px;
+    font-weight: 600;
+}
 
 .justify {
     display: flex;

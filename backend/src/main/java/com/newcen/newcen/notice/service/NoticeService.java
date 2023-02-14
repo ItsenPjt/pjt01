@@ -1,5 +1,6 @@
 package com.newcen.newcen.notice.service;
 
+import com.newcen.newcen.common.dto.request.SearchCondition;
 import com.newcen.newcen.common.entity.*;
 import com.newcen.newcen.notice.dto.request.NoticeCreateFileRequestDTO;
 import com.newcen.newcen.notice.dto.request.NoticeCreateRequestDTO;
@@ -14,6 +15,9 @@ import com.newcen.newcen.notice.repository.NoticeRepositorySupport;
 import com.newcen.newcen.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -45,6 +49,17 @@ public class NoticeService {
                 .builder()
                 .notices(dtoList)
                 .build();
+    }
+
+    //공지사항 목록 조회 페이지네이션
+    public PageImpl<NoticeDetailResponseDTO> getNoticeList(Pageable pageable){
+        PageImpl<NoticeDetailResponseDTO> result = noticeRepositorySupport.getNoticeList(pageable);
+        return result;
+    }
+    //공지사항 검색 및 페이지 제네이션
+    public PageImpl<NoticeDetailResponseDTO> getPageListWithSearch(SearchCondition searchCondition, Pageable pageable){
+        PageImpl<NoticeDetailResponseDTO> result = noticeRepositorySupport.getPageNoticeListWithSearch(searchCondition, pageable);
+        return result;
     }
 
     // 공지사항 한개 조회 (해당 공지사항의 첨부된 파일 list 조회)
@@ -120,7 +135,7 @@ public class NoticeService {
     }
 
     // 공지사항 삭제
-    public NoticeListResponseDTO delete (final Long boardId, final String userId) {
+    public boolean delete (final Long boardId, final String userId) {
 
         Optional<UserEntity> userEntity = userRepository.findById(userId);
         if (!userEntity.get().getUserRole().equals(UserRole.ADMIN)) {
@@ -134,7 +149,7 @@ public class NoticeService {
 
             throw new RuntimeException("삭제할 공지사항이 존재하지 않아 삭제에 실패했습니다.");      // [클라이언트에게 전달할 메세지]
         }
-        return retrieve();      // 공지사항 목록으로
+        return true;
     }
 
     // 공지사항 파일 등록
@@ -237,11 +252,4 @@ public class NoticeService {
         return retrieveOne(boardId);
     }
 
-    //공지사항 댓글 목록 조회
-
-    //공지사항 댓글 작성
-
-    //공지사항 댓글 수정
-
-    //공지사항 댓글 삭제
 }

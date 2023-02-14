@@ -8,6 +8,8 @@ import Modal from 'react-bootstrap/Modal';
 import { BASE_URL, QUESTION } from '../common/config/host-config';
 import { getToken } from '../common/util/login-util';
 
+import QuestionComment from './QuestionComment';
+
 import './css/QuestionContent.css';
 
 // 문의사항 내용
@@ -18,7 +20,7 @@ const QuestionContent = () => {
     const ACCESS_TOKEN = getToken();
 
     // 문의사항 api 데이터 
-    const [noticeContents, setNoticeContents] = useState([]);
+    const [questionContents, setQuestionContents] = useState([]);
 
     const [modal, setModal] = useState(false); 
 
@@ -49,7 +51,7 @@ const QuestionContent = () => {
             })
             .then(result => {
                 console.log(result);
-                setNoticeContents(result);
+                setQuestionContents(result);
             });
     }, [API_BASE_URL]);
 
@@ -63,9 +65,15 @@ const QuestionContent = () => {
         setModal(true);     // 모달 열기
     }
 
-    // 문의사항 목록 페이지로
-    const onQuestionPage = () => {
-        window.location.href = "/question";
+    // 문의사항 삭제 서버 요청 (DELETE)
+    const handleDeleteQuestion = () => {
+        fetch(`${API_BASE_URL}/${questionId}`, {
+            method: 'DELETE',
+            headers: headerInfo,
+        })
+        .then(() => {
+            window.location.href = "/question";       // 문의사항 목록 페이지로 이동
+        });
     }
 
     // 문의사항 수정 페이지로
@@ -81,11 +89,11 @@ const QuestionContent = () => {
                 <div className='justify'>
                     <div>
                         <Form id='question_content_title'>
-                            {noticeContents.boardTitle}
+                            {questionContents.boardTitle}
                         </Form>
 
                         <div id='question_content_write'>
-                            작성자 : {noticeContents.boardWriter} | 작성일 : {noticeContents.createDate}
+                            작성자 : {questionContents.boardWriter} | 작성일 : {questionContents.createDate}
                         </div>
                     </div>
 
@@ -95,12 +103,18 @@ const QuestionContent = () => {
                     </div>
                 </div>
 
+                {/* dangerouslySetInnerHTML : String형태를 html로 */}
                 <div>
-                    <Form id='question_contents'>
-                        {noticeContents.boardContent}
-                    </Form>
+                    <Form id='question_contents'
+                        dangerouslySetInnerHTML={{
+                            __html: questionContents.boardContent
+                        }} 
+                    />
                 </div>
 
+                {/* 댓글 */}
+                <div id='question_content_comment_txt'>댓글</div>
+                <QuestionComment questionId = {questionId}/>
             </div>
 
             {/* Modal */}
@@ -111,10 +125,10 @@ const QuestionContent = () => {
                     </div>
 
                     <div id="question_delete_modal_content">
-                        <Button className='btn_gray question_btn btn_size_100' onClick={handleClose}>
+                        <Button onClick={handleClose} className='btn_gray question_btn btn_size_100'>
                             아니오
                         </Button>
-                        <Button className='btn_orange question_btn btn_size_100' id="question_content_delete_btn" onClick={onQuestionPage}>
+                        <Button onClick={handleDeleteQuestion} className='btn_orange question_btn btn_size_100' id="question_content_delete_btn">
                             네
                         </Button>
                     </div>

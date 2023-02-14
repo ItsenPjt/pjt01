@@ -39,16 +39,20 @@ const NoticeUpdate = () => {
             headers: headerInfo
         })
             .then(res => {
-                // if (res.status === 403) {
-                //     alert('로그인이 필요한 서비스입니다');
-
-                //     window.location.href = '/';
-                //     return;
-                // } 
-                // else if (res.status === 500) {
-                //     alert('서버가 불안정합니다');
-                //     return;
-                // }
+                if (res.status === 406) {
+                    if (ACCESS_TOKEN === '') {
+                        alert('로그인이 필요한 서비스입니다');
+                        window.location.href = '/join';
+                    } else {
+                        alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
+                        return;
+                    }
+                    return;
+                } 
+                else if (res.status === 500) {
+                    alert('서버가 불안정합니다');
+                    return;
+                }
                 return res.json();
             })
             .then(result => {
@@ -89,7 +93,7 @@ const NoticeUpdate = () => {
                     </Form>
 
                      {/* 라디오 버튼 */} 
-                    <CommentRadioBtn comment={noticeContents.boardCommentIs}/>
+                    <CommentRadioBtn updateBeforeComment={noticeContents.boardCommentIs} />     {/* commentStatus={commentChangeHandler} */}
                 </div>
 
                 <div>
@@ -111,10 +115,10 @@ const NoticeUpdate = () => {
                     </div>
 
                     <div id="notice_update_modal_content">
-                        <Button className='btn_gray notice_btn btn_size_100' onClick={handleClose}>
+                        <Button onClick={handleClose} className='btn_gray notice_btn btn_size_100'>
                             아니오
                         </Button>
-                        <Button className='btn_orange notice_btn btn_size_100' id="notice_update_btn" onClick={onNoticeContentPage}>
+                        <Button onClick={onNoticeContentPage} className='btn_orange notice_btn btn_size_100' id="notice_update_btn">
                             네
                         </Button>
                     </div>

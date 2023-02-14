@@ -45,3 +45,20 @@
     background-color: #5D5A5A;
     opacity:0.8; 
 }
+
+#header_login {
+    margin-top: 10px;
+    color: #F64E60;
+    cursor: pointer;
+}
+
+#header_user {
+    margin-top: 10px;
+    color: white;
+}
+
+#header_logout {
+    margin-top: 10px;
+    color: #F64E60;
+    cursor: pointer;
+}

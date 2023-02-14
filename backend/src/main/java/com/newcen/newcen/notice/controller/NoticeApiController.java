@@ -8,18 +8,22 @@ import com.newcen.newcen.commentFile.dto.request.CommentFileCreateRequest;
 import com.newcen.newcen.commentFile.dto.request.CommentFileUpdateRequest;
 import com.newcen.newcen.commentFile.dto.response.CommentFileListResponseDTO;
 import com.newcen.newcen.commentFile.service.CommentFileService;
+import com.newcen.newcen.common.dto.request.SearchCondition;
 import com.newcen.newcen.common.entity.BoardEntity;
 import com.newcen.newcen.common.entity.UserEntity;
 import com.newcen.newcen.notice.dto.request.NoticeCreateFileRequestDTO;
 import com.newcen.newcen.notice.dto.request.NoticeCreateRequestDTO;
 import com.newcen.newcen.notice.dto.request.NoticeUpdateFileRequestDTO;
 import com.newcen.newcen.notice.dto.request.NoticeUpdateRequestDTO;
+import com.newcen.newcen.notice.dto.response.NoticeDetailResponseDTO;
 import com.newcen.newcen.notice.dto.response.NoticeListResponseDTO;
 import com.newcen.newcen.notice.dto.response.NoticeOneResponseDTO;
 import com.newcen.newcen.notice.repository.NoticeRepository;
 import com.newcen.newcen.notice.service.NoticeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
@@ -39,10 +43,20 @@ public class NoticeApiController {
     private final CommentFileService commentFileService;
     // 공지사항 목록 요청 (GET)
     @GetMapping()
-    public ResponseEntity<?> listNotice() {
+    public ResponseEntity<?> listNotice(Pageable pageable) {
+
+
+        PageImpl<NoticeDetailResponseDTO> responseDTO = noticeService.getNoticeList(pageable);
+
+        return ResponseEntity
+                .ok()
+                .body(responseDTO);
+    }
+    @PostMapping("/search")
+    public ResponseEntity<?> getPageListNotice(@RequestBody SearchCondition searchCondition, Pageable pageable) {
         log.info("/api/notices GET request");
 
-        NoticeListResponseDTO responseDTO = noticeService.retrieve();
+        PageImpl<NoticeDetailResponseDTO> responseDTO = noticeService.getPageListWithSearch(searchCondition, pageable);
 
         return ResponseEntity
                 .ok()
@@ -137,20 +151,11 @@ public class NoticeApiController {
                     .body(NoticeListResponseDTO.builder()
                             .error("Board ID를 전달해주세요"));
         }
-
-        try {
-            NoticeListResponseDTO responseDTO = noticeService.delete(boardId, userId);
-            return ResponseEntity
-                    .ok()
-                    .body(responseDTO);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-
-            return ResponseEntity
-                    .internalServerError()
-                    .body(NoticeListResponseDTO
-                            .builder()
-                            .error(e.getMessage()));
+        boolean deleted = noticeService.delete(boardId, userId);
+        if (deleted){
+            return ResponseEntity.ok().body("게시글이 삭제되었습니다.");
+        }else {
+            return ResponseEntity.internalServerError().body("게시글 삭제에 실패했습니다.");
         }
     }
 

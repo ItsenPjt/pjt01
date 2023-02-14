@@ -3,14 +3,17 @@ package com.newcen.newcen.question.controller;
 import com.newcen.newcen.comment.dto.request.CommentCreateRequest;
 import com.newcen.newcen.comment.dto.request.CommentUpdateRequest;
 import com.newcen.newcen.comment.dto.response.CommentListResponseDTO;
+import com.newcen.newcen.comment.dto.response.CommentResponseDTO;
 import com.newcen.newcen.comment.repository.CommentRepository;
 import com.newcen.newcen.comment.service.CommentService;
 import com.newcen.newcen.commentFile.dto.request.CommentFileCreateRequest;
 import com.newcen.newcen.commentFile.dto.request.CommentFileUpdateRequest;
 import com.newcen.newcen.commentFile.dto.response.CommentFileListResponseDTO;
 import com.newcen.newcen.commentFile.service.CommentFileService;
+import com.newcen.newcen.common.dto.request.SearchCondition;
 import com.newcen.newcen.common.entity.BoardEntity;
 import com.newcen.newcen.common.entity.UserEntity;
+import com.newcen.newcen.notice.dto.response.NoticeDetailResponseDTO;
 import com.newcen.newcen.question.repository.QuestionsRepository;
 import com.newcen.newcen.question.request.QuestionCreateRequestDTO;
 import com.newcen.newcen.question.request.QuestionFileRequestDTO;
@@ -22,6 +25,8 @@ import com.newcen.newcen.question.service.QuestionService;
 import com.newcen.newcen.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
@@ -43,11 +48,24 @@ public class QuestionsController {
     private final CommentFileService commentFileService;
     //문의 게시글 목록조회
     @GetMapping
-    private ResponseEntity<?> getQuestionList(){
-        QuestionListResponseDTO getList = questionService.retrieve();
+    private ResponseEntity<?> getQuestionList(Pageable pageable){
+//        QuestionListResponseDTO getList = questionService.retrieve();
+        PageImpl<QuestionResponseDTO> responseDTO = questionService.getPageList(pageable);
         return ResponseEntity.ok()
-                .body(getList);
+                .body(responseDTO);
     }
+
+    @PostMapping("/search")
+    public ResponseEntity<?> getPageListNotice(@RequestBody SearchCondition searchCondition, Pageable pageable) {
+        log.info("/api/notices GET request");
+
+        PageImpl<QuestionResponseDTO> responseDTO = questionService.getPageListWithSearch(searchCondition, pageable);
+
+        return ResponseEntity
+                .ok()
+                .body(responseDTO);
+    }
+
     //문의 게시글 상세조회
     @GetMapping("/{boardId}")
     private ResponseEntity<?> getQuestionsDetail(@PathVariable Long boardId){
@@ -154,7 +172,7 @@ public class QuestionsController {
                     .body(result.getFieldError());
         }
         try {
-            QuestionResponseDTO questionResponseDTO = questionService.updateFile(userId,boardId,questionFileRequestDTO.getBoardFilePath(),boardFileId);
+            QuestionsOneResponseDTO questionResponseDTO = questionService.updateFile(userId,boardId,questionFileRequestDTO.getBoardFilePath(),boardFileId);
             return ResponseEntity
                     .ok()
                     .body(questionResponseDTO);
@@ -177,8 +195,9 @@ public class QuestionsController {
     }
     //문의사항 댓글 조회
     @GetMapping("/{boardId}/comments")
-    private  ResponseEntity<?> getCommentList(Long boardId){
-        CommentListResponseDTO retrived = commentService.retrive(boardId);
+    private  ResponseEntity<?> getCommentList(Pageable pageable, @PathVariable Long boardId){
+//        CommentListResponseDTO retrived = commentService.retrive(boardId);
+        PageImpl<CommentResponseDTO> retrived = commentService.getCommentListPage(pageable,boardId);
         return ResponseEntity.ok()
                 .body(retrived);
     }
@@ -193,7 +212,7 @@ public class QuestionsController {
                     .body(result.getFieldError());
         }
         BoardEntity board = questionsRepository.findById(boardId).get();
-        if (board ==null){
+        if (board == null){
             log.warn("해당 글이 없습니다.");
             return ResponseEntity
                     .badRequest()

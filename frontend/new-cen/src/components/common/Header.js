@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom';
 
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
+
+import { getToken, getUsername, getUserRole } from '../common/util/login-util';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -11,13 +14,36 @@ import './css/Header.css';
 
 const Header = () => {
 
+    const ACCESS_TOKEN = getToken();
+    const USER_NAME = getUsername();
+    const USER_ROLE = getUserRole();
+
     const [userRole, setUserRole] = useState('MEMBER');     // default : MEMBER
 
     // userRole 가 ADMIN 인 경우에만 관리자 버튼 확인 가능
     useEffect(() => {
         // DB에서 읽어온 후 set 해주기
-        setUserRole('ADMIN');
+        if (USER_ROLE === 'ADMIN') {
+            setUserRole('ADMIN');
+        }
     })
+
+    // 로그인 페이지로
+    const navigate = useNavigate();
+    const onLoginPage = () => {
+        const path = `/join`;
+        navigate(path);
+    };
+
+    // 로그아웃
+    const logoutHandler = () => {
+        localStorage.removeItem('ACCESS_TOKEN');
+        localStorage.removeItem('LOGIN_USERNAME');
+        localStorage.removeItem('LOGIN_USEREMAIL')
+        localStorage.removeItem('LOGIN_USERROLE')
+
+        window.location.href='/';
+    }
 
     var textSize1, fontWeight1, textSize2, fontWeight2,  textSize3, fontWeight3, textSize4, fontWeight4, textSize5, fontWeight5;
     if (window.location.pathname === '/notice') {
@@ -32,7 +58,7 @@ const Header = () => {
     } else if (window.location.pathname === '/admin') {
         textSize4 = '18px';
         fontWeight4 = 700;
-    } else if (window.location.pathname === '/mypage' || window.location.pathname === '/message') {
+    } else if (window.location.pathname === '/signset' || window.location.pathname === '/message') {
         textSize5 = '18px';
         fontWeight5 = 700;
     }
@@ -64,10 +90,25 @@ const Header = () => {
                             <Nav.Link style={{fontSize: textSize4, fontWeight: fontWeight4}} onClick={() => {document.location.href = '/admin'}} className='header_nav_link'>관리자</Nav.Link>
                         }
 
-                        <NavDropdown style={{fontSize: textSize5, fontWeight: fontWeight5}} title="내정보" id="basic-nav-dropdown">
-                            <NavDropdown.Item onClick={() => {document.location.href = '/mypage'}} className='header_nav_dropdown_link'>마이페이지</NavDropdown.Item>
-                            <NavDropdown.Item onClick={() => {document.location.href = '/message'}} className='header_nav_dropdown_link'>메세지함</NavDropdown.Item>
-                        </NavDropdown>
+                        {ACCESS_TOKEN === null || ACCESS_TOKEN === '' 
+                            ? (
+                                <div onClick={onLoginPage} id='header_login'>
+                                    로그인
+                                </div>
+                              )
+                            : (
+                                <>
+                                    <div id='header_user'>{USER_NAME} 님 환영합니다.</div>
+                                    <NavDropdown style={{fontSize: textSize5, fontWeight: fontWeight5}} title="내정보" id="basic-nav-dropdown">
+                                        <NavDropdown.Item onClick={() => {document.location.href = '/signset'}} className='header_nav_dropdown_link'>마이페이지</NavDropdown.Item>
+                                        <NavDropdown.Item onClick={() => {document.location.href = '/message'}} className='header_nav_dropdown_link'>메세지함</NavDropdown.Item>
+                                    </NavDropdown>
+                                    <div onClick={logoutHandler} id='header_logout'>
+                                        로그아웃
+                                    </div>
+                                </>
+                              )  
+                        }
                     </Nav>
                 </Navbar.Collapse>
             </Container>
