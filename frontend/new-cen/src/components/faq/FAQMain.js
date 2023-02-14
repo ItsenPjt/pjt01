@@ -38,8 +38,8 @@ const FAQMain = () => {
 
             return res.json();
         })
-        .then(result => {
-            setFaqList(result);
+        .then(res => {
+            setFaqList(res.content);
         });
     }, [API_BASE_URL]);
 
@@ -60,6 +60,7 @@ const FAQMain = () => {
                         </thead>
                         <tbody>
                             {
+                            !faqList.empty &&  
                                 faqList.map((item) => {
                                     i++;
                                     return (
@@ -71,7 +72,7 @@ const FAQMain = () => {
                                         </tr>
                                     )
                                 })
-                            }
+                            } 
                         </tbody>
                     </Table >   
                 </div>
