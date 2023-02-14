@@ -32,6 +32,8 @@ public class CommentEntity {
     @Column(name="comment_writer", nullable = false)
     private String commentWriter;
 
+
+
     @Column(name="comment_createdate")
     @CreationTimestamp
     private LocalDateTime commentCreateDate;
@@ -45,6 +47,9 @@ public class CommentEntity {
 
     @Column(name="user_id")
     private String userId;
+
+    @Column(name="comment_user_email")
+    private String userEmail;
 
     @JoinColumn(name="comment_file_id")
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE,orphanRemoval = true)

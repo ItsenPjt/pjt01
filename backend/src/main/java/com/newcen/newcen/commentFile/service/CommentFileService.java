@@ -1,8 +1,6 @@
 package com.newcen.newcen.commentFile.service;
 
 import com.newcen.newcen.comment.repository.CommentRepository;
-import com.newcen.newcen.comment.repository.CommentRepositorySupport;
-import com.newcen.newcen.comment.service.CommentService;
 import com.newcen.newcen.commentFile.dto.request.CommentFileCreateRequest;
 import com.newcen.newcen.commentFile.dto.request.CommentFileUpdateRequest;
 import com.newcen.newcen.commentFile.dto.response.CommentFileListResponseDTO;
@@ -12,10 +10,8 @@ import com.newcen.newcen.commentFile.repository.CommentFileRepositorySupport;
 import com.newcen.newcen.common.entity.CommentEntity;
 import com.newcen.newcen.common.entity.CommentFileEntity;
 import com.newcen.newcen.common.entity.UserEntity;
-import com.newcen.newcen.notice.repository.NoticeRepository;
-import com.newcen.newcen.question.repository.QuestionsRepository;
-import com.newcen.newcen.question.repository.QuestionsRepositorySupport;
 import com.newcen.newcen.users.repository.UserRepository;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,25 +21,24 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+//@RequiredArgsConstructor
 @Service
+//@AllArgsConstructor
 @Slf4j
-@RequiredArgsConstructor
 public class CommentFileService {
 
     private final UserRepository userRepository;
-
-    private final NoticeRepository noticeRepository;
-
-    private final QuestionsRepository questionsRepository;
-
-    private final QuestionsRepositorySupport questionsRepositorySupport;
-
     private final CommentRepository commentRepository;
-    private final CommentRepositorySupport commentRepositorySupport;
 
     private final CommentFileRepository commentFileRepository;
     private final CommentFileRepositorySupport commentFileRepositorySupport;
-    private final CommentService commentService;
+
+    public CommentFileService(UserRepository userRepository, CommentRepository commentRepository, CommentFileRepository commentFileRepository, CommentFileRepositorySupport commentFileRepositorySupport) {
+        this.userRepository = userRepository;
+        this.commentRepository = commentRepository;
+        this.commentFileRepository = commentFileRepository;
+        this.commentFileRepositorySupport = commentFileRepositorySupport;
+    }
 
     //댓글 파일 목록조회
     public CommentFileListResponseDTO retrive(Long commentId){

@@ -9,8 +9,11 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-@RequiredArgsConstructor
 public class CommentFileRepositorySupport {
+
+    public CommentFileRepositorySupport(JPAQueryFactory jpaQueryFactory) {
+        this.jpaQueryFactory = jpaQueryFactory;
+    }
 
     private final JPAQueryFactory jpaQueryFactory;
 

@@ -13,6 +13,7 @@ import com.newcen.newcen.commentFile.service.CommentFileService;
 import com.newcen.newcen.common.dto.request.SearchCondition;
 import com.newcen.newcen.common.entity.BoardEntity;
 import com.newcen.newcen.common.entity.UserEntity;
+import com.newcen.newcen.common.service.AwsS3Service;
 import com.newcen.newcen.notice.dto.response.NoticeDetailResponseDTO;
 import com.newcen.newcen.notice.repository.NoticeFileRepository;
 import com.newcen.newcen.question.repository.QuestionsRepository;
@@ -24,6 +25,8 @@ import com.newcen.newcen.question.response.QuestionResponseDTO;
 import com.newcen.newcen.question.response.QuestionsOneResponseDTO;
 import com.newcen.newcen.question.service.QuestionService;
 import com.newcen.newcen.users.repository.UserRepository;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageImpl;
@@ -33,14 +36,16 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/api/questions")
 public class QuestionsController {
-    private final NoticeFileRepository noticeFileRepository;
-    private final CommentRepository commentRepository;
+    private final AwsS3Service awsS3Service;
     private final UserRepository userRepository;
     private final QuestionsRepository questionsRepository;
 
@@ -138,25 +143,37 @@ public class QuestionsController {
             return ResponseEntity.internalServerError().body("게시글 삭제에 실패했습니다.");
         }
     }
-
+//, @Validated @RequestBody QuestionFileRequestDTO questionFileRequestDTO
     //문의사항 파일 등록
+    @ApiOperation(value = "Amazon S3에 파일 업로드", notes = "Amazon S3에 파일 업로드 ")
     @PostMapping("/{boardId}/files")
     private ResponseEntity<?> createQuestionsFile(
-            @AuthenticationPrincipal String userId, @PathVariable Long boardId, @Validated @RequestBody QuestionFileRequestDTO questionFileRequestDTO
-            , BindingResult result
+            @ApiParam(value="파일들(여러 파일 업로드 가능)", required = true)
+            @AuthenticationPrincipal String userId, @PathVariable Long boardId,
+            @RequestPart(value="file",required = false) List<MultipartFile> multipartFile
+
     ){
 
-        if (result.hasErrors()){
-            log.warn("DTO 검증 에러 발생 : {} ", result.getFieldError());
-            return ResponseEntity
-                    .badRequest()
-                    .body(result.getFieldError());
-        }
+//        if (result.hasErrors()){
+//            log.warn("DTO 검증 에러 발생 : {} ", result.getFieldError());
+//            return ResponseEntity
+//                    .badRequest()
+//                    .body(result.getFieldError());
+//        }
         try {
-            QuestionsOneResponseDTO questionResponseDTO = questionService.createFile(userId,boardId,questionFileRequestDTO.getBoardFilePath());
+
+//            multipartFile.forEach(f -> {
+//                System.out.println("f.getOriginalFilename() = " + f.getOriginalFilename());
+//            });
+
+//            QuestionsOneResponseDTO questionResponseDTO = questionService.createFile(userId,boardId,questionFileRequestDTO.getBoardFilePath());
+            List<String> uploaded = awsS3Service.uploadFile(multipartFile);
+            for (int i=0;i<uploaded.size();i++){
+                questionService.createFile(userId,boardId,uploaded.get(i));
+            }
             return ResponseEntity
                     .ok()
-                    .body(questionResponseDTO);
+                    .body(uploaded);
         } catch (Exception e) {
             log.error(e.getMessage());
             return ResponseEntity
