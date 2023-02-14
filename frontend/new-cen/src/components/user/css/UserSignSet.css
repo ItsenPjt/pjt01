@@ -16,12 +16,14 @@
 /* 로고 이미지 위치 (가운데 정렬) */
 #mypage_logo_position {
     text-align: center;
+    margin-right: 15px;
 }
 
 /* 로고 이미지 크기 */
 #mypage_logo_img {
     margin-top: 20px;
     height: 80px;
+    cursor: pointer;
 }
 
 #mypage_main_content {
@@ -102,14 +104,14 @@
 }
 
 #mypage_modal_content {
-    margin-top: 20px;
+    margin-top: 5px;
         
     font-size: 14px;
     font-weight: 550;
 }
 
 #mypage_modal_message {
-    margin-top: 20px;
+    margin: 10px 10px;
 
     font-size: 18px;
     font-weight: 800;

@@ -127,8 +127,11 @@ public class UserService {
 
         Optional<UserEntity> targetEntity = userRepository.findByUserId(userId);
 
-        targetEntity.ifPresent(entity -> {
+        String message = "";
 
+        if (targetEntity.isPresent()) {
+
+            UserEntity entity = targetEntity.get();
             // 패스워드 인코딩
             String rawPassword = userModifyRequestDTO.getUserPassword();   // 새로운 수정된 평문 암호
             String encodePassword = passwordEncoder.encode(rawPassword);    // 암호화 처리
@@ -136,15 +139,15 @@ public class UserService {
 
             UserEntity savedUser = userRepository.save(entity);
 
-            log.info(
-                    "내정보 수정 성공..!!! - user_id : {}", savedUser.getUserId());
-            log.info("변경된 계정 - user_email : {}", savedUser.getUserEmail());
+            message = "회원정보가 정상적으로 변경되었습니다.";
+            log.info("{}", message);
 
-        });
+        } else {
+            message = "비정상적인 처리입니다.";
+            log.info("{}", message);
+        }
 
-        Optional<UserEntity> result = userRepository.findByUserId(userId);
-
-        return new UserModifyResponseDTO(result.get());
+        return new UserModifyResponseDTO(message);
 
     }
 

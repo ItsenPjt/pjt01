@@ -20,6 +20,7 @@ public class CommentFileCreateRequest {
         return CommentFileEntity.builder()
                 .commentId(comment.getCommentId())
                 .commentFilePath(this.commentFilePath)
+                .userEmail(comment.getUserEmail())
                 .build();
     }
 }

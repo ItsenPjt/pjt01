@@ -281,7 +281,7 @@ const UserSignUp = () => {
 
         // 입력값 검증을 올바르게 수행했는지 검사
         if (isValid()) {
-            alert('[FE] 회원가입을 진행합니다.');
+            //alert('[FE] 회원가입을 진행합니다.');
 
             fetch(`${API_BASE_URL}/signup`, {
                 method: 'POST',
@@ -293,7 +293,7 @@ const UserSignUp = () => {
             .then(res => {
                 if (res.status === 200) {
                     alert('newcen.co.kr : 회원가입을 축하합니다. 🎉');
-                    // 로그인 페이지로 리다이렉트
+                    // 메인 페이지로 리다이렉트
                     window.location.href = '/';
                 } else {
                     alert(`회원가입에 실패했습니다.\n등록되지 않은 계정이거나 중복된 회원정보입니다.\n잠시 후 다시 시도해 주세요.`

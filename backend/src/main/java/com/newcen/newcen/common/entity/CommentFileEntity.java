@@ -27,6 +27,9 @@ public class CommentFileEntity {
     @Column(name="comment_id")
     private Long commentId;
 
+    @Column(name="comment_file_user_email")
+    private String userEmail;
+
     public void updatePath(String commentFilePath){
         this.commentFilePath = commentFilePath;
     }

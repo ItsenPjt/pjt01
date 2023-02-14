@@ -58,6 +58,7 @@ const UserJoin = () => {
                 localStorage.setItem('LOGIN_USERNAME', result.userName);
                 localStorage.setItem('LOGIN_USEREMAIL', result.userEmail);
                 localStorage.setItem('LOGIN_USERROLE', result.userRole);
+                localStorage.setItem('LOGIN_USERID', result.userId);
 
                 window.location.href='/';
             }

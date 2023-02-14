@@ -118,12 +118,11 @@ public class UserApiController {
 
     // 내정보 변경 요청
     @RequestMapping(
-            value = "/api/user/signset/{id}"
+            value = "/api/user/signset"
             , method = {RequestMethod.PUT, RequestMethod.PATCH}
     )
     public ResponseEntity<?> updateUser(
             @AuthenticationPrincipal String userId  // @AuthenticationPrincipal 로그인 정보를 받아옴
-            , @PathVariable("id") String pathUserId // URL 경로에서 id를 가져옴
             , @Validated @RequestBody UserModifyRequestDTO requestDTO
             , BindingResult result
             , HttpServletRequest request    // PUT 인지, PATCH 인지 요청정보 알 수 있음
@@ -138,7 +137,7 @@ public class UserApiController {
                     .body(result.getFieldError());
         }
 
-        log.info("/api/user/{} {} request", pathUserId, request.getMethod());
+        log.info("/api/user/{} {} request", userId, request.getMethod());
         log.info("modifying dto : {}", requestDTO);
 
         try {
@@ -184,15 +183,14 @@ public class UserApiController {
 
 
     // 회원탈퇴(UserEntity, ValidUserEntity 회원정보 삭제)
-    @DeleteMapping("/api/user/signout/{id}")
+    @DeleteMapping("/api/user/signout")
     public ResponseEntity<?> deleteUser(
             @AuthenticationPrincipal String userId  // @AuthenticationPrincipal 로그인 정보를 받아옴
-            , @PathVariable("id") String deleteId  // URL 경로에서 id를 가져옴
     ) {
 
         log.info("/api/user/{} DELETE request", userId);
 
-        if (deleteId == null || deleteId.trim().equals("")) {
+        if (userId == null || userId.trim().equals("")) {
             return ResponseEntity
                     .badRequest()
                     .body(UserListResponseDTO.builder().error("삭제하려는 ID를 전달해주세요"));
@@ -200,7 +198,7 @@ public class UserApiController {
 
         try {
 
-            UserDeleteResponseDTO responseDTO = userService.delete(deleteId);
+            UserDeleteResponseDTO responseDTO = userService.delete(userId);
 
             return ResponseEntity.ok()
                     .body(responseDTO);
