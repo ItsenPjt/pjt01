@@ -7,17 +7,17 @@ import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
 import Modal from 'react-bootstrap/Modal';
 
-import './css/AdminMain.css';
+import './css/AdminList.css';
 
-const AdminMain = () => {
-
+// 직원 관리
+const AdminUserList = () => {
     const API_BASE_URL = BASE_URL + ADMIN;
     const ACCESS_TOKEN = getToken();
 
     // 직원 목록 api 데이터 
     const [users, setUsers] = useState([]);
-    const [modal, setModal] = useState(false); 
-    const [deleteUser, setDeleteUser] = useState('');       // 퇴사 대상 직원 id
+    const [deleteModal, setDeleteModal] = useState(false); 
+    const [deleteUserId, setDeleteUserId] = useState('');       // 퇴사 대상 직원 id
 
     // headers
     const headerInfo = {
@@ -51,18 +51,18 @@ const AdminMain = () => {
 
     // 모달 닫기
     const handleClose = () => {
-        setModal(false);
+        setDeleteModal(false);
     };
 
     // 직원 퇴사 모달
     const handleDeleteModal = (userId) => {
-        setDeleteUser(userId);
-        setModal(true);     // 모달 열기
+        setDeleteUserId(userId);
+        setDeleteModal(true);     // 모달 열기
     }
 
     // 직원 퇴사 서버 요청 (DELETE)
     const handleDeleteUser = () => {
-        fetch(`${API_BASE_URL}/${deleteUser}`, {
+        fetch(`${API_BASE_URL}/${deleteUserId}`, {
             method: 'DELETE',
             headers: headerInfo,
         })
@@ -76,6 +76,7 @@ const AdminMain = () => {
     return (
         <>
             <div id='admin_main'>
+                <div id='admin_txt'>직원 관리</div>
                 <Table responsive>
                     <thead>
                         <tr>
@@ -98,7 +99,7 @@ const AdminMain = () => {
                                         <td>{item.userName}</td>
                                         <td>{item.userEmail}</td>
                                         <td>{item.userRegdate}</td>
-                                        <td><Button className="btn_orange" onClick = {() => handleDeleteModal(item.userId)}>퇴사</Button></td>
+                                        <td><Button onClick = {() => handleDeleteModal(item.userId)} className="btn_orange">퇴사</Button></td>
                                     </tr>
                                 )
                             })     
@@ -107,14 +108,13 @@ const AdminMain = () => {
                 </Table>
             </div>
 
-            {/* Modal */}
-            <Modal show={modal} onHide={handleClose} id="admin_delete_modal">
-                <Modal.Body id='admin_delete_modal_body'>
-                    <div id='admin_delete_modal_content'>
+            <Modal show={deleteModal} onHide={handleClose} id="admin_delete_modal">
+                <Modal.Body id='admin_modal_body'>
+                    <div id='admin_modal_content'>
                         해당 직원을 퇴사처리 하시겠습니까?
                     </div>
 
-                    <div id="admin_delete_modal_content">
+                    <div id="admin_modal_content">
                         <Button onClick={handleClose} className='btn_gray admin_btn btn_size_100'>
                             아니오
                         </Button>
@@ -128,4 +128,4 @@ const AdminMain = () => {
     )
 }
 
-export default AdminMain
+export default AdminUserList

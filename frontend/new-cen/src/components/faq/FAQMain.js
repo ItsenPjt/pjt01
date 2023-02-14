@@ -39,6 +39,7 @@ const FAQMain = () => {
             return res.json();
         })
         .then(result => {
+            console.log(result);
             setFaqList(result);
         });
     }, [API_BASE_URL]);
