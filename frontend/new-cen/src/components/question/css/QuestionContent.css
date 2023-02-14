@@ -1,6 +1,6 @@
 #question_content_main {
     width: 60%;
-    margin: 60px auto;
+    margin: 30px auto;
 }
 
 .justify {
@@ -62,21 +62,19 @@
     margin-left: 10px;
 }
 
+#question_content_list {
+    margin-left: 10px;
+}
+
 /* 문의사항 내용 */
 #question_contents {
-    height: 500px;
+    height: 420px;
 
     margin-top: 20px;
     padding: 30px 20px;
 
     border: 1px solid #aaa;
     border-radius: 10px;
-}
-
-/* footer */
-#question_content_footer_div {
-    margin-top: 10px;
-    float: right;
 }
 
 /* Modal */
@@ -106,7 +104,7 @@
 }
 
 #question_content_comment_txt {
-    margin-top: 15px;
+    margin-top: 5px;
     font-weight: 600;
 }
 
@@ -125,12 +123,18 @@
 }
 
 #question_content_comment_size {
-    height: 100px;
+    margin-top: 5px;
+
+    height: 105px;
+    overflow: auto;
+
+    display: flex;
+    flex-direction: column;
 }
 
 #question_content_comment_writer {    /* 댓글 작성자 */
     height: 60px;
-    
+    font-weight: 600;
     padding: 10px 0px;
 
     float: left;
@@ -140,6 +144,7 @@
     height: 60px;
     
     padding: 10px 0px;
+    margin-left: 10px;
 
     float: left;
 }
@@ -168,8 +173,4 @@
 #question_content_comment_file::file-selector-button:hover {
     background: #414858;
     color: white;
-}
-
-#question_content_comment_insert_btn {
-    margin-left: 10px;
 }

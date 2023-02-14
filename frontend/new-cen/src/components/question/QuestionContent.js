@@ -104,7 +104,7 @@ const QuestionContent = () => {
     };
 
     // 문의사항 목록 페이지로
-    const onNoticePage = () => {
+    const onQuestionPage = () => {
         const path = `/question`;
         navigate(path);
     };
@@ -127,14 +127,14 @@ const QuestionContent = () => {
                         {/* 권한이 ADMIN 인 경우에만 '수정','삭제' 버튼 보이도록 */}
                         {USER_ROLE === 'ADMIN' 
                         ? 
-                            <div id='notice_content_body_div'>
+                            <div id='question_content_body_div'>
                                 <Button onClick={onUpdatePage} className='btn_gray btn_size_100'>수정</Button>
-                                <Button onClick={handleShowDeleteModal} className='btn_orange btn_size_100' id='notice_content_delete_btn'>삭제</Button>
-                                <Button onClick={onNoticePage} className='btn_indigo btn_size_100' id='notice_content_list'>목록</Button>
+                                <Button onClick={handleShowDeleteModal} className='btn_orange btn_size_100' id='question_content_delete_btn'>삭제</Button>
+                                <Button onClick={onQuestionPage} className='btn_indigo btn_size_100' id='question_content_list'>목록</Button>
                             </div>
                             :
-                            <div id='notice_content_body_div'>
-                                <Button onClick={onNoticePage} className='btn_indigo btn_size_100'>목록</Button>
+                            <div id='question_content_body_div'>
+                                <Button onClick={onQuestionPage} className='btn_indigo btn_size_100'>목록</Button>
                             </div>
                         }
                     </>
@@ -150,7 +150,6 @@ const QuestionContent = () => {
                 </div>
 
                 {/* 댓글 */}
-                <div id='question_content_comment_txt'>댓글</div>
                 <QuestionComment questionId = {questionId}/>
             </div>
 

@@ -121,7 +121,10 @@
 }
 
 #notice_content_comment_size {
-    height: 100px;
+    margin-top: 5px;
+
+    height: 105px;
+    overflow: auto;
 
     display: flex;
     flex-direction: column;
