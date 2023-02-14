@@ -2,6 +2,16 @@
     margin: 10px 20px;
 }
 
+#admin_txt {
+    font-weight: 600;
+}
+#admin_insert_modal {
+    width: 400px;
+
+    border: 1px solid black;
+    border-radius: 10px;
+}
+
 #admin_delete_modal {
     width: 320px;
 
@@ -9,16 +19,28 @@
     border-radius: 10px;
 }
 
-#admin_delete_modal_body {
+#admin_modal_body {
     text-align: center;
     
     font-size: 17px;
     font-weight: 550;
 }
 
-#admin_delete_modal_content {
+#admin_modal_content {
     margin-top: 40px;
 }
+
+.admin_form_control {
+    margin-top: 15px;
+    text-align: center;
+    height: 30px;
+
+    box-shadow: 3px 3px #D0D0D0;
+}
+.admin_form_control::placeholder {
+    color: #D0D0D0;
+}
+
 
 /* button className-- */
 .btn_gray {

@@ -21,6 +21,7 @@ const NoticeContent = () => {
     const ACCESS_TOKEN = getToken();        // 토큰값
     const USER_ROLE = getUserRole();        // 권한
 
+    
     // 공지사항 api 데이터 
     const [noticeContents, setNoticeContents] = useState([]);
 
@@ -56,7 +57,6 @@ const NoticeContent = () => {
                 return res.json();
             })
             .then(result => {
-                console.log(result.noticeDetails[0]);
                 setNoticeContents(result.noticeDetails[0]);
             });
     }, [API_BASE_URL]);
@@ -77,7 +77,7 @@ const NoticeContent = () => {
             method: 'DELETE',
             headers: headerInfo,
         })
-        // .then(res => res.json())
+        //  .then(res => res.json())
         .then(() => {
             window.location.href = "/notice";       // 공지사항 목록 페이지로 이동
         });
