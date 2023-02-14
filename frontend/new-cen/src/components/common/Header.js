@@ -34,6 +34,10 @@ const Header = () => {
         const path = `/join`;
         navigate(path);
     };
+    const signup = () => {
+        const path = `/signup`;
+        navigate(path);
+    }
 
     // 로그아웃
     const logoutHandler = () => {
@@ -92,9 +96,15 @@ const Header = () => {
 
                         {ACCESS_TOKEN === null || ACCESS_TOKEN === '' 
                             ? (
-                                <div onClick={onLoginPage} id='header_login'>
+                                <>
+                                <span onClick={onLoginPage} id='header_login'>
                                     로그인
-                                </div>
+                                </span>
+                                <span id='header_dot'>　·　</span>
+                                <span onClick={signup} id='header_signup'>
+                                회원가입
+                                </span>
+                                </>
                               )
                             : (
                                 <>
