@@ -51,7 +51,7 @@ const NoticeMain = () => {
             })
             .then(result => {
                 console.log(result);
-                setNotices(result.notices);
+                setNotices(result.content);
             });
     }, [API_BASE_URL]);
 
@@ -62,6 +62,7 @@ const NoticeMain = () => {
         navigate(path);
     };
 
+    var i = 0;
     return (
         <>
             <div id='notice_btn_main'>
@@ -79,15 +80,16 @@ const NoticeMain = () => {
                         <tbody>
                             {
                                 notices.map((item) => {
+                                    i++;
                                     return (
                                         <tr key={item.boardId} id='notice_main_tbody'>
-                                            <td>{item.boardId}</td>
+                                            <td>{i}</td>
                                             <th id='notice_main_tbody_th' onClick={() => onTitleClick(item.boardId)}>{item.boardTitle}</th>
                                             <td>{item.createDate.substring(0, 10)}</td>
                                             <td>{item.boardWriter}</td>
                                         </tr>
                                     )
-                                })     
+                                })
                             }
                         </tbody>
                     </Table >   

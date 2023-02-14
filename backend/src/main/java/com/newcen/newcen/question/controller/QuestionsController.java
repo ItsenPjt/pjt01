@@ -14,6 +14,7 @@ import com.newcen.newcen.common.dto.request.SearchCondition;
 import com.newcen.newcen.common.entity.BoardEntity;
 import com.newcen.newcen.common.entity.UserEntity;
 import com.newcen.newcen.notice.dto.response.NoticeDetailResponseDTO;
+import com.newcen.newcen.notice.repository.NoticeFileRepository;
 import com.newcen.newcen.question.repository.QuestionsRepository;
 import com.newcen.newcen.question.request.QuestionCreateRequestDTO;
 import com.newcen.newcen.question.request.QuestionFileRequestDTO;
@@ -38,6 +39,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RequestMapping("/api/questions")
 public class QuestionsController {
+    private final NoticeFileRepository noticeFileRepository;
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final QuestionsRepository questionsRepository;
@@ -54,15 +56,19 @@ public class QuestionsController {
         return ResponseEntity.ok()
                 .body(responseDTO);
     }
-
+    //문의사항 검색
     @PostMapping("/search")
     public ResponseEntity<?> getPageListNotice(@RequestBody SearchCondition searchCondition, Pageable pageable) {
         log.info("/api/notices GET request");
+        PageImpl<QuestionResponseDTO> responseDTO;
+        if (searchCondition.getBoardWriter() == null && searchCondition.getBoardContent()==null && searchCondition.getBoardTitle()==null){
+            responseDTO = questionService.getPageList(pageable);
+        }
+        else {
+            responseDTO = questionService.getPageListWithSearch(searchCondition, pageable);
 
-        PageImpl<QuestionResponseDTO> responseDTO = questionService.getPageListWithSearch(searchCondition, pageable);
-
-        return ResponseEntity
-                .ok()
+        }
+        return ResponseEntity.ok()
                 .body(responseDTO);
     }
 

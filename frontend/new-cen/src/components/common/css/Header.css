@@ -48,8 +48,28 @@
 
 #header_login {
     margin-top: 10px;
-    color: #F64E60;
+    color: white;
     cursor: pointer;
+}
+
+#header_login:hover {
+    color: rgb(199, 198, 198);
+}
+
+#header_dot {
+    margin-top: 10px;
+    color: white;
+    cursor: pointer;
+}
+
+#header_signup {
+    margin-top: 10px;
+    color: white;
+    cursor: pointer;
+}
+
+#header_signup:hover {
+    color: rgb(199, 198, 198);
 }
 
 #header_user {
@@ -62,3 +82,4 @@
     color: #F64E60;
     cursor: pointer;
 }
+

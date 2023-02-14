@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 
 import { BASE_URL, NOTICE } from '../common/config/host-config';
-import { getToken } from '../common/util/login-util';
+import { getToken, getUsername } from '../common/util/login-util';
 
 import './css/NoticeContent.css'
 
@@ -14,7 +13,8 @@ const NoticeComment = ( { noticeId }) => {      // NoticeContent.js 에서 받�
     
     const API_BASE_URL = BASE_URL + NOTICE;
     const ACCESS_TOKEN = getToken();
-    
+    const USER_NAME = getUsername();
+
     // headers
     const headerInfo = {
         'content-type': 'application/json',
@@ -71,6 +71,7 @@ const NoticeComment = ( { noticeId }) => {      // NoticeContent.js 에서 받�
             window.location.href = '/join';
         }
         else {
+            // 댓글이 null 이고, 파일 명이 null 일때 alert창 뜨도록
             if (noticeInsertComment.commentContent === '') {
                 alert('댓글을 입력해주세요.');
             } else {
@@ -106,19 +107,22 @@ const NoticeComment = ( { noticeId }) => {      // NoticeContent.js 에서 받�
     return (
         <>
             <div>
+                <div id='notice_content_comment_footer'>
+                    <div id='notice_content_comment_txt'>댓글 - {USER_NAME}</div> {/*className="form-control"*/}
+                    <textarea onChange={commentChangeHandler} value={noticeInsertComment.commentContent} rows="3"  id='notice_content_comment_insert' placeholder='댓글 입력'/>
+                    <div className='justify'>
+                        <input type="file" name="notice_content_comment_file" id="notice_content_comment_file" onChange={(e) => console.log(e.target.files[0])} />
+                        <Button onClick={handleInsertNoticeComment}  className='btn_orange'>등록</Button>
+                    </div>
+                </div>
                 <Form>
                     <Form.Group className='mb-3'>
-                        <div className='justify' id='notice_content_comment_insert_div'>
-                            <Form.Control onChange={commentChangeHandler} value={noticeInsertComment.commentContent} id='notice_content_comment_insert' type='text' placeholder='댓글 입력' />
-                            <input type="file" name="notice_content_comment_file" id="notice_content_comment_file" onChange={(e) => console.log(e.target.files[0])} />
-                            <Button onClick={handleInsertNoticeComment}  className='btn_orange' id='notice_content_comment_insert_btn'>댓글 등록</Button>
-                        </div>
                         <div id='notice_content_comment_size'>
                             {/* 댓글 리스트 존재 여부에 따라 아래 데이터 숨김 --> map함수 처리 예정 */}
                             <span id='notice_content_comment_writer'>(작성자)</span> <span id='notice_content_comment_detail'>(내용)</span>
                             <Button className='btn_gray' id='notice_content_comment_update'>수정하기</Button>
                             <Button className='btn_orange' id='notice_content_comment_delete'>삭제하기</Button>
-                        </div>         
+                        </div>   
                     </Form.Group>
                 </Form>
             </div>

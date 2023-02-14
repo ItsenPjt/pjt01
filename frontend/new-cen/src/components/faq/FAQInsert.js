@@ -1,5 +1,5 @@
 import React, { useState }  from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
@@ -9,11 +9,79 @@ import Editor from '../common/EditorComponent';
 
 import './css/FAQInsert.css';
 
+import { BASE_URL, FAQ } from '../common/config/host-config';
+import { getToken } from '../common/util/login-util';
+
+
 // 자주 묻는 질문 추가
 const FAQInsert = () => {
 
+    const API_BASE_URL = BASE_URL + FAQ;
+    const ACCESS_TOKEN = getToken();
+    const headerInfo = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + ACCESS_TOKEN
+    }
+
+    const navigate = useNavigate();
+
+    // FAQ 등록 값
+    const [faqContent, setFaqContent] = useState({
+        boardTitle: '',
+        boardContent: ''
+    });
+
+
+    const insertFaq = () => {
+
+        if(faqContent.boardTitle === '') {
+            alert("제목은 필수 입력 값 입니다");
+            return;
+        }
+        if(faqContent.boardContent === '') {
+            alert("내용은 필수 입력 값 입니다");
+            return;
+        }
+
+        fetch(API_BASE_URL, {
+            method: "POST",
+            headers: headerInfo,
+            body: JSON.stringify(faqContent)
+        })
+        .then(res => {
+            
+            if(res.status === 403) {
+                alert("권한이 없습니다");
+                return;
+            }else if(res.status === 404) {
+                alert("세션이 만료되었습니다")
+                 return;
+            }else {
+                window.location.href = "/faq";
+            }
+        })
+        
+        
+
+
+    }
+
+    const handleEditTitle = (e) => {
+        setFaqContent({
+            ...faqContent,
+            boardTitle: e.target.value
+        })
+    }
+
+    const handleEditContent = (value) => {
+        setFaqContent({
+            ...faqContent,
+            boardContent: value
+        })
+    }
+
+
     const [modal, setModal] = useState(false); 
-    const [desc, setDesc] = useState('');
 
     // 모달 닫기
     const handleClose = () => {
@@ -25,12 +93,9 @@ const FAQInsert = () => {
         setModal(true);     // 모달 열기
     }
     
-    function onEditorChange(value) {
-        setDesc(value);
-    };
+
 
     // 자주 묻는 질문 목록 페이지로
-    const navigate = useNavigate();
     const onFaqPage = () => {
         const path = `/faq`;
         navigate(path);
@@ -42,18 +107,18 @@ const FAQInsert = () => {
                 <div className='justify'>
                     <Form>
                         <Form.Group className='mb-3'>
-                            <Form.Control id='faq_insert_title' autoFocus type='text' placeholder='제목 입력' />
+                            <Form.Control id='faq_insert_title' autoFocus type='text' placeholder='제목 입력' onChange={handleEditTitle} />
                         </Form.Group>
                     </Form>
                 </div>
 
                 <div>
-                    <Editor value={desc} onChange={onEditorChange} />
+                    <Editor onChange={handleEditContent} value={faqContent.boardContent} id='faq_insert_content' />
                 </div>
 
                 <div id='faq_insert_footer_div'>
                     <Button className='btn_gray btn_size_100' onClick={handleShowCancelModal}>취소</Button>
-                    <Button className='btn_orange btn_size_100' id='faq_insert_btn'>등록</Button>
+                    <Button className='btn_orange btn_size_100' id='faq_insert_btn' onClick={insertFaq}>등록</Button>
                 </div>
             </div>
 

@@ -2,7 +2,7 @@
     width: 60%;
 
     /* 박스 x축 중앙 정렬 : margin 좌우값을 auto로 설정*/
-    margin: 70px auto;  
+    margin: 30px auto;  
 }
 
 /* button className-- */
@@ -22,7 +22,7 @@
 #faq_table_main {
     border-radius: 10px;
 
-    height: 600px;
+    height: 670px;
 
     /* 음영처리 */ 
     /* x축, y축, 블러크기, 색상*/
@@ -54,4 +54,5 @@
 
 #faq_main_rows:hover {
     cursor: pointer;
+    font-weight: 800;
 }
