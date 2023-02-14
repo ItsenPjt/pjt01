@@ -31,20 +31,20 @@ class MessageServiceTest {
     @DisplayName("테스트 시작 전 회원1, 회원2, 회원3 추가")
     void beforeTest() {
         UserEntity user1 = UserEntity.builder()
-                .userEmail("test1@naver.com")
-                .userPassword("1234")
+                .userEmail("test4@naver.com")
+                .userPassword("abcd1234")
                 .userName("회원1")
                 .build();
 
         UserEntity user2 = UserEntity.builder()
-                .userEmail("test2@naver.com")
-                .userPassword("1234")
+                .userEmail("test5@naver.com")
+                .userPassword("abcd1234")
                 .userName("회원2")
                 .build();
 
         UserEntity user3 = UserEntity.builder()
-                .userEmail("test3@naver.com")
-                .userPassword("1234")
+                .userEmail("test6@naver.com")
+                .userPassword("abcd1234")
                 .userName("회원3")
                 .build();
 
@@ -65,7 +65,8 @@ class MessageServiceTest {
         UserEntity receiver = userRepository.findByUserEmail("test2@naver.com");
         String senderId = sender.getUserId();
         String receiverId = receiver.getUserId();
-
+        System.out.println("senderId : " + senderId);
+        System.out.println("receiverId : " + receiverId);
         List<String> receiverList = new ArrayList<>();
         receiverList.add(receiverId);
 
@@ -178,14 +179,9 @@ class MessageServiceTest {
         List<Long> deleteMessageList = new ArrayList<>();
         deleteMessageList.add(messageId);
 
-        MessageReceivedListResponseDTO afterDeleteMessageList = messageService.deleteMessage(deleteMessageList, receiverId);
+        Boolean result = messageService.deleteMessage(deleteMessageList, receiverId);
 
         // then
-        Assertions.assertEquals(1, afterDeleteMessageList.getReceivedMessageList().size());
-        Assertions.assertEquals("회원2", afterDeleteMessageList.getReceivedMessageList().get(0).getMessageSender());
-
+        Assertions.assertEquals(true, result);
     }
-
-
-
 }

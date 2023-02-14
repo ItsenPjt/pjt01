@@ -101,18 +101,22 @@ public class MessageController {
     @PostMapping("/api/messages/search/sent")
     public ResponseEntity<?> getSentPageList(
             @AuthenticationPrincipal String userId,
-            @RequestBody SearchSentMessageCondition SearchSentMessageCondition, Pageable pageable,
-            BindingResult result
+            @RequestBody SearchSentMessageCondition searchSentMessageCondition, Pageable pageable
     ) {
-
         if(userId.equals("anonymousUser")) {
             throw new MessageCustomException(MessageExceptionEnum.UNAUTHORIZED_ACCESS);
         }
-
-        PageImpl<MessageSentResponseDTO> sentList = messageService.getSentMessagePageListWithSearch(SearchSentMessageCondition,pageable,userId);
+        if (searchSentMessageCondition.getMessageContent() ==null && searchSentMessageCondition.getMessageTitle()==null && searchSentMessageCondition.getMessageReceiver()==null){
+            PageImpl<MessageSentResponseDTO> responseDTO = messageService.getSentMessagePageList(pageable,userId);
+            return ResponseEntity
+                    .ok()
+                    .body(responseDTO);
+        } else {
+        PageImpl<MessageSentResponseDTO> sentList = messageService.getSentMessagePageListWithSearch(searchSentMessageCondition,pageable,userId);
         return ResponseEntity
                 .ok()
                 .body(sentList);
+        }
     }
 
 
@@ -137,10 +141,10 @@ public class MessageController {
                                          @RequestParam("receiverList") List<String> receiverList,
                                           @AuthenticationPrincipal String userId) {
 
-        MessageReceivedListResponseDTO receivedList = messageService.sendMessage(userId, receiverList, message);
+        boolean result = messageService.sendMessage(userId, receiverList, message);
         return ResponseEntity
                 .ok()
-                .body(receivedList);
+                .body(result);
 
     }
 
@@ -153,10 +157,10 @@ public class MessageController {
             throw new MessageCustomException(MessageExceptionEnum.UNAUTHORIZED_ACCESS);
         }
 
-        MessageReceivedListResponseDTO receivedList = messageService.deleteMessage(messageList, userId);
+        boolean result = messageService.deleteMessage(messageList, userId);
         return ResponseEntity
                 .ok()
-                .body(receivedList);
+                .body(result);
     }
 
 }

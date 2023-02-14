@@ -52,12 +52,20 @@ public class NoticeApiController {
                 .ok()
                 .body(responseDTO);
     }
+
+    //공지사항 검색
     @PostMapping("/search")
     public ResponseEntity<?> getPageListNotice(@RequestBody SearchCondition searchCondition, Pageable pageable) {
         log.info("/api/notices GET request");
+        PageImpl<NoticeDetailResponseDTO> responseDTO;
+        if (searchCondition.getBoardContent() == null && searchCondition.getBoardTitle() ==null && searchCondition.getBoardWriter()==null){
+            responseDTO = noticeService.getNoticeList(pageable);
 
-        PageImpl<NoticeDetailResponseDTO> responseDTO = noticeService.getPageListWithSearch(searchCondition, pageable);
+        }
+        else {
+            responseDTO = noticeService.getPageListWithSearch(searchCondition, pageable);
 
+        }
         return ResponseEntity
                 .ok()
                 .body(responseDTO);
