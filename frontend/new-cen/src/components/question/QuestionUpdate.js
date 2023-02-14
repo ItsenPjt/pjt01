@@ -69,12 +69,14 @@ const QuestionUpdate = () => {
                 return res.json();
             })
             .then(result => {
-                console.log(result);
-                setQuestionData({
-                    boardTitle: result.boardTitle,
-                    boardCommentIs: result.boardCommentIs,
-                    boardContent: result.boardContent
-                })
+                if (!!result) {
+                    console.log(result);
+                    setQuestionData({
+                        boardTitle: result.boardTitle,
+                        boardCommentIs: result.boardCommentIs,
+                        boardContent: result.boardContent
+                    })
+                }
             });
     }, [API_BASE_URL]);
 

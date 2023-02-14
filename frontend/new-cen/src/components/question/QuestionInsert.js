@@ -53,10 +53,7 @@ const QuestionInsert = () => {
             alert('제목을 입력해주세요.');
         } else if (questionData.boardContent === '') {
             alert('내용을 입력해주세요.');
-        } else {
-            console.log(questionData);
-            console.log(ACCESS_TOKEN);
-            
+        } else {            
             fetch(API_BASE_URL, {
                 method: 'POST',
                 headers: headerInfo,

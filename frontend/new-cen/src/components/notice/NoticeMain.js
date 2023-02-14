@@ -50,8 +50,9 @@ const NoticeMain = () => {
                 return res.json();
             })
             .then(result => {
-                console.log(result);
-                setNotices(result.content);
+                if (!!result) {
+                    setNotices(result.content);
+                }
             });
     }, [API_BASE_URL]);
 
