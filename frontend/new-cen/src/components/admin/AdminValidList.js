@@ -50,8 +50,9 @@ const AdminValidList = () => {
                 return res.json();
             })
             .then(result => {
-                console.log(result);
-                setUsers(result);
+                if(!!result) {
+                    setUsers(result);
+                }
             });
     }, [API_BASE_URL]);
 
@@ -91,7 +92,7 @@ const AdminValidList = () => {
             })
             .then(res => {
                 if (res.status === 400) {
-                    alert('기존에 존재하는 이메일입니다.');
+                    alert('잘못된 이메일 형식이거나 기존에 존재하는 이메일입니다.');
                     window.location.href = '/validlist';
 
                     return;
@@ -114,13 +115,32 @@ const AdminValidList = () => {
 
     // 직원 퇴사 서버 요청 (DELETE)
     const handleDeleteUser = () => {
-        fetch(`${API_BASE_URL}/${deleteUserId}`, {
+        fetch(`${API_BASE_URL}/validuser/${deleteUserId}`, {
             method: 'DELETE',
             headers: headerInfo,
         })
-        .then(res => res.json())
-        .then(() => {
-            window.location.href = "/admin";
+        .then(res => {
+            if(res.status === 500) {
+                alert("서버가 불안정합니다");
+                return;
+            }else if(res.status === 400) {
+                alert("유효하지 않은 파라미터 값 입니다");
+                return;
+            }
+            else if(res.status === 403) {
+                alert("토큰 혹은 권한이 없습니다");
+                return;
+            }else if(res.status === 404) {
+                alert("존재하지 않는 회원입니다");
+                return;
+            }
+            return res.json();
+        })
+        .then(res => {
+            if(!!res) {
+                setUsers(res);
+            }
+            setDeleteModal(false);
         });
     }
 
@@ -134,18 +154,24 @@ const AdminValidList = () => {
                         <tr>
                             <th width="2%"><Button onClick={handleInsertModal} className="btn_indigo">직원 추가</Button></th>
                             <th width="6%">아이디</th>
+                            <th width="8%">가입여부</th>
                             <th width="8%">삭제</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {
+                        {   users&&
                             users.map((item) => {
                                 i++;
                                 return (
                                     <tr key={item.validUserEmail}>
                                         <td>{i}</td>
                                         <td>{item.validUserEmail}</td>
-                                        <td><Button onClick = {() => handleDeleteModal(item.userId)} className="btn_orange">삭제</Button></td>
+                                        {
+                                            item.validActive==1 ?
+                                            <><td>&nbsp;미가입</td><td><Button onClick={() => handleDeleteModal(item.validUserId)} className="btn_orange">삭제</Button></td></>
+                                            :
+                                            <><td>가입완료</td><td></td></>
+                                        }
                                     </tr>
                                 )
                             })     

@@ -4,6 +4,7 @@ package com.newcen.newcen.message.exception;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -31,6 +32,7 @@ public class MessageExceptionAdvice {
     }
 
     @ExceptionHandler({
+            EmptyResultDataAccessException.class,
             MethodArgumentNotValidException.class,
             MissingServletRequestParameterException.class,
             HttpClientErrorException.BadRequest.class,

@@ -45,7 +45,9 @@ const AdminUserList = () => {
                 return res.json();
             })
             .then(result => {
-                setUsers(result);
+                if(!!result) {
+                    setUsers(result);
+                }
             });
     }, [API_BASE_URL]);
 
