@@ -64,7 +64,7 @@ public class UserService {
 
         if (!compareResult) {
             log.warn("********** - UserInfo unprepared - {}", compareResult);
-            throw new NoRegisteredArgumentsException("Nonexistent UserInfo - 등록되지 않은 회원정보입니다.");
+            throw new NoRegisteredArgumentsException("Nonexistent UserInfo - 등록되지 않은 계정이거나 중복된 회원정보입니다.");
         }
 
         log.info("********** - UserInfo available to use - {}", compareResult);
