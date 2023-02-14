@@ -6,7 +6,7 @@ import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 
 import { BASE_URL, QUESTION } from '../common/config/host-config';
-import { getToken } from '../common/util/login-util';
+import { getToken, getUserRole } from '../common/util/login-util';
 
 import QuestionComment from './QuestionComment';
 
@@ -18,6 +18,7 @@ const QuestionContent = () => {
     
     const API_BASE_URL = BASE_URL + QUESTION;
     const ACCESS_TOKEN = getToken();
+    const USER_ROLE = getUserRole();        // 권한
 
     // 문의사항 api 데이터 
     const [questionContents, setQuestionContents] = useState([]);
@@ -83,6 +84,12 @@ const QuestionContent = () => {
         navigate(path);
     };
 
+    // 문의사항 목록 페이지로
+    const onNoticePage = () => {
+        const path = `/question`;
+        navigate(path);
+    };
+
     return (
         <>
             <div id='question_content_main'>
@@ -101,6 +108,22 @@ const QuestionContent = () => {
                         <Button className='btn_gray btn_size_100' onClick={onUpdatePage}>수정</Button>
                         <Button className='btn_orange btn_size_100' id='question_content_delete_btn' onClick={handleShowDeleteModal}>삭제</Button>
                     </div>
+
+                    <>
+                        {/* 권한이 ADMIN 인 경우에만 '수정','삭제' 버튼 보이도록 */}
+                        {USER_ROLE === 'ADMIN' 
+                        ? 
+                            <div id='notice_content_body_div'>
+                                <Button onClick={onUpdatePage} className='btn_gray btn_size_100'>수정</Button>
+                                <Button onClick={handleShowDeleteModal} className='btn_orange btn_size_100' id='notice_content_delete_btn'>삭제</Button>
+                                <Button onClick={onNoticePage} className='btn_indigo btn_size_100' id='notice_content_list'>목록</Button>
+                            </div>
+                            :
+                            <div id='notice_content_body_div'>
+                                <Button onClick={onNoticePage} className='btn_indigo btn_size_100'>목록</Button>
+                            </div>
+                        }
+                    </>
                 </div>
 
                 {/* dangerouslySetInnerHTML : String형태를 html로 */}

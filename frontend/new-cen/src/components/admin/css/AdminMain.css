@@ -1,3 +1,51 @@
 #admin_main {
     margin: 10px 20px;
 }
+
+#admin_delete_modal {
+    width: 320px;
+
+    border: 1px solid black;
+    border-radius: 10px;
+}
+
+#admin_delete_modal_body {
+    text-align: center;
+    
+    font-size: 17px;
+    font-weight: 550;
+}
+
+#admin_delete_modal_content {
+    margin-top: 40px;
+}
+
+/* button className-- */
+.btn_gray {
+    background-color: #717172;
+    border: none;
+}
+.btn_gray:hover, .btn_gray:active, .btn_gray:focus {
+    background-color: #5e5e5e;
+}
+
+.btn_orange {
+    background-color: #E9460A;
+    border: none;
+}
+.btn_orange:hover, .btn_orange:active, .btn_orange:focus {
+    background-color: #b43102;
+}
+
+.admin_btn {
+    width: 80px;
+}
+
+.btn_size_100 {
+    width: 100px;
+}
+/* --button */
+
+#admin_content_delete_btn {
+    margin-left: 10px;
+}

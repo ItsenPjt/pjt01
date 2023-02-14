@@ -16,7 +16,7 @@ const QuestionMain = () => {
     const API_BASE_URL = BASE_URL + QUESTION;
     const ACCESS_TOKEN = getToken();
 
-    // 공지사항 api 데이터 
+    // 문의사항 api 데이터 
     const [questions, setQuestions] = useState([]);
 
     // headers
@@ -32,21 +32,21 @@ const QuestionMain = () => {
             headers: headerInfo
         })
             .then(res => {
-                // if (res.status === 403) {
-                //     alert('로그인이 필요한 서비스입니다');
+                if (res.status === 403) {
+                    alert('로그인이 필요한 서비스입니다');
 
-                //     window.location.href = '/';
-                //     return;
-                // } 
-                // else if (res.status === 500) {
-                //     alert('서버가 불안정합니다');
-                //     return;
-                // }
+                    window.location.href = '/join';
+                    return;
+                } 
+                else if (res.status === 500) {
+                    alert('서버가 불안정합니다');
+                    return;
+                }
                 return res.json();
             })
             .then(result => {
                 console.log(result);
-                setQuestions(result.data);
+                setQuestions(result.content);
             });
     }, [API_BASE_URL]);
 
@@ -57,6 +57,7 @@ const QuestionMain = () => {
         navigate(path);
     };
 
+    var i = 0;
     return (
         <>
             <div id='question_btn_main'>
@@ -75,9 +76,10 @@ const QuestionMain = () => {
                             {/* db 연결하여 map 함수 이용 */}
                             {
                                 questions.map((item) => {
+                                    i++;
                                     return (
                                         <tr key={item.boardId} id='question_main_tbody'>
-                                            <td>{item.boardId}</td>
+                                            <td>{i}</td>
                                             <th id='question_main_tbody_th' onClick={() => onTitleClick(item.boardId)}>{item.boardTitle}</th>
                                             <td>{item.createDate.substring(0, 10)}</td>
                                             <td>{item.boardWriter}</td>
