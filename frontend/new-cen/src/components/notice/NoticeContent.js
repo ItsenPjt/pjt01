@@ -23,7 +23,7 @@ const NoticeContent = () => {
     
     // 공지사항 api 데이터 
     const [noticeContents, setNoticeContents] = useState([]);
-    const [isComment, setIsComment] = useState('');
+    const [isComment, setIsComment] = useState('');     // 수정(NoticeUpdate) 페이지로 보낼 댓글여부 데이터
 
     const [modal, setModal] = useState(false); 
 

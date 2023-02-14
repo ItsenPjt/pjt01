@@ -62,6 +62,7 @@ const QuestionComment = ( { questionId } ) => { // QuestionContent.js 에서 받
         .then(result => {
             if (!!result) {
                 console.log(result);
+                setQuestionComments(result);
             }
         });
     }, [API_BASE_URL]);
