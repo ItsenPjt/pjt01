@@ -26,11 +26,10 @@ import FAQUpdate from "./components/faq/FAQUpdate";
 
 import MessageTemplate from './components/message/MessageTemplate';
 
-import AdminTemplate from "./components/admin/AdminTemplate";
-
+import AdminUserList from "./components/admin/AdminUserList";
+import AdminValidList from "./components/admin/AdminValidList";
 
 import NotFound from "./components/common/NotFound";
-
 
 function App() {
 
@@ -48,6 +47,58 @@ function App() {
         }
 
     }, []);
+
+    // var myPath = '';
+    // if (isLogin) {      // 로그인 후
+    //     if (myPath === '/signset') {  // 주소가 signset 이면 --> <Header /> 없어야 함
+    //         return (
+    //             <>
+    //                 <Routes>
+    //                     <Route path={myPath} element={<UserSignSet />} />
+    //                 </Routes>
+    //             </>
+    //         )
+    //     } 
+    //     else {
+    //         return (
+    //             <>
+    //                 <Header />
+                
+    //                 <Routes>
+    //                     <Route path="/" element={<MainTemplate />} />
+                        
+    //                     <Route path="/join" element={<UserJoin />} />
+    //                     <Route path="/signup" element={<UserSignUp />} />
+    //                     <Route path="/findinfo" element={<UserFindInfo />} />
+
+    //                     <Route path="/notice" element={<NoticeTemplate />} />
+    //                     <Route path="/notice/insert" element={<NoticeInsert />} />
+    //                     <Route path="/notice/:noticeId" element={<NoticeContent />}/>
+    //                     <Route path="/notice/update/:noticeId" element={<NoticeUpdate />}/>
+                
+    //                     <Route path="/question" element={<QuestionTemplate />} />
+    //                     <Route path="/question/insert" element={<QuestionInsert />} />
+    //                     <Route path="/question/:questionId" element={<QuestionContent />}/>
+    //                     <Route path="/question/update/:questionId" element={<QuestionUpdate />}/>
+
+    //                     <Route path="/faq" element={<FAQTemplate />} />
+    //                     <Route path="/faq/insert" element={<FAQInsert />} />
+    //                     <Route path="/faq/:faqId" element={<FAQContent />}/>
+    //                     <Route path="/faq/update/:faqId" element={<FAQUpdate />}/>
+
+    //                     <Route path="/userlist" element={<AdminUserList />} />
+    //                     <Route path="/validlist" element={<AdminValidList />} />
+
+    //                     <Route path="/message" element={<MessageTemplate />} />
+    //                     <Route path={"*"} element={<NotFound />}/>
+    //                 </Routes>
+    //             </>
+    //         )
+    //     }
+
+    // }
+
+
 
     return (
         <>
@@ -79,8 +130,9 @@ function App() {
                             <Route path="/faq/:faqId" element={<FAQContent />}/>
                             <Route path="/faq/update/:faqId" element={<FAQUpdate />}/>
 
-                            <Route path="/admin" element={<AdminTemplate />} />
-
+                            {/* <Route path="/admin" element={<AdminTemplate />} /> */}
+                                <Route path="/userlist" element={<AdminUserList />} />
+                                <Route path="/validlist" element={<AdminValidList />} />
                             <Route path="/signset" element={<UserSignSet />} />
 
                             <Route path="/message" element={<MessageTemplate />} />
@@ -109,7 +161,7 @@ function App() {
                         <Route path="/faq" element={<FAQTemplate />} />
                         <Route path="/faq/:faqId" element={<FAQContent />}/>
 
-                        <Route path="/admin" element={<AdminTemplate />} />
+                        {/* <Route path="/admin" element={<AdminTemplate />} /> */}
 
                         <Route path="/message" element={<MessageTemplate />} />
                         <Route path={"*"} element={<NotFound />}/>

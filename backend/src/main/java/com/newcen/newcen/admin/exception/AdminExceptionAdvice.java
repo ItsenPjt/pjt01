@@ -3,6 +3,7 @@ package com.newcen.newcen.admin.exception;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -37,6 +38,7 @@ public class AdminExceptionAdvice extends DefaultHandlerExceptionResolver {
     }
 
     @ExceptionHandler({
+            EmptyResultDataAccessException.class,
             MissingPathVariableException.class,
             MethodArgumentNotValidException.class,
             MissingServletRequestParameterException.class,

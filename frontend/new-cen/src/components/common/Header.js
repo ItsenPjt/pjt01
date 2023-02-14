@@ -59,7 +59,7 @@ const Header = () => {
     } else if (window.location.pathname === '/faq') {
         textSize3 = '18px';
         fontWeight3 = 700;
-    } else if (window.location.pathname === '/admin') {
+    } else if (window.location.pathname === '/userlist' || window.location.pathname === '/validlist') {
         textSize4 = '18px';
         fontWeight4 = 700;
     } else if (window.location.pathname === '/signset' || window.location.pathname === '/message') {
@@ -91,7 +91,10 @@ const Header = () => {
                         
                         {/* // userRole 가 ADMIN 인 경우에만 관리자 버튼 확인 가능 */}
                         {(userRole === 'ADMIN') &&
-                            <Nav.Link style={{fontSize: textSize4, fontWeight: fontWeight4}} onClick={() => {document.location.href = '/admin'}} className='header_nav_link'>관리자</Nav.Link>
+                            <NavDropdown style={{fontSize: textSize4, fontWeight: fontWeight4}} title="관리자" id="basic-nav-dropdown">
+                                <NavDropdown.Item onClick={() => {document.location.href = '/userlist'}} className='header_nav_dropdown_link'>직원 관리</NavDropdown.Item>
+                                <NavDropdown.Item onClick={() => {document.location.href = '/validlist'}} className='header_nav_dropdown_link'>인증코드 관리</NavDropdown.Item>
+                            </NavDropdown>
                         }
 
                         {ACCESS_TOKEN === null || ACCESS_TOKEN === '' 
@@ -102,7 +105,7 @@ const Header = () => {
                                 </span>
                                 <span id='header_dot'>　·　</span>
                                 <span onClick={signup} id='header_signup'>
-                                회원가입
+                                    회원가입
                                 </span>
                                 </>
                               )

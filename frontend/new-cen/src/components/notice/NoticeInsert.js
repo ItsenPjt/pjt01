@@ -54,6 +54,7 @@ const NoticeInsert = () => {
             ...noticeData,        // 기존 noticeData 복사 후 boardContent 추가
             boardContent: value,
         });
+        console.log(noticeData.boardContent);
     };
 
     // 공지사항 등록 서버 요청  (POST에 대한 응답처리)
@@ -86,8 +87,10 @@ const NoticeInsert = () => {
                 }
                 return res.json();
             })
-            .then(() => {
-                window.location.href = "/notice";       // 공지사항 목록 페이지로 이동
+            .then((result) => {
+                if (!!result) {
+                    window.location.href = "/notice";       // 공지사항 목록 페이지로 이동
+                }
             });
         }
     };

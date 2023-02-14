@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
@@ -17,6 +17,9 @@ import './css/NoticeUpdate.css';
 const NoticeUpdate = () => {
     var noticeId = useParams().noticeId;
 
+    const location = useLocation();
+    const comment = location.state.comment;     // NoticeContent.js에서 보낸 댓글여부 값 받아오기
+    
     const API_BASE_URL = BASE_URL + NOTICE;
     const ACCESS_TOKEN = getToken();
 
@@ -29,7 +32,7 @@ const NoticeUpdate = () => {
     // 공지사항 api 데이터 
     const [noticeData, setNoticeData] = useState({
         boardTitle: '',          // 공지사항 제목
-        boardCommentIs: 'ON',      // 공지사항 댓글 여부 (default: ON)
+        boardCommentIs: comment,      // 공지사항 댓글 여부 (초기값 : NoticeContent.js에서 보낸 댓글여부 값)
         boardContent: '',        // 공지사항 내용
     });
     const [modal, setModal] = useState(false); 
@@ -82,6 +85,7 @@ const NoticeUpdate = () => {
                 return res.json();
             })
             .then(result => {
+                console.log(result.noticeDetails[0]);
                 setNoticeData({
                     boardTitle: result.noticeDetails[0].boardTitle,
                     boardCommentIs: result.noticeDetails[0].boardCommentIs,
@@ -146,8 +150,8 @@ const NoticeUpdate = () => {
                         </Form.Group>
                     </Form>
 
-                     {/* 라디오 버튼 */} 
-                    <CommentRadioBtn updateBeforeComment={noticeData.boardCommentIs} />     {/* commentStatus={commentChangeHandler} */}
+                    {/* 라디오 버튼 */} 
+                    <CommentRadioBtn updateBeforeComment={noticeData.boardCommentIs} commentStatus={commentChangeHandler}/>
                 </div>
 
                 <div>

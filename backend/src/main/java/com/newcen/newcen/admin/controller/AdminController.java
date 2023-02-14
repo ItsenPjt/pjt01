@@ -85,4 +85,19 @@ public class AdminController {
                 .body(validUserList);
     }
 
+    // Valid 이메일 삭제
+    @DeleteMapping("/api/admins/validuser/{deleteId}")
+    public ResponseEntity<?> validUserDelete(@AuthenticationPrincipal String userId,
+                                             @PathVariable("deleteId") String deleteId) {
+
+        if(userId.equals("anonymousUser")) {
+            throw new AdminCustomException(AdminExceptionEnum.TOKEN_REQUIRED);
+        }
+
+        List<AdminValidUserResponseDTO> validUserList = adminService.validUserDelete(userId, deleteId);
+
+        return ResponseEntity.ok()
+                .body(validUserList);
+    }
+
 }

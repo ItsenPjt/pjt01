@@ -124,6 +124,21 @@ public class AdminService {
         return validUserList(userId);
     }
 
+    public List<AdminValidUserResponseDTO> validUserDelete(final String userId, final String deleteId) {
+
+        UserEntity admin = adminRepository.findById(userId).orElseThrow(() -> {
+            throw new AdminCustomException(AdminExceptionEnum.USER_NOT_EXIST);
+        });
+
+        if(!admin.getUserRole().equals(UserRole.ADMIN)) {
+            throw new AdminCustomException(AdminExceptionEnum.ACCESS_FORBIDDEN);
+        }
+
+        validUserRepository.deleteById(deleteId);
+
+        return validUserList(userId);
+    }
+
 
 
 }

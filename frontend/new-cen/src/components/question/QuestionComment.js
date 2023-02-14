@@ -37,32 +37,34 @@ const QuestionComment = ( { questionId } ) => { // QuestionContent.js 에서 받
         });
     };
 
-    // useEffect(() => {
-    //     fetch(`${API_BASE_URL}/${questionId}/comments`, {
-    //         method: 'GET',
-    //         headers: headerInfo
-    //     })
-    //     .then(res => {
-    //         if (res.status === 406) {
-    //             if (ACCESS_TOKEN === '') {
-    //                 alert('로그인이 필요한 서비스입니다');
-    //                 window.location.href = '/join';
-    //             } else {
-    //                 alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
-    //                 return;
-    //             }
-    //             return;
-    //         } 
-    //         else if (res.status === 500) {
-    //             alert('서버가 불안정합니다');
-    //             return;
-    //         }
-    //         return res.json();
-    //     })
-    //     .then(result => {
-    //         console.log(result);
-    //     });
-    // }, [API_BASE_URL]);
+    useEffect(() => {
+        fetch(`${API_BASE_URL}/${questionId}/comments`, {
+            method: 'GET',
+            headers: headerInfo
+        })
+        .then(res => {
+            if (res.status === 406) {
+                if (ACCESS_TOKEN === '') {
+                    alert('로그인이 필요한 서비스입니다');
+                    window.location.href = '/join';
+                } else {
+                    alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
+                    return;
+                }
+                return;
+            } 
+            else if (res.status === 500) {
+                alert('서버가 불안정합니다');
+                return;
+            }
+            return res.json();
+        })
+        .then(result => {
+            if (!!result) {
+                console.log(result);
+            }
+        });
+    }, [API_BASE_URL]);
 
     // 댓글 등록 서버 요청 (POST에 대한 응답처리)
     const handleInsertNoticeComment = () => {

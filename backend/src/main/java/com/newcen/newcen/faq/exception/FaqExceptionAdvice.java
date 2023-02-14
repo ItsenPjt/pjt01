@@ -6,6 +6,7 @@ import com.newcen.newcen.message.exception.MessageExceptionEntity;
 import com.newcen.newcen.message.exception.MessageExceptionEnum;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -33,6 +34,7 @@ public class FaqExceptionAdvice {
     }
 
     @ExceptionHandler({
+            EmptyResultDataAccessException.class,
             MissingPathVariableException.class,
             MethodArgumentNotValidException.class,
             MissingServletRequestParameterException.class,

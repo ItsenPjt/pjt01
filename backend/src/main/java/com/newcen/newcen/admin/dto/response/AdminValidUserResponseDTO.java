@@ -15,10 +15,12 @@ import java.awt.desktop.OpenFilesEvent;
 @Builder
 public class AdminValidUserResponseDTO {
 
+    private String validUserId;
     private String validUserEmail;
     private int validActive;
 
     public AdminValidUserResponseDTO(ValidUserEntity entity) {
+        this.validUserId = entity.getValidUserId();
         this.validUserEmail = entity.getValidUserEmail();
         this.validActive = entity.getValidActive();
     }
