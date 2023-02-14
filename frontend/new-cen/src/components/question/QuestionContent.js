@@ -122,12 +122,7 @@ const QuestionContent = () => {
                             작성자 : {questionContents.boardWriter} | 작성일 : {questionContents.createDate}
                         </div>
                     </div>
-
-                    <div id='question_content_body_div'>
-                        <Button className='btn_gray btn_size_100' onClick={onUpdatePage}>수정</Button>
-                        <Button className='btn_orange btn_size_100' id='question_content_delete_btn' onClick={handleShowDeleteModal}>삭제</Button>
-                    </div>
-
+                    
                     <>
                         {/* 권한이 ADMIN 인 경우에만 '수정','삭제' 버튼 보이도록 */}
                         {USER_ROLE === 'ADMIN' 
