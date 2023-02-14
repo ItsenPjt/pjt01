@@ -114,8 +114,11 @@ const FAQContent = () => {
                     </div>
                 </div>
                 <div>
-                    <Form id='faq_contents'>
-                        {faqContent.boardContent}
+                    <Form id='faq_contents' 
+                        dangerouslySetInnerHTML={{
+                            __html: faqContent.boardContent
+                        }}
+                    >
                     </Form>
                 </div>
             </div>

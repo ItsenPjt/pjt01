@@ -1,5 +1,5 @@
 import React, { useState }  from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
@@ -33,7 +33,6 @@ const FAQInsert = () => {
 
 
     const insertFaq = () => {
-        const title = document.querySelector('#faq_insert_title');
 
         if(faqContent.boardTitle === '') {
             alert("제목은 필수 입력 값 입니다");
@@ -50,11 +49,19 @@ const FAQInsert = () => {
             body: JSON.stringify(faqContent)
         })
         .then(res => {
-            console.log(res);
+            
+            if(res.status === 403) {
+                alert("권한이 없습니다");
+                return;
+            }else if(res.status === 404) {
+                alert("세션이 만료되었습니다")
+                 return;
+            }else {
+                window.location.href = "/faq";
+            }
         })
-        .then(
-            navigate("/faq")
-        )
+        
+        
 
 
     }
