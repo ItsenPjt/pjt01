@@ -77,27 +77,18 @@ const MessageMain = () => {
 
     // 렌더링 되자마자 할 일 => 메세지 api GET 목록 호출
     useEffect(() => {
-        fetch(API_BASE_URL, {
+        fetch(`${API_BASE_URL}?mode=received`, {
             method: 'GET',
             headers: headerInfo
         })
-            .then(res => {
-                // if (res.status === 403) {
-                //     alert('로그인이 필요한 서비스입니다');
-
-                //     window.location.href = '/';
-                //     return;
-                // } 
-                // else if (res.status === 500) {
-                //     alert('서버가 불안정합니다');
-                //     return;
-                // }
-                return res.json();
-            })
-            .then(result => {
-                console.log(result);
-                setMessages(result.messages);
-            });
+        .then(res => {
+            console.log(res);
+            return res.json();
+        })
+        .then(result => {
+            console.log(result);
+            // setMessages(result.messages);
+        });
     }, [API_BASE_URL]);
 
     return (
@@ -182,15 +173,15 @@ const MessageMain = () => {
                     <div id='message_send_modal_body'>
                         <Form.Group className='mb-3'>
                             <Form.Label id='message_form_label'>받는 사람</Form.Label>
-                            <Form.Control autoFocus type='text' className='message_form_control' placeholder='받는 사람'/>
+                            <Form.Control autoFocus type='text' className='message_form_control' placeholder='받는 사람' id="message_receiver"/>
                         </Form.Group>
                         <Form.Group className='mb-3'>
                             <Form.Label id='message_form_label'>제목</Form.Label>
-                            <Form.Control type='text' className='message_form_control' placeholder='제목'/>
+                            <Form.Control type='text' className='message_form_control' placeholder='제목' id="message_title"/>
                         </Form.Group>
                         <Form.Group className='mb-3'>
                             <Form.Label id='message_form_label'>내용</Form.Label>
-                            <textarea rows="5" className="form-control" id='message_send_content'/>
+                            <textarea rows="5" className="form-control" id='message_content'/>
                         </Form.Group>
                     </div>
 

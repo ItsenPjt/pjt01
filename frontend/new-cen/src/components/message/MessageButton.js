@@ -35,21 +35,24 @@ const MessageButton = () => {
     const [searchReceiverList, setSearchReceiverList] = useState([]);
 
     const handleSearchReceiver = (e) => {
-        console.log(e.target.value);
 
         fetch(API_BASE_URL+"/receiver?username="+e.target.value, {
             headers: headerInfo,
         })
-        .then(res => res.json)
+        .then(res => res.json())
         .then(res => {
-            setSearchReceiverList(res);
+            if(!!res) {
+                setSearchReceiverList(res);
+            }
         })
     }
 
     const receiverList = useState([]);
 
-    const handleAddReceiver = (userId) => {
-        receiverList.push(userId);
+    const handleAddReceiver = (e) => {
+        console.log(e);
+        console.log(e.target.value);
+        // receiverList.push(userId);
     }
 
 
@@ -76,22 +79,23 @@ const MessageButton = () => {
                             <Form.Label id='message_form_label'>받는 사람</Form.Label>
                             <Form.Control autoFocus type='text' className='message_form_control' placeholder='받는 사람' id='message_receiver' onChange={handleSearchReceiver}/>
 
-                            <datalist id="receiverListOptions">
-                                {searchReceiverList.map((item) => {
+                            {/* <div id="receiverListOptions">
+                                { searchReceiverList && searchReceiverList.map((item) => {
                                     return (
-                                        console.log(item)
-                                        // <option key={item.userId}  value={item.UserName} + "(" + {item.UserEmail} + ")" onClick={handleAddReceiver({item.userId})} />
+                                        <div>
+                                            <span onClick={handleAddReceiver} value={item.userId}>{item.userName}({item.userEmail})</span>
+                                        </div>
                                     )
                                 })}
-                            </datalist>
+                            </div> */}
                         </Form.Group>
                         <Form.Group className='mb-3'>
                             <Form.Label id='message_form_label'>제목</Form.Label>
-                            <Form.Control type='text' className='message_form_control' placeholder='제목'/>
+                            <Form.Control type='text' className='message_form_control' placeholder='제목' id='message_title'/>
                         </Form.Group>
                         <Form.Group className='mb-3'>
                             <Form.Label id='message_form_label'>내용</Form.Label>
-                            <textarea rows="5" className="form-control" id='message_send_content'/>
+                            <textarea rows="5" className="form-control" id='message_content'/>
                         </Form.Group>
                     </div>
 
