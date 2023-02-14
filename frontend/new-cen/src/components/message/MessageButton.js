@@ -10,7 +10,7 @@ import { getToken } from '../common/util/login-util';
 import './css/MessageButton.css';
 
 // 메세지 버튼
-const MessageButton = () => {
+const MessageButton = ({changeMode}) => {
 
     const API_BASE_URL = BASE_URL + MESSAGE;
     const ACCESS_TOKEN = getToken();
@@ -22,6 +22,7 @@ const MessageButton = () => {
 
     const [modal, setModal] = useState(false); 
 
+
     // 모달 닫기
     const handleClose = () => {
         setModal(false);
@@ -32,6 +33,7 @@ const MessageButton = () => {
         setModal(true);     // 모달 열기
     }
 
+    // 실시간 회원 검색 목록
     const [searchReceiverList, setSearchReceiverList] = useState([]);
 
     const handleSearchReceiver = (e) => {
@@ -47,6 +49,7 @@ const MessageButton = () => {
         })
     }
 
+    // 메세지 수신인 리스트
     const receiverList = useState([]);
 
     const handleAddReceiver = (e) => {
@@ -54,6 +57,8 @@ const MessageButton = () => {
         console.log(e.target.value);
         // receiverList.push(userId);
     }
+
+    
 
 
 
@@ -64,8 +69,8 @@ const MessageButton = () => {
             <div className='justify'>
                 <div id='message_button_txt'>메세지</div>
                 <div id='message_button_group'>
-                    <Button className='btn_indigo' id='message_button_sent'>보낸 쪽지</Button>
-                    <Button className='btn_indigo' id='message_button_reception'>받은 쪽지</Button>
+                    <Button className='btn_indigo' id='message_button_sent' onClick={() => changeMode('sent')}>보낸 쪽지</Button>
+                    <Button className='btn_indigo' id='message_button_reception' onClick={() => changeMode('received')}>받은 쪽지</Button>
                     <Button className='btn_indigo' id='message_button_select_delete'>선택 삭제</Button>
                     <Button onClick={handleSendModal} className='btn_orange' id='message_button_send'>메세지 보내기</Button>
                 </div>

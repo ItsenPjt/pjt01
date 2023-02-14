@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
+import { useParams} from 'react-router-dom';
+
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
@@ -18,8 +20,42 @@ const MessageMain = () => {
     const API_BASE_URL = BASE_URL + MESSAGE;
     const ACCESS_TOKEN = getToken();
 
+    // mode값 
+    const [mode, setMode] = useState(); // 초기값?
+
+    const changeMode = (value) => {
+        setMode(value);
+        reloadMessages();
+    }
+
+    const reloadMessages = () => {
+
+        fetch(`${API_BASE_URL}?mode=${mode}&page=&size=&sort=`, {
+            method: 'GET',
+            headers: headerInfo
+        })
+        .then(res => {
+
+            if(res.status === 500) {
+                alert("서버가 불안정합니다");
+                return;
+            }else if(res.status === 400) {
+                alert("잘못된 요청 값 입니다");
+                return;
+            }
+
+            return res.json();
+        })
+        .then(res => {
+            setMessages(res.content);
+        });
+        console.log(mode);
+    }
+ 
     // 메세지 api 데이터 
     const [messages, setMessages] = useState([]);
+
+ 
 
     // headers
     const headerInfo = {
@@ -34,8 +70,6 @@ const MessageMain = () => {
     const handleSelectAll = () => {
         let i = 0;
         const check_boxes = document.querySelectorAll(".message_select_checkbox");
-        console.log(selectAll);
-        console.log(check_boxes);
         if(selectAll) {
             while(i < check_boxes.length) {
                 console.log(check_boxes[i]);
@@ -77,24 +111,31 @@ const MessageMain = () => {
 
     // 렌더링 되자마자 할 일 => 메세지 api GET 목록 호출
     useEffect(() => {
-        fetch(`${API_BASE_URL}?mode=received`, {
+        fetch(`${API_BASE_URL}?mode=received&page=&size=&sort=`, {
             method: 'GET',
             headers: headerInfo
         })
         .then(res => {
-            console.log(res);
+
+            if(res.status === 500) {
+                alert("서버가 불안정합니다");
+                return;
+            }else if(res.status === 400) {
+                alert("잘못된 요청 값 입니다");
+                return;
+            }
+
             return res.json();
         })
-        .then(result => {
-            console.log(result);
-            // setMessages(result.messages);
+        .then(res => {
+            setMessages(res.content);
         });
     }, [API_BASE_URL]);
 
     return (
         <>
             <div id='message_btn_main'>
-                <MessageButton />
+                <MessageButton changeMode={changeMode}/>
                 <div id='message_table_main'>
                     <Table responsive id='message_table'>
                         <thead>
@@ -107,33 +148,18 @@ const MessageMain = () => {
                         </thead>
                         <tbody>
 
-                            {/* db 연결하여 map 함수 이용 */}
-                            {/* {
+                            {   
                                 messages.map((item) => {
                                     return (
                                         <tr key={item.messageId} id='message_main_tbody'>
-                                            <td>{item.messageId}</td>
+                                            <td>{item.messageSender}</td>
                                             <th id='message_main_tbody_th' onClick={handleShowReceiveModal}>{item.messageTitle}</th>
                                             <td>{item.messageSenddate}</td>
                                             <td><input type='checkbox' id='message_select_checkbox' /></td>
                                         </tr>
                                     )
                                 })     
-                            } */}
-                            
-                                {/* 아래는 임시 데이터 */}
-                                <tr id='message_main_tbody'>
-                                    <td>허진영</td>
-                                    <th onClick={handleShowReceiveModal} id='message_main_tbody_th'>연봉은 대체 얼마인가요?</th>
-                                    <td>2023-01-18</td>
-                                    <td><input type='checkbox' className='message_select_checkbox' /></td>
-                                </tr>
-                                <tr id='message_main_tbody'>
-                                    <td>이진행</td>
-                                    <th onClick={handleShowReceiveModal} id='message_main_tbody_th'>회사 발령은 언제 결정되나요?</th>
-                                    <td>2023-01-18</td>
-                                    <td><input type='checkbox' className='message_select_checkbox' /></td>
-                                </tr>
+                            } 
                         </tbody>
                     </Table >   
                 </div>

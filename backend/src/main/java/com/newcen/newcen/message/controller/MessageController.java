@@ -37,6 +37,8 @@ public class MessageController {
 
         log.info("/api/{}/message message list GET request!", userId);
 
+        log.info("pageable : {}", pageable);
+
         if(mode.equals("received")) {
 //            MessageReceivedListResponseDTO messageList = messageService.receivedMessageList(userId);
             PageImpl<MessageReceivedResponseDTO> responseDTO = messageService.getReceivedMessagePageList(pageable,userId);
