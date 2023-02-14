@@ -18,6 +18,11 @@ export const getUserRole = () => {
     return localStorage.getItem('LOGIN_USERROLE');
 };
 
+// 로그인 유저의 UUID를 반환하는 함수
+export const getUserId = () => {
+    return localStorage.getItem('LOGIN_USERID');
+}
+
 // 로그인 상태인지 검증해주는 함수
 export const isLogin = () => {
     return !!getUsername();      // getUsername() !== null

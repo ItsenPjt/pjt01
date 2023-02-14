@@ -2,23 +2,59 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom';
 
 import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form'
+import Form from 'react-bootstrap/Form';
 
-import './css/UserFindInfo.css'
+import './css/UserFindInfo.css';
 
-// 비밀번호 변경
+import { BASE_URL, USER } from "../common/config/host-config";
+
+import { getToken } from '../common/util/login-util';
+import { getUserEmail } from '../common/util/login-util';
+import { getUsername } from '../common/util/login-util';
+
+// 익명 사용자 비밀번호 변경
 const UserFindInfo = () => {
 
-    const navigate = useNavigate();
-    const onLoginPage = () => {
-        const path = `/`;
-        navigate(path);
+    // const API_BASE_URL = BASE_URL + USER;
+    // const ACCESS_TOKEN = getToken();
+
+    // const headerInfo = {
+    //     'content-type': 'application/json'
+    //     , 'Authorization': 'Bearer ' + ACCESS_TOKEN
+    // };
+
+
+    // // 내 정보 수정 요청 처리
+    // const updateUser = e => {
+
+    //     fetch(`${API_BASE_URL}/signset/getUserEmail`)
+
+    // };
+
+
+
+
+    // 로고 클릭 시
+    const onLogo = () => {
+        window.location.href = "/";
     };
+
+    // 취소 버튼 클릭 시(헤더없는 경우)
+    const onLoginPage = () => {
+        window.location.href = "/";
+    };
+
+    // // 취소 버튼 클릭 시(헤더있는 경우)
+    // const navigate = useNavigate();
+    // const onLoginPage = () => {
+    //     const path = `/`;
+    //     navigate(path);
+    // };
 
     return (
         <div id='find_pw_main'>
             <div id='find_pw_logo_position'>
-                <img id='find_pw_logo_img' alt='logo' src="/img/logo_title.png"/>
+                <img id='find_pw_logo_img' alt='logo' src="/img/logo_title.png"  onClick={onLogo}/>
             </div>
 
             <div id='find_pw_main_content'>

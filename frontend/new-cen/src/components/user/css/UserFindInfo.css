@@ -17,12 +17,14 @@
 /* 로고 이미지 위치 (가운데 정렬) */
 #find_pw_logo_position {
     text-align: center;
+    margin-right: 40px;
 }
 
 /* 로고 이미지 크기 */
 #find_pw_logo_img {
     margin-top: 20px;
     height: 80px;
+    cursor: pointer;
 }
 
 #find_pw_main_content {
