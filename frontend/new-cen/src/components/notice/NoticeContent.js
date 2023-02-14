@@ -9,7 +9,6 @@ import Modal from 'react-bootstrap/Modal';
 import { BASE_URL, NOTICE } from '../common/config/host-config';
 import { getToken, getUserRole } from '../common/util/login-util';
 
-import NoticeNoComment from './NoticeNoComment';
 import NoticeComment from './NoticeComment';
 
 import './css/NoticeContent.css';
@@ -97,6 +96,13 @@ const NoticeContent = () => {
         navigate(path);
     };
        
+    // 댓글 허용 여부에 따라 게시물 내용의 높이가 달라짐
+    if (noticeContents.boardCommentIs === 'ON') {
+        document.getElementById('notice_contents').style.height = '420px';
+    } else if (noticeContents.boardCommentIs === 'OFF'){
+        document.getElementById('notice_contents').style.height = '600px';
+    }
+
     return (
         <>
             <div id='notice_content_main'>
@@ -125,8 +131,6 @@ const NoticeContent = () => {
                                 <Button onClick={onNoticePage} className='btn_indigo btn_size_100'>목록</Button>
                             </div>
                         }
-
-                        
                     </>
                 </div>
 
@@ -140,15 +144,14 @@ const NoticeContent = () => {
                 </div>
 
                 {/* 댓글 */}
-                {noticeContents.boardCommentIs === 'ON'
+                { noticeContents.boardCommentIs === 'ON'
                     ? 
                     (
                         <>
-                            <div id='notice_content_comment_txt'>댓글</div>
                             <NoticeComment noticeId = {noticeId} />
                         </>
                     )
-                    : <NoticeNoComment />       // 댓글 X
+                    : ''
                 }
             </div>
 

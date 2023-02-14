@@ -5,7 +5,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 
 import { BASE_URL, QUESTION } from '../common/config/host-config';
-import { getToken } from '../common/util/login-util';
+import { getToken, getUsername } from '../common/util/login-util';
 
 import './css/QuestionContent.css'
 
@@ -14,6 +14,7 @@ const QuestionComment = ( { questionId } ) => { // QuestionContent.js 에서 받
     
     const API_BASE_URL = BASE_URL + QUESTION;
     const ACCESS_TOKEN = getToken();
+    const USER_NAME = getUsername();
 
     // headers
     const headerInfo = {
@@ -101,31 +102,28 @@ const QuestionComment = ( { questionId } ) => { // QuestionContent.js 에서 받
             }
         }
     }
-
-    // 문의사항 목록 페이지로
-    const navigate = useNavigate();
-    const onNoticePage = () => {
-        const path = `/question`;
-        navigate(path);
-    };
     
     return (
         <>
             <div>
+                <div id='question_content_comment_footer'>
+                    <div id='question_content_comment_txt'>댓글 - {USER_NAME}</div>
+                    <textarea onChange={commentChangeHandler} value={questionInsertComment.commentContent} rows="3" id='question_content_comment_insert' placeholder='댓글 입력'/>
+                    <div className='justify'>
+                        <input type="file" name="question_content_comment_file" id="question_content_comment_file" onChange={(e) => console.log(e.target.files[0])} />
+                        <Button onClick={handleInsertNoticeComment}  className='btn_orange'>등록</Button>
+                    </div>
+                </div>
                 <Form>
                     <Form.Group className='mb-3'>
-                        <div className='justify' id='question_content_comment_insert_div'>
-                            <Form.Control onChange={commentChangeHandler} value={questionInsertComment.commentContent} id='question_content_comment_insert' type='text' placeholder='댓글 입력' />
-                            <input type="file" name="question_content_comment_file" id="question_content_comment_file" onChange={(e) => console.log(e.target.files[0])} />
-                        </div>
-                        
+                        <div id='question_content_comment_size'>
+                            {/* 댓글 리스트 존재 여부에 따라 아래 데이터 숨김 --> map함수 처리 예정 */}
+                            <span id='question_content_comment_writer'>(작성자)</span> <span id='question_content_comment_detail'>(내용)</span>
+                            <Button className='btn_gray' id='question_content_comment_update'>수정하기</Button>
+                            <Button className='btn_orange' id='question_content_comment_delete'>삭제하기</Button>
+                        </div>   
                     </Form.Group>
                 </Form>
-            </div>
-
-            <div id='question_content_footer_div'>
-                <Button onClick={onNoticePage} className='btn_gray btn_size_100'>목록</Button>
-                <Button onClick={handleInsertNoticeComment} className='btn_orange btn_size_100' id='question_content_comment_insert_btn'>등록</Button>
             </div>
         </>
     )
