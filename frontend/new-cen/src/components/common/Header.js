@@ -68,7 +68,13 @@ const Header = () => {
         fontWeight5 = 700;
     }
 
+    const noHeaderPathList = ['/join', '/signup', '/findinfo', '/signset'];
+
+    console.log(noHeaderPathList.includes(window.location.pathname));
     return (
+        noHeaderPathList.includes(window.location.pathname)
+        ? null 
+        :(
         <Navbar className="header_nav_bar">
             <Container>
                 <Navbar.Brand href="/">
@@ -127,6 +133,7 @@ const Header = () => {
                 </Navbar.Collapse>
             </Container>
         </Navbar>
+        )
     )
 }
 

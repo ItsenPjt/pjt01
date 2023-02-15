@@ -332,7 +332,7 @@ const UserFindInfo = () => {
     return (
         <div id='find_pw_main'>
             <div id='find_pw_logo_position'>
-                <img id='find_pw_logo_img' alt='logo' src="/img/logo_title.png"  onClick={onLogo} />
+                <img id='find_pw_logo_img' alt='logo' src="/img/logo_title.png" onClick={onLogo} />
             </div>
 
             <div id='find_pw_main_content'>
