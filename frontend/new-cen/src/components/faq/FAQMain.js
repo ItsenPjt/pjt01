@@ -67,7 +67,7 @@ const FAQMain = () => {
                                         <tr key={item.boardId} id='faq_main_rows'>
                                             <td width="10%">{i}</td>
                                             <th id='question_main_tbody_th' onClick={() => handleFaqContent(item.boardId)}>{item.boardTitle}</th>
-                                            <td width="15%">{item.boardCreatedate}</td>
+                                            <td width="15%">{item.boardCreatedate.substring(0, 10)}</td>
                                             <td width="15%">{item.boardWriter}</td>
                                         </tr>
                                     )

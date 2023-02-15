@@ -15,6 +15,7 @@ import java.time.LocalDate;
 @EqualsAndHashCode
 public class LoginResponseDTO {
 
+    private String userId;
     private String userEmail;
     private String userName;
 
@@ -29,6 +30,7 @@ public class LoginResponseDTO {
 
     // 엔터티를 DTO로 변경
     public LoginResponseDTO(UserEntity userEntity, String token) {
+        this.userId = userEntity.getUserId();
         this.userEmail = userEntity.getUserEmail();
         this.userName = userEntity.getUserName();
         this.userRole = userEntity.getUserRole();

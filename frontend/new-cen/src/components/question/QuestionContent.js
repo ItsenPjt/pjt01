@@ -6,7 +6,7 @@ import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 
 import { BASE_URL, QUESTION } from '../common/config/host-config';
-import { getToken, getUserRole } from '../common/util/login-util';
+import { getToken, getUserId } from '../common/util/login-util';
 
 import QuestionComment from './QuestionComment';
 
@@ -18,7 +18,7 @@ const QuestionContent = () => {
     
     const API_BASE_URL = BASE_URL + QUESTION;
     const ACCESS_TOKEN = getToken();
-    const USER_EMAIL = getUserRole();        // 권한
+    const USER_ID = getUserId();        // 권한
 
     // 문의사항 api 데이터 
     const [questionContents, setQuestionContents] = useState([]);
@@ -126,7 +126,7 @@ const QuestionContent = () => {
                     
                     <>
                         {/* 게시물 등록한 사람인 경우에만 '수정','삭제' 버튼 보이도록 */}
-                        {USER_EMAIL === 'ADMIN' 
+                        {USER_ID === questionContents.userId
                         ? 
                             <div id='question_content_body_div'>
                                 <Button onClick={onUpdatePage} className='btn_gray btn_size_100'>수정</Button>

@@ -1,6 +1,6 @@
 #notice_content_main {
     width: 60%;
-    margin: 30px auto;
+    margin: 25px auto;
 }
 
 .justify {
@@ -143,7 +143,21 @@
     float: left;
 }
 
-#notice_content_comment_date {  /* 댓글 작성 날짜 */
+#notice_content_comment_detail_file {   /* 댓글 작성 파일명*/
+    height: 60px;
+    
+    font-weight: 600;
+    font-size: 14px;
+
+    padding: 10px 0px;
+    margin-left: 10px;
+
+    cursor: pointer;
+
+    float: left;
+}
+
+#notice_content_comment_detail_date {  /* 댓글 작성 날짜 */
     height: 60px;
     
     padding: 10px 0px;

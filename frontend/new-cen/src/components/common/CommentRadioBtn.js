@@ -6,7 +6,6 @@ const CommentRadioBtn = ( { commentStatus, updateBeforeComment } ) => {      // 
         
     var defaultComment = '';
 
-    // useEffect()
     // NoticeUpdate.js 에서 넘어온 updateBeforeComment 값이 ON이나 OFF이면 (수정하기) 상태
     if (updateBeforeComment === 'ON' || updateBeforeComment === 'OFF') {
         defaultComment = updateBeforeComment;       // defaultComment 값을 updateBeforeComment으로

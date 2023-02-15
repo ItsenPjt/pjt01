@@ -7,7 +7,7 @@ import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 
 import { BASE_URL, NOTICE } from '../common/config/host-config';
-import { getToken, getUserRole } from '../common/util/login-util';
+import { getToken, getUserId } from '../common/util/login-util';
 
 import NoticeComment from './NoticeComment';
 
@@ -19,7 +19,7 @@ const NoticeContent = () => {
     
     const API_BASE_URL = BASE_URL + NOTICE;
     const ACCESS_TOKEN = getToken();        // 토큰값
-    const USER_ROLE = getUserRole();        // 권한
+    const USER_ID = getUserId();
     
     // 공지사항 api 데이터 
     const [noticeContents, setNoticeContents] = useState([]);
@@ -144,8 +144,8 @@ const NoticeContent = () => {
                     </div>
 
                     <>
-                        {/* 권한이 ADMIN 인 경우에만 '수정','삭제' 버튼 보이도록 */}
-                        {USER_ROLE === 'ADMIN' 
+                        {/* 게시물 등록한 사람인 경우에만 '수정','삭제' 버튼 보이도록 */}
+                        {USER_ID === noticeContents.userId
                         ? 
                             <div id='notice_content_body_div'>
                                 <Button onClick={onUpdatePage} className='btn_gray btn_size_100'>수정</Button>
