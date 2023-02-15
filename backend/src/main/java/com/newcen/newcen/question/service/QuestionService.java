@@ -115,7 +115,7 @@ public class QuestionService {
         BoardEntity boardGet = questionsRepositorySupport.findBoardByUserIdAndBoardId(userId,boardId);
         UserEntity user = userRepository.findById(userId).get();
         List<BoardFileEntity> boardFileEntityList = boardFileRepository.findByBoardId(boardId);
-        if (boardFileEntityList.size() !=0 ){
+        if (boardFileEntityList.size() !=0 && boardFileEntityList !=null){
             boardFileEntityList.forEach(t-> amazonS3.deleteObject(new DeleteObjectRequest(bucket, t.getBoardFilePath())));
         }
         if (!Objects.equals(boardGet.getUserId(), user.getUserId())){
