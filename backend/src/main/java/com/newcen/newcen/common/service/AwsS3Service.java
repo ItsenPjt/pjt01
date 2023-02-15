@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
@@ -31,12 +32,14 @@ public class AwsS3Service {
 
     private final AmazonS3 amazonS3;
 
+
+    //s3 파일 업로드
     public List<String> uploadFile(List<MultipartFile> multipartFile) {
         List<String> fileNameList = new ArrayList<>();
 
         // forEach 구문을 통해 multipartFile로 넘어온 파일들 하나씩 fileNameList에 추가
         multipartFile.forEach(file -> {
-            String fileName = createFileName(file.getOriginalFilename());
+            String fileName = createFileName(file.getOriginalFilename()); //파일 이름 uuid로 난수화시킴
             ObjectMetadata objectMetadata = new ObjectMetadata();
             objectMetadata.setContentLength(file.getSize());
             objectMetadata.setContentType(file.getContentType());
@@ -73,41 +76,15 @@ public class AwsS3Service {
     /**
      * S3 bucket 파일 다운로드
      */
-    public ResponseEntity<byte[]> getObject(String storedFileName) throws IOException {
+    public ByteArrayOutputStream downloadFile(String storedFileName) throws IOException {
         S3Object o = amazonS3.getObject(new GetObjectRequest(bucket, storedFileName));
-
-        S3ObjectInputStream objectInputStream = o.getObjectContent();
-        byte[] bytes = IOUtils.toByteArray(objectInputStream);
-
-
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(contentType(storedFileName));
-        httpHeaders.setContentLength(bytes.length);
-        String[]arr = storedFileName.split("/");
-        String type = arr[arr.length-1];
-        String fileName = URLEncoder.encode(type,"UTF-8").replace("\\+","%20");
-        httpHeaders.setContentDispositionFormData("attachment", fileName);
-
-        return new ResponseEntity<>(bytes, httpHeaders, HttpStatus.OK);
-
-    }
-
-    private MediaType contentType(String keyname){
-        String[] arr = keyname.split("\\.");
-        String type = arr[arr.length-1];
-        switch (type){
-            case "txt":
-                return MediaType.TEXT_PLAIN;
-            case "md":
-                return MediaType.TEXT_MARKDOWN;
-            case "png":
-                return MediaType.IMAGE_PNG;
-            case "jpg":
-                return MediaType.IMAGE_JPEG;
-            default:
-                return MediaType.APPLICATION_OCTET_STREAM;
+        InputStream is = o.getObjectContent();
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        int len;
+        byte[] buffer = new byte[4096];
+        while ((len = is.read(buffer, 0, buffer.length)) != -1) {
+            outputStream.write(buffer, 0, len);
         }
+        return outputStream;
     }
-
-
 }

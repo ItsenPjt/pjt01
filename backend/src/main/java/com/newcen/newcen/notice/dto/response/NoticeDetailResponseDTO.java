@@ -29,6 +29,8 @@ public class NoticeDetailResponseDTO {      // 공지사항 목록에 보여지�
 
     private BoardCommentIs boardCommentIs;
 
+    private String userId;
+
     // entity 를 받아서 DTO 로 만들어주는 생성자
     public NoticeDetailResponseDTO(BoardEntity entity) {
         this.boardId = entity.getBoardId();
@@ -39,5 +41,6 @@ public class NoticeDetailResponseDTO {      // 공지사항 목록에 보여지�
         this.createDate = entity.getCreateDate();
         this.boardUpdateDate = entity.getBoardUpdateDate();
         this.boardCommentIs = entity.getBoardCommentIs();
+        this.userId = entity.getUserId();
     }
 }

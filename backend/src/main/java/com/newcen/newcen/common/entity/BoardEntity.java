@@ -59,11 +59,9 @@ public class BoardEntity {
     @Column(name="user_id")
     private String userId;
 
-
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE,orphanRemoval = true)
     @JoinColumn(name="comment_id")
     private final List<CommentEntity> commentEntityList = new ArrayList<>();
-
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE,orphanRemoval = true)
     @JoinColumn(name="board_id")
