@@ -44,8 +44,8 @@ const Header = () => {
         localStorage.removeItem('ACCESS_TOKEN');
         localStorage.removeItem('LOGIN_USERID');
         localStorage.removeItem('LOGIN_USERNAME');
-        localStorage.removeItem('LOGIN_USEREMAIL')
-        localStorage.removeItem('LOGIN_USERROLE')
+        localStorage.removeItem('LOGIN_USEREMAIL');
+        localStorage.removeItem('LOGIN_USERROLE');
 
         window.location.href='/';
     }

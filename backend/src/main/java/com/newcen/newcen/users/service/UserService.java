@@ -1,17 +1,13 @@
 package com.newcen.newcen.users.service;
 
-import com.newcen.newcen.admin.exception.AdminCustomException;
-import com.newcen.newcen.admin.exception.AdminExceptionEnum;
 import com.newcen.newcen.common.config.security.TokenProvider;
 import com.newcen.newcen.common.entity.UserEntity;
-import com.newcen.newcen.common.entity.UserRole;
 import com.newcen.newcen.common.entity.ValidUserEntity;
 import com.newcen.newcen.common.repository.ValidUserRepository;
 import com.newcen.newcen.users.dto.request.AnonymousReviseRequestDTO;
 import com.newcen.newcen.users.dto.request.UserModifyRequestDTO;
 import com.newcen.newcen.users.dto.request.UserSignUpRequestDTO;
 import com.newcen.newcen.users.dto.response.*;
-import com.newcen.newcen.users.exception.DuplicatedEmailException;
 import com.newcen.newcen.users.exception.NoRegisteredArgumentsException;
 import com.newcen.newcen.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,9 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -210,9 +204,11 @@ public class UserService {
     public UserDeleteResponseDTO delete(
             final String deleteId) {
 
+        String delEmail;
+
         try {
 
-            String delEmail = userRepository.selectUserEmail(deleteId);
+            delEmail = userRepository.selectUserEmail(deleteId);
 
             userRepository.deleteById(deleteId);  // 로그인된 회원 UUID로 회원정보 삭제
             log.info("User Delete Complete - UserId : {}", deleteId);
@@ -234,7 +230,8 @@ public class UserService {
 
         }
 
-        Optional<ValidUserEntity> endUser = validUserRepository.findById(deleteId);
+        Optional<ValidUserEntity> endUser = validUserRepository.selectValidUserEmail(delEmail);
+        log.info("삭제가 완료되어 존재하지 않는 이메일입니다. - ValidUserEmail : {}", delEmail);
 
         String message = "";
 

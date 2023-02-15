@@ -139,7 +139,7 @@ const UserSignSet = () => {
     };
 
 
-    // 내 정보 수정 요청 처리
+    // 내 정보 수정 서버 요청
     const updateUserPw = e => {
 
         if (isValid()) {
@@ -161,11 +161,120 @@ const UserSignSet = () => {
                 return res.json();
             });
         } else {
-            alert(`알 수 없는 오류입니다.\n관리자에게 문의하세요`);
+            alert(`입력창을 확인하세요.`);
+            window.location.href = '/signset';
         }
        
     };
 
+
+
+    // 회원탈퇴 기능 처리
+
+    const outOk = '해피엔딩';
+    
+    // 탈퇴 검증 완료 여부
+    const [outValiDate, setOutValiDate] = useState({
+        outUser: false
+    });
+
+    // 탈퇴 입력값 저장
+    const [outUserValue, setOutUserValue] = useState({
+        outUser: ''
+    });
+
+
+    // 탈퇴 입력문구 검증 체인지 이벤트 핸들러
+    const outUserHandler = e => {
+        
+        console.log(e.target.value);
+
+        if (!e.target.value) {  // 탈퇴 문구 미 입력 시
+            setOutValiDate({
+                ...outValiDate,
+                outUser: false
+            });
+        } else if (!outOk.valueOf(e.target.value)) {
+            setOutValiDate({
+                ...outValiDate,
+                outUser: false
+            });
+        } else if (outOk.valueOf === e.target.value) {
+            setOutValiDate({
+                ...outValiDate,
+                outUser: true
+            });
+        }
+        setOutUserValue({
+            ...outUserValue,
+            outUser: e.target.value
+        });
+
+
+        if(e.target.value === outOk) {
+            e.target.style.color = '#99434C';
+            e.target.style.fontWeight = 'bold';
+        }
+
+    };
+
+    
+    // outValiDate 객체 안의 모든 논리값 true인지 검사하는 함수
+    const outIsValid = () => {
+
+        // of : 배열 반복, in : 객체 반복
+        // 객체에서 key값만 뽑아줌 'outUser'
+        for (let key in outValiDate) {
+            let value = outValiDate[key];
+            if (!value) return false;
+        }
+        
+
+        return true;
+    };
+
+    
+    // 회원탈퇴 요청 서버로 보내기
+    const outOfHere = e => {
+
+        //console.log('회원 탈퇴 서버요청!');
+
+        // e.preventDefault();  // 태그 기본 동작 중지
+
+        // 입력값 검증을 올바르게 했는지 검사
+        if (outIsValid()) {
+            
+            // alert('[FE] 회원탈퇴를 진행합니다.');
+
+            fetch(`${API_BASE_URL}/signout`, {
+                method: 'DELETE',
+                headers: headerInfo
+            })
+            .then(res => {
+                if (res.status === 200) {
+                    alert('회원탈퇴가 완료되었습니다.\n소중한 인연이 언젠가 또 닿기를 바랍니다.\n감사합니다.');
+
+                    localStorage.removeItem('ACCESS_TOKEN');
+                    localStorage.removeItem('LOGIN_USERNAME');
+                    localStorage.removeItem('LOGIN_USEREMAIL');
+                    localStorage.removeItem('LOGIN_USERROLE');
+                    localStorage.removeItem('LOGIN_USERID');
+
+                    // 메인 페이지로 리다이렉트
+                    window.location.href = '/';
+
+                } else {
+                    alert(`회원탈퇴 처리에 실패했습니다.\n잠시 후 다시 시도해 주세요.`)
+                    window.location.href = '/signset';
+                }
+            });
+        } else {
+            alert(`입력창을 확인하세요.`);
+            window.location.href = '/signset';
+        }
+
+    };
+    
 
     // 취소 버튼 클릭 시(헤더없는 경우)
     const onLoginPage = () => {
@@ -184,6 +293,7 @@ const UserSignSet = () => {
         setModal(true);     // 모달 열기
     }
 
+    
     return (
         <>
             <div id='mypage_main'>
@@ -228,7 +338,7 @@ const UserSignSet = () => {
                         <Button onClick={onLoginPage} className="btn_gray mypage_btn btn_size_100">
                             취소
                         </Button> 
-                        <Button className="btn_orange mypage_btn btn_size_100" id="mypage_btn"  onClick={updateUserPw}>
+                        <Button className="btn_orange mypage_btn btn_size_100" id="mypage_btn" onClick={updateUserPw}>
                             완료
                         </Button> 
                     </div>
@@ -249,14 +359,14 @@ const UserSignSet = () => {
                         지금<br />
                         당신이 주연인<br />
                         당신의 영화도<br />
-                        멋진 <input type='text' autoFocus id='mypage_modal_message_write' placeholder='해피엔딩' /> 으로<br/>
+                        멋진 <input type='text' autoFocus id='mypage_modal_message_write' placeholder='해피엔딩' onChange={outUserHandler} /> 으로<br/>
                         끝나기를
                     </div>
                     <div id="notice_modal_content">
                         <Button className='btn_gray notice_btn btn_size_100' onClick={handleClose}>
                             취소
                         </Button>
-                        <Button className='btn_orange notice_btn btn_size_100' id="mypage_withdrawal_btn">
+                        <Button className='btn_orange notice_btn btn_size_100' id="mypage_withdrawal_btn" onClick={outOfHere}>
                             탈퇴
                         </Button>
                     </div>
