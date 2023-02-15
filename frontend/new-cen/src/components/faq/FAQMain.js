@@ -64,9 +64,9 @@ const FAQMain = () => {
                                 faqList.map((item) => {
                                     i++;
                                     return (
-                                        <tr key={item.boardId} id='faq_main_rows' onClick={() => handleFaqContent(item.boardId)}>
+                                        <tr key={item.boardId} id='faq_main_rows'>
                                             <td width="10%">{i}</td>
-                                            <td width="20%">{item.boardTitle}</td>
+                                            <th id='question_main_tbody_th' onClick={() => handleFaqContent(item.boardId)}>{item.boardTitle}</th>
                                             <td width="15%">{item.boardCreatedate}</td>
                                             <td width="15%">{item.boardWriter}</td>
                                         </tr>

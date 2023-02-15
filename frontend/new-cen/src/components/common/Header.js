@@ -42,6 +42,7 @@ const Header = () => {
     // 로그아웃
     const logoutHandler = () => {
         localStorage.removeItem('ACCESS_TOKEN');
+        localStorage.removeItem('LOGIN_USERID');
         localStorage.removeItem('LOGIN_USERNAME');
         localStorage.removeItem('LOGIN_USEREMAIL')
         localStorage.removeItem('LOGIN_USERROLE')

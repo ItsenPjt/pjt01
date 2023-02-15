@@ -58,13 +58,13 @@
 }
 /* --button */
 
-#faq_content_delete_btn {
+#faq_content_delete_btn, #faq_content_list {
     margin-left: 10px;
 }
 
 /* 자주 묻는 질문 내용 */
 #faq_contents {
-    height: 500px;
+    height: 600px;
 
     margin-top: 20px;
     padding: 30px 20px;

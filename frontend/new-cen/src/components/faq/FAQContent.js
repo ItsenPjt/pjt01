@@ -7,7 +7,7 @@ import Modal from 'react-bootstrap/Modal';
 
 import './css/FAQContent.css';
 import { BASE_URL, FAQ } from '../common/config/host-config';
-import { getToken } from '../common/util/login-util';
+import { getToken, getUserRole } from '../common/util/login-util';
 
 // 자주 묻는 질문 내용
 const FAQContent = () => {
@@ -15,6 +15,7 @@ const FAQContent = () => {
     const API_BASE_URL = BASE_URL + FAQ;
 
     const ACCESS_TOKEN = getToken();
+    const USER_ROLE = getUserRole();        // 권한
 
     const headerInfo = {
         'content-type': 'application/json',
@@ -94,6 +95,12 @@ const FAQContent = () => {
         navigate(path);
     };
 
+    // 자주 묻는 질문 목록 페이지로
+    const goFaqPage = () => {
+        const path = `/faq`;
+        navigate(path);
+    };
+
     return (
         <>
             <div id='faq_content_main'>
@@ -108,10 +115,21 @@ const FAQContent = () => {
                         </div>
                     </div>
 
-                    <div id='faq_content_body_div'>
-                        <Button className='btn_gray btn_size_100' onClick={onUpdatePage}>수정</Button>
-                        <Button className='btn_orange btn_size_100' id='faq_content_delete_btn' onClick={handleShowDeleteModal}>삭제</Button>
-                    </div>
+                    <>
+                        {/* 권한이 ADMIN 인 경우에만 '수정','삭제' 버튼 보이도록 */}
+                        {USER_ROLE === 'ADMIN' 
+                        ? 
+                            <div id='notice_content_body_div'>
+                                <Button onClick={onUpdatePage} className='btn_gray btn_size_100'>수정</Button>
+                                <Button onClick={handleShowDeleteModal} className='btn_orange btn_size_100' id='faq_content_delete_btn'>삭제</Button>
+                                <Button onClick={goFaqPage} className='btn_indigo btn_size_100' id='faq_content_list'>목록</Button>
+                            </div>
+                            :
+                            <div id='notice_content_body_div'>
+                                <Button onClick={goFaqPage} className='btn_indigo btn_size_100'>목록</Button>
+                            </div>
+                        }
+                    </>
                 </div>
                 <div>
                     <Form id='faq_contents' 

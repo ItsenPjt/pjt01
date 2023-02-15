@@ -3,6 +3,11 @@ export const getToken = () => {
     return localStorage.getItem('ACCESS_TOKEN');
 };
 
+// 로그인 유저의 아이디를 반환하는 함수
+export const getUserId = () => {
+    return localStorage.getItem('LOGIN_USERID');
+};
+
 // 로그인 유저의 이름을 반환하는 함수
 export const getUsername = () => {
     return localStorage.getItem('LOGIN_USERNAME');

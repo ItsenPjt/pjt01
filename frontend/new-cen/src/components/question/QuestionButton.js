@@ -24,11 +24,7 @@ const QuestionButton = () => {
                 <Button className='btn_indigo' id='question_button_date_asc'>날짜 순</Button>
                 <Button className='btn_indigo' id='question_button_like_asc'>좋아요 순</Button>
                 <Button className='btn_indigo' id='question_button_commente_asc'>댓글 순</Button>
-                
-                {/* 권한이 ADMIN 인 경우에만 '글쓰기' 버튼 보이도록 */}
-                {USER_ROLE === 'ADMIN' && 
-                    <Button onClick={onInsertPage} className='btn_orange btn_size_100' id='question_button_insert'>글쓰기</Button>
-                }
+                <Button onClick={onInsertPage} className='btn_orange btn_size_100' id='question_button_insert'>글쓰기</Button>
             </div>
         </div>      
     )
