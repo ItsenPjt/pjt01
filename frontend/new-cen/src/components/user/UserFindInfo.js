@@ -306,7 +306,6 @@ const UserFindInfo = () => {
             });
         } else {
             alert(`입력창을 확인하세요.`);
-            window.location.href = '/findinfo';
         }
     };
 
