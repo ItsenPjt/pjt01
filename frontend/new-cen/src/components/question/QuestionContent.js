@@ -5,7 +5,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 
-import { BASE_URL, QUESTION } from '../common/config/host-config';
+import { BASE_URL, QUESTION, AWS } from '../common/config/host-config';
 import { getToken, getUserId } from '../common/util/login-util';
 
 import QuestionComment from './QuestionComment';
@@ -17,11 +17,15 @@ const QuestionContent = () => {
     var questionId = useParams().questionId;
     
     const API_BASE_URL = BASE_URL + QUESTION;
+    const API_AWS_URL = BASE_URL + AWS;
+
     const ACCESS_TOKEN = getToken();
     const USER_ID = getUserId();        // 권한
 
     // 문의사항 api 데이터 
     const [questionContents, setQuestionContents] = useState([]);
+    const [questionFiles, setQuestionFiles] = useState([]);
+    const [questionFileCount, setQuestionFileCount] = useState(0);  // 파일 개수
 
     const [modal, setModal] = useState(false); 
 
@@ -52,8 +56,38 @@ const QuestionContent = () => {
         })
         .then(result => {
             setQuestionContents(result);
+
+            if (result.boardFileList.length !== 0) {
+                setQuestionFileCount(result.boardFileList.length);
+                setQuestionFiles(result.boardFileList);
+            }
         });
     }, [API_BASE_URL]);
+
+    // 파일 클릭 시 다운로드
+    const commentFileDown = (filePath) => {
+        fetch(`${API_AWS_URL}/files/${filePath}`, {
+            method: 'GET',
+            headers: headerInfo,
+        })
+        .then(res => {
+            if (res.status === 404) {
+                alert('다시 시도해주세요');
+                return;
+            }
+            else if (res.status === 406) {
+                alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
+                return;
+            } 
+            else if (res.status === 500) {
+                alert('서버가 불안정합니다');
+                return;
+            }
+            else {
+                window.location.href = res.url;
+            }
+        })
+    }
 
     // 모달 닫기
     const handleClose = () => {
@@ -139,6 +173,22 @@ const QuestionContent = () => {
                         }
                     </>
                 </div>
+
+                {/* 문의사항 파일 */}
+                {questionFiles.length !== 0 &&
+                    <div id='question_content_file_txt'>
+                        첨부파일({questionFileCount})
+                        {
+                            questionFiles.map((item) => {
+                                return (
+                                    <span key={item.boardFileId} onClick={() => commentFileDown(item.boardFilePath)} id='question_content_file_data'>
+                                        | {item.boardFileName}
+                                    </span>   
+                                )
+                            })
+                        }   
+                    </div>
+                }
 
                 {/* dangerouslySetInnerHTML : String형태를 html로 */}
                 <div>

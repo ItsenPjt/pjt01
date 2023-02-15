@@ -58,12 +58,27 @@
 }
 /* --button */
 
-#question_content_delete_btn {
+#question_content_delete_btn, #question_content_list {
     margin-left: 10px;
 }
 
-#question_content_list {
+/* 공지사항 파일 */
+#question_content_file_txt {
+    float: right;
+
+    color: rgba(11, 61, 155, 0.527);
+    border: 1px solid #aaa;
+    
+    border-radius: 10px;    
+    margin-top: 20px;
+
+    padding: 5px;
+}
+
+#question_content_file_data {
+    font-weight: 600;
     margin-left: 10px;
+    cursor: pointer;
 }
 
 /* 문의사항 내용 */

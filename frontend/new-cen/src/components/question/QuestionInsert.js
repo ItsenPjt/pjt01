@@ -6,7 +6,7 @@ import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 
 import { BASE_URL, QUESTION } from '../common/config/host-config';
-import { getToken } from '../common/util/login-util';
+import { getToken, getUserId } from '../common/util/login-util';
 
 import Editor from '../common/EditorComponent';
 
@@ -17,6 +17,7 @@ const QuestionInsert = () => {
     
     const API_BASE_URL = BASE_URL + QUESTION;
     const ACCESS_TOKEN = getToken();
+    const USER_ID = getUserId();
 
     // headers
     const headerInfo = {
@@ -47,13 +48,23 @@ const QuestionInsert = () => {
         });
     };
 
-    // 문의사항 등록 서버 요청  (POST에 대한 응답처리)
-    const handleInsertNotice = () => {
+    // 파일
+    var files = [];
+    const FileChangeHandler = e => {        
+        e.preventDefault();
+        files = e.target.files;  
+    }
+
+    // 문의사항 등록
+    const handleInsertQuestion = () => {
         if (questionData.boardTitle === '') {
             alert('제목을 입력해주세요.');
-        } else if (questionData.boardContent === '') {
+        } 
+        else if (questionData.boardContent === '') {
             alert('내용을 입력해주세요.');
-        } else {
+        } 
+        // 글만 입력되어있을 때 -> 문의사항 등록 서버 요청  (POST에 대한 응답처리)
+        else if (files.length === 0) {
             fetch(API_BASE_URL, {
                 method: 'POST',
                 headers: headerInfo,
@@ -64,7 +75,6 @@ const QuestionInsert = () => {
                     alert('로그인이 필요한 서비스입니다');
     
                     window.location.href = '/join';
-                    return;
                 } 
                 else if (res.status === 500) {
                     alert('서버가 불안정합니다');
@@ -74,6 +84,69 @@ const QuestionInsert = () => {
             })
             .then(() => {
                 window.location.href = "/question";       // 문의사항 목록 페이지로 이동
+            });
+        }
+        // 파일 등록 -> 문의사항 등록 서버 요청 후, 파일 등록 서버 요청
+        else {
+
+            // 게시물 등록
+            fetch(API_BASE_URL, {
+                method: 'POST',
+                headers: headerInfo,
+                body: JSON.stringify(questionData)
+            })
+            .then(res => {
+                if (res.status === 406) {
+                    if (ACCESS_TOKEN === '') {
+                        alert('로그인이 필요한 서비스입니다');
+                        window.location.href = '/join';
+                    } else {
+                        alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
+                        return;
+                    }
+                    return;
+                } 
+                else if (res.status === 500) {
+                    alert('서버가 불안정합니다');
+                    return;
+                }
+                return res.json();
+            })
+            .then((res) => {
+
+                console.log(res);
+
+                // foemData
+                var formData = new FormData(); 
+                for (let i = 0; i < files.length; i++) {
+                    formData.append('file', files[i]);
+                }
+
+                // 파일 등록
+                const newBoardId = res.boardId;
+                if (USER_ID === res.userId) {
+                    fetch(`${API_BASE_URL}/${newBoardId}/files`, {
+                        method: 'POST',
+                        headers: {
+                             'Authorization': 'Bearer ' + ACCESS_TOKEN
+                        },
+                        body: formData
+                    })
+                    .then(res => {
+                        if (res.status === 406) {
+                            alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
+                            return;
+                        } 
+                        else if (res.status === 500) {
+                            alert('서버가 불안정합니다');
+                            return;
+                        }
+                        return res.json();
+                    })
+                    .then(() => {
+                        window.location.href = "/question";       // 공지사항 목록 페이지로 이동
+                    });
+                }
             });
         }
     };
@@ -110,9 +183,14 @@ const QuestionInsert = () => {
                     <Editor onChange={contentChangeHandler} value={questionData.boardContent} />
                 </div>
 
-                <div id='question_insert_footer_div'>
-                    <Button onClick={handleShowCancelModal} className='btn_gray btn_size_100'>취소</Button>
-                    <Button onClick={handleInsertNotice} className='btn_orange btn_size_100' id='question_insert_btn'>등록</Button>
+                <div className='justify'>
+                    <>
+                        <input onChange={FileChangeHandler} type='file' name="question_content_file" id="question_content_file" multiple/>
+                    </>
+                    <div id='question_insert_footer_div'>
+                        <Button onClick={handleShowCancelModal} className='btn_gray btn_size_100'>취소</Button>
+                        <Button onClick={handleInsertQuestion} className='btn_orange btn_size_100' id='question_insert_btn'>등록</Button>
+                    </div>
                 </div>
             </div>
 
