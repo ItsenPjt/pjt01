@@ -70,7 +70,8 @@ const Header = () => {
 
     const noHeaderPathList = ['/join', '/signup', '/findinfo', '/signset'];
 
-    console.log(noHeaderPathList.includes(window.location.pathname));
+    // console.log(noHeaderPathList.includes(window.location.pathname));
+
     return (
         noHeaderPathList.includes(window.location.pathname)
         ? null 

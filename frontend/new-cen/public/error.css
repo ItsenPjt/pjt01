@@ -1,0 +1,24 @@
+
+
+@import 'reset.css';
+
+body {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+}
+
+.err {
+    width: 700px;
+    height: 500px;
+    
+}
+
+.errorPage {
+    width: 700px;
+
+}
+
+
