@@ -1,6 +1,6 @@
 #mypage_main {
     width: 30%;
-    height: 800px;
+    height: 600px;
 
     border: 1px solid #aaa;
     border-radius: 10px;
@@ -10,7 +10,7 @@
     box-shadow: 0 0 8px #aaa;
 
     /* 박스 x축 중앙 정렬 : margin 좌우값을 auto로 설정*/
-    margin: 100px auto; 
+    margin: 120px auto; 
 }
 
 /* 로고 이미지 위치 (가운데 정렬) */
