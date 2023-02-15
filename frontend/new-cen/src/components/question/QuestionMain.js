@@ -46,6 +46,7 @@ const QuestionMain = () => {
             })
             .then(result => {
                 if (!!result) {
+                    console.log(result);
                     setQuestions(result.content);
                 }
             });
@@ -70,11 +71,10 @@ const QuestionMain = () => {
                                 <th width="10%">이름</th>
                                 <th width="20%">제목</th>
                                 <th width="15%">날짜</th>
-                                <th width="15%">좋아요</th>
+                                <th width="15%">작성자</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {/* db 연결하여 map 함수 이용 */}
                             {
                                 questions.map((item) => {
                                     i++;

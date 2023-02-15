@@ -32,6 +32,7 @@ const NoticeComment = ( { noticeId }) => {      // NoticeContent.js 에서 받�
         commentContent: ''
     });
 
+    // 입력할 파일
     const [noticeInsertCommentFile, setNoticeInsertCommentFile] = useState({
         commentFilePath: ''
     })
@@ -85,13 +86,46 @@ const NoticeComment = ( { noticeId }) => {      // NoticeContent.js 에서 받�
     // 댓글 등록
     const handleInsertNoticeComment = () => {
 
-        // 댓글 입력되어있을 때 -> 댓글 등록 서버 요청 (POST에 대한 응답처리)
-        if (noticeInsertComment.commentContent !== '') {
+        // 댓글과 댓글 파일 모두 입력하지 않았을 때
+        if (noticeInsertComment.commentContent === '' && noticeInsertCommentFile.commentFilePath === '') {
+            alert('댓글 입력 혹은 파일을 선택해주세요');
+        }
+        // 댓글만 입력되어있을 때 -> 댓글 등록 서버 요청 (POST에 대한 응답처리)
+        else if (noticeInsertComment.commentContent !== '' && noticeInsertCommentFile.commentFilePath === '') {
             if (ACCESS_TOKEN === '' || ACCESS_TOKEN === null) {
                 alert('로그인이 필요한 서비스입니다.');
                 window.location.href = '/join';
             }
             else {
+                fetch(`${API_BASE_URL}/${noticeId}/comments`, {
+                    method: 'POST',
+                    headers: headerInfo,
+                    body: JSON.stringify(noticeInsertComment)
+                })
+                .then(res => {
+                    if (res.status === 406) {
+                        alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
+                        return;
+                    } 
+                    else if (res.status === 500) {
+                        alert('서버가 불안정합니다');
+                        return;
+                    }
+                    return res.json();
+                })
+                .then(() => {
+                    window.location.href = `/notice/${noticeId}`;       // 해당 공지사항 페이지 새로고침
+                });
+            }
+        } 
+        // 파일이 존재할 때 -> 댓글 등록 서버 요청 후, 댓글 파일 등록 서버 요청 (POST에 대한 응답처리)
+        else {
+            if (ACCESS_TOKEN === '' || ACCESS_TOKEN === null) {
+                alert('로그인이 필요한 서비스입니다.');
+                window.location.href = '/join';
+            }
+            else {
+                // 댓글 등록
                 fetch(`${API_BASE_URL}/${noticeId}/comments`, {
                     method: 'POST',
                     headers: headerInfo,
@@ -115,60 +149,34 @@ const NoticeComment = ( { noticeId }) => {      // NoticeContent.js 에서 받�
                     return res.json();
                 })
                 .then((res) => {
-                    console.log(res);
-                    //window.location.href = `/notice/${noticeId}`;       // 해당 공지사항 페이지 새로고침
+                    
+                    // 파일 등록
+                    const newCommentId = res.data[(res.data.length - 1)]["commentId"];
+
+                    if (USER_EMAIL === res.data[(res.data.length - 1)]["userEmail"]) {
+                        fetch(`${API_BASE_URL}/${noticeId}/comments/${newCommentId}/files`, {
+                            method: 'POST',
+                            headers: headerInfo,
+                            body: JSON.stringify(noticeInsertCommentFile)
+                        })
+                        .then(res => {
+                            if (res.status === 406) {
+                                alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
+                                return;
+                            } 
+                            else if (res.status === 500) {
+                                alert('서버가 불안정합니다');
+                                return;
+                            }
+                            return res.json();
+                        })
+                        .then(() => {
+                            window.location.href = `/notice/${noticeId}`;       // 해당 공지사항 페이지 새로고침
+                        });
+                    }
                 });
             }
-        } 
-
-
-        // 파일이 존재할 때 -> 댓글 파일 등록 서버 요청 (POST에 대한 응답처리)
-        if (noticeInsertCommentFile.commentFilePath !== '') {
-            // if (ACCESS_TOKEN === '' || ACCESS_TOKEN === null) {
-            //     alert('로그인이 필요한 서비스입니다.');
-            //     window.location.href = '/join';
-            // }
-            // else {
-            //     fetch(`${API_BASE_URL}/${noticeId}/comments`, {
-            //         method: 'POST',
-            //         headers: headerInfo,
-            //         body: JSON.stringify(noticeInsertComment)
-            //     })
-            //     .then(res => {
-            //         if (res.status === 406) {
-            //             if (ACCESS_TOKEN === '') {
-            //                 alert('로그인이 필요한 서비스입니다');
-            //                 window.location.href = '/join';
-            //             } else {
-            //                 alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
-            //                 return;
-            //             }
-            //             return;
-            //         } 
-            //         else if (res.status === 500) {
-            //             alert('서버가 불안정합니다');
-            //             return;
-            //         }
-            //         return res.json();
-            //     })
-            //     .then(() => {
-            //         window.location.href = `/notice/${noticeId}`;       // 해당 공지사항 페이지 새로고침
-            //     });
-            //}
         }
-
-        if (noticeInsertComment.commentContent === '' && noticeInsertCommentFile.commentFilePath === '') {
-            alert('댓글 입력 혹은 파일을 선택해주세요');
-        }
-       
-    }
-
-    // 댓글 수정 클릭 시
-    const handleUpdateNoticeComment = (commentId, commentContent) => {
-        console.log(commentId);
-        console.log(commentContent);
-
-
     }
 
     // 모달 닫기
@@ -220,8 +228,8 @@ const NoticeComment = ( { noticeId }) => {      // NoticeContent.js 에서 받�
                     <div id='notice_content_comment_txt'>댓글 - {USER_NAME}</div>
                     <textarea onChange={commentChangeHandler} value={noticeInsertComment.commentContent} rows="3" id='notice_content_comment_insert' placeholder='댓글 입력'/>
                     <div className='justify'>
-                        <input onChange={commentFileChangeHandler}  type="file" name="notice_content_comment_file" id="notice_content_comment_file"/>
-                        <Button onClick={handleInsertNoticeComment}  className='btn_orange'>등록</Button>
+                        <input onChange={commentFileChangeHandler} type="file" name="notice_content_comment_file" id="notice_content_comment_file"/>
+                        <Button onClick={handleInsertNoticeComment} className='btn_orange'>등록</Button>
                     </div>
                 </div>
 
@@ -233,16 +241,12 @@ const NoticeComment = ( { noticeId }) => {      // NoticeContent.js 에서 받�
                                     <div>
                                         <span id='notice_content_comment_writer'>{item.commentWriter}</span> 
                                         <span id='notice_content_comment_detail'>| {item.commentContent}</span>
+                                        {item.commentFileList.length !== 0  && <span id='notice_content_comment_detail'>- {item.commentFileList}</span>}
+                                        <span id='notice_content_comment_date'>- {item.commentCreateDate}</span>
                                     </div>
 
                                     {/* 내가 등록한 댓글인지 아닌지 판단 필요 */}
-                                    { USER_EMAIL === item.userEmail 
-                                        ?   <>
-                                                <Button onClick={() => handleUpdateNoticeComment(item.commentId, item.commentContent)} className='btn_gray' id='notice_content_comment_update'>수정하기</Button>
-                                                <Button onClick={() => handleShowDeleteModal(item.commentId)} className='btn_orange' id='notice_content_comment_delete'>삭제하기</Button>
-                                            </>
-                                        :   ''
-                                    }
+                                    { USER_EMAIL === item.userEmail && <Button onClick={() => handleShowDeleteModal(item.commentId)} className='btn_gray' id='notice_content_comment_delete'>X</Button>}
                                 </div>   
                             )
                         })

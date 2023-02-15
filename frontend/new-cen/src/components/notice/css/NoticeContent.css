@@ -58,11 +58,7 @@
 }
 /* --button */
 
-#notice_content_delete_btn {
-    margin-left: 10px;
-}
-
-#notice_content_list {
+#notice_content_delete_btn, #notice_content_list {
     margin-left: 10px;
 }
 
@@ -147,11 +143,24 @@
     float: left;
 }
 
-#notice_content_comment_update, #notice_content_comment_delete {    /* 댓글 수정, 삭제하기 */
+#notice_content_comment_date {  /* 댓글 작성 날짜 */
+    height: 60px;
+    
+    padding: 10px 0px;
+    margin-top: 2px;
+    margin-left: 5px;
+
+    font-size: 12px;
+    color: gray;
+
+    float: left;
+}
+
+#notice_content_comment_delete {    /* 댓글 삭제하기 */
     margin-top: 10px;
     margin-left: 10px;
-    font-size: 11px;
-    width: 70px;
+
+    font-size: 10px;
 }
 
 /* 댓글 - 파일첨부 */
