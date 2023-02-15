@@ -210,9 +210,10 @@ public class UserService {
     public UserDeleteResponseDTO delete(
             final String deleteId) {
 
+        String delEmail;
         try {
 
-            String delEmail = userRepository.selectUserEmail(deleteId);
+            delEmail = userRepository.selectUserEmail(deleteId);
 
             userRepository.deleteById(deleteId);  // 로그인된 회원 UUID로 회원정보 삭제
             log.info("User Delete Complete - UserId : {}", deleteId);
@@ -234,7 +235,8 @@ public class UserService {
 
         }
 
-        Optional<ValidUserEntity> endUser = validUserRepository.findById(deleteId);
+        Optional<ValidUserEntity> endUser = validUserRepository.selectValidUserEmail(delEmail);
+        log.info("삭제가 완료되어 존재하지 않는 이메일입니다. - ValidUserEmail : {}", delEmail);
 
         String message = "";
 

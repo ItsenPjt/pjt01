@@ -188,7 +188,8 @@ public class UserApiController {
             @AuthenticationPrincipal String userId  // @AuthenticationPrincipal 로그인 정보를 받아옴
     ) {
 
-        log.info("/api/user/{} DELETE request", userId);
+        log.info("/api/user/signout/{} DELETE request", userId);
+
 
         if (userId == null || userId.trim().equals("")) {
             return ResponseEntity

@@ -75,7 +75,7 @@ const UserJoin = () => {
 
     // 비밀번호 찾기 버튼 클릭 시
     const onFindPwPage = () => {
-        window.location.href = "/findpw";
+        window.location.href = "/findinfo";
     };
 
     // 회원가입 버튼 클릭 시

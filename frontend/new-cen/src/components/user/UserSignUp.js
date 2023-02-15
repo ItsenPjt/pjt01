@@ -149,7 +149,8 @@ const UserSignUp = () => {
 
     // 유저 이름 입력란 검증 체인지 이벤트 핸들러
     const userNameHandler = e => {
-        console.log(e.target.value);
+
+        //console.log(e.target.value);
 
         const nameRegex = /^[가-힣]{2,10}$/;
 
@@ -292,7 +293,7 @@ const UserSignUp = () => {
             })
             .then(res => {
                 if (res.status === 200) {
-                    alert('newcen.co.kr : 회원가입을 축하합니다. 🎉');
+                    alert('회원가입을 축하합니다. 🎉');
                     // 메인 페이지로 리다이렉트
                     window.location.href = '/';
                 } else {
