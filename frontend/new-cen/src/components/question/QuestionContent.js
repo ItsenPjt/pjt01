@@ -51,7 +51,6 @@ const QuestionContent = () => {
             return res.json();
         })
         .then(result => {
-            console.log(result);
             setQuestionContents(result);
         });
     }, [API_BASE_URL]);

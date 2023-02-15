@@ -73,9 +73,7 @@ const NoticeComment = ( { noticeId }) => {      // NoticeContent.js 에서 받�
 
     // 파일
     var files = [];
-    const FileChangeHandler = e => {
-        //files = [...e.target.files]; 
-        
+    const FileChangeHandler = e => {        
         e.preventDefault();
         files = e.target.files[0];    
     }
@@ -89,7 +87,7 @@ const NoticeComment = ( { noticeId }) => {      // NoticeContent.js 에서 받�
         }
 
         // 댓글만 입력되어있을 때 -> 댓글 등록 서버 요청 (POST에 대한 응답처리)
-        else if (noticeInsertComment.commentContent !== '' && files.length === 0) {// 댓글만 입력되어있을 때 -> 댓글 등록 서버 요청 (POST에 대한 응답처리)
+        else if (noticeInsertComment.commentContent !== '' && files.length === 0) {
             if (ACCESS_TOKEN === '' || ACCESS_TOKEN === null) {
                 alert('로그인이 필요한 서비스입니다.');
                 window.location.href = '/join';
