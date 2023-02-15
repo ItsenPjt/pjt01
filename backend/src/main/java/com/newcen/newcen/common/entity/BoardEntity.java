@@ -60,18 +60,17 @@ public class BoardEntity {
     private String userId;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE,orphanRemoval = true)
-    @JoinColumn(name="comment_id")
+    @JoinColumn(name="board_id")
+    @JsonIgnore
     private final List<CommentEntity> commentEntityList = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE,orphanRemoval = true)
     @JoinColumn(name="board_id")
     private final List<BoardFileEntity> boardFileEntityList = new ArrayList<>();
-
     public void updateBoard(String boardTitle, String boardContent){
         this.boardContent = boardContent;
         this.boardTitle = boardTitle;
     }
-
     public void setUserId(String userId) {
         this.userId = userId;
     }

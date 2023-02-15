@@ -31,6 +31,9 @@ public class BoardFileEntity {
     @Column(name="board_id")
     private Long boardId;
 
+    @Column(name="board_file_name")
+    private String boardFileName;
+
     public  void setBoardFilePath(String boardFilePath){
         this.boardFilePath = boardFilePath;
     }

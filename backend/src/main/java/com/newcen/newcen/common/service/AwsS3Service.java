@@ -32,7 +32,6 @@ public class AwsS3Service {
 
     private final AmazonS3 amazonS3;
 
-
     //s3 파일 업로드
     public List<String> uploadFile(List<MultipartFile> multipartFile) {
         List<String> fileNameList = new ArrayList<>();
@@ -50,17 +49,14 @@ public class AwsS3Service {
             } catch(IOException e) {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.");
             }
-
             fileNameList.add(fileName);
         });
-
         return fileNameList;
     }
 
     public void deleteFile(String fileName) {
         amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileName));
     }
-
     private String createFileName(String fileName) { // 먼저 파일 업로드 시, 파일명을 난수화하기 위해 random으로 돌립니다.
         return UUID.randomUUID().toString().concat(getFileExtension(fileName));
     }
@@ -75,6 +71,7 @@ public class AwsS3Service {
 
     /**
      * S3 bucket 파일 다운로드
+     *
      */
     public ByteArrayOutputStream downloadFile(String storedFileName) throws IOException {
         S3Object o = amazonS3.getObject(new GetObjectRequest(bucket, storedFileName));

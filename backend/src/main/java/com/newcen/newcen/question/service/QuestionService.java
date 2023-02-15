@@ -114,6 +114,10 @@ public class QuestionService {
     public boolean deleteQuestion(String userId, Long boardId){
         BoardEntity boardGet = questionsRepositorySupport.findBoardByUserIdAndBoardId(userId,boardId);
         UserEntity user = userRepository.findById(userId).get();
+        List<BoardFileEntity> boardFileEntityList = boardFileRepository.findByBoardId(boardId);
+        if (boardFileEntityList.size() !=0 ){
+            boardFileEntityList.forEach(t-> amazonS3.deleteObject(new DeleteObjectRequest(bucket, t.getBoardFilePath())));
+        }
         if (!Objects.equals(boardGet.getUserId(), user.getUserId())){
             throw new RuntimeException("본인이 작성한 글이 아닙니다.");
         }
@@ -122,7 +126,7 @@ public class QuestionService {
     }
 
     // 게시물 파일 등록
-    public QuestionsOneResponseDTO createFile(String userId, Long boardId, String boardFilePath){
+    public QuestionsOneResponseDTO createFile(String filename ,String userId, Long boardId, String boardFilePath){
         UserEntity user = null;
         user = userRepository.findById(userId).get();
         BoardEntity board = questionsRepositorySupport.findBoardByUserIdAndBoardId(userId,boardId);
@@ -136,8 +140,10 @@ public class QuestionService {
         BoardFileEntity boardFileEntity = BoardFileEntity.builder()
                 .boardFilePath(boardFilePath)
                 .boardId(boardId)
+                .boardFileName(filename)
                 .build();
         BoardFileEntity savedFileEntity = questionsFileRepository.save(boardFileEntity);
+
         board.getBoardFileEntityList().add(savedFileEntity);
         BoardEntity savedBoard = questionsRepository.save(board);
         return new QuestionsOneResponseDTO(savedBoard);
@@ -168,7 +174,7 @@ public class QuestionService {
         }
         try {
             questionsFileRepository.deleteById(boardFileId);
-//            amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileName));
+            amazonS3.deleteObject(new DeleteObjectRequest(bucket, boardFile.getBoardFilePath()));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

@@ -30,6 +30,8 @@ public class CommentFileEntity {
     @Column(name="comment_file_user_email")
     private String userEmail;
 
+    @Column(name="comment_file_name")
+    private String commentFileName;
     public void updatePath(String commentFilePath){
         this.commentFilePath = commentFilePath;
     }
