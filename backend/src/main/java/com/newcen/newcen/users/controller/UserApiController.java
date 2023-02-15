@@ -154,7 +154,7 @@ public class UserApiController {
 
     // 익명 사용자 정보 수정 요청
     @RequestMapping(
-            value = "/api/user/findinfo"
+            value = "/api/user/findset"
             , method = {RequestMethod.PUT, RequestMethod.PATCH}
     )
     public ResponseEntity<?> updateAnonymous(
@@ -168,7 +168,7 @@ public class UserApiController {
                     .body(result.getFieldError());
         }
 
-        log.info("/api/user/findinfo {} {} request", requestDTO, request.getMethod());
+        log.info("/api/user/findset {} {} request", requestDTO, request.getMethod());
 
         try {
             AnonymousReviseResponseDTO responseDTO = userService.update(requestDTO);

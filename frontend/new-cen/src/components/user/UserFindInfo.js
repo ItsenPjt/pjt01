@@ -285,7 +285,7 @@ const UserFindInfo = () => {
     const anonymousUserUpdate = e => {
 
         if (isValid()) {
-            fetch(`${API_BASE_URL}/findinfo`, {
+            fetch(`${API_BASE_URL}/findset`, {
                 method: 'PATCH',
                 headers: {
                     'content-type': 'application/json'
