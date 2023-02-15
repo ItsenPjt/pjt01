@@ -34,7 +34,7 @@ const QuestionComment = ( { questionId } ) => { // QuestionContent.js 에서 받
 
     // 입력할 파일
     const [questionInsertCommentFile, setQuestionInsertCommentFile] = useState({
-        commentFilePath: ''
+        commentFilePath: ''     
     })
 
     const commentChangeHandler = e => {
@@ -149,9 +149,9 @@ const QuestionComment = ( { questionId } ) => { // QuestionContent.js 에서 받
                 .then((res) => {
                     
                     // 파일 등록
-                    const newCommentId = res.data[(res.data.length - 1)]["commentId"];
+                    const newCommentId = res.data[0]["commentId"];
 
-                    if (USER_EMAIL === res.data[(res.data.length - 1)]["userEmail"]) {
+                    if (USER_EMAIL === res.data[0]["userEmail"]) {
                         fetch(`${API_BASE_URL}/${questionId}/comments/${newCommentId}/files`, {
                             method: 'POST',
                             headers: headerInfo,
@@ -239,8 +239,8 @@ const QuestionComment = ( { questionId } ) => { // QuestionContent.js 에서 받
                                     <div>
                                         <span id='question_content_comment_writer'>{item.commentWriter}</span> 
                                         <span id='question_content_comment_detail'>| {item.commentContent}</span>
-                                        {item.commentFileList.length !== 0  && <span id='question_content_comment_detail'>- {item.commentFileList}</span>}
-                                        <span id='question_content_comment_date'>- {item.commentCreateDate}</span>
+                                        {item.commentFileList.length !== 0  && <span id='question_content_comment_detail_file'> {item.commentFileList[0].commentFilePath}</span>}
+                                        <span id='question_content_comment_detail_date'>- {item.commentCreateDate}</span>
                                     </div>
 
                                     {/* 내가 등록한 댓글인지 아닌지 판단 필요 */}

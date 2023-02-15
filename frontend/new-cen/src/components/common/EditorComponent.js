@@ -13,20 +13,20 @@ class EditorComponent extends Component {
         toolbar: [          // 어떤 기능을 사용할지 설정
             //[{ 'font': [] }],     // 웹사이트 기본 폰트가 적용되도록 주석 처리
             [{ 'header': [1, 2, false] }],
-            ['bold', 'italic', 'underline','strike', 'blockquote'],
+            ['bold', 'italic', 'underline','strike'],       // blockquote
             [{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}],
-            ['link', 'image'],
+            // ['link', 'image'],
             [{ 'align': [] }, { 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
-            ['clean']
+            // ['clean']
         ],
       }
     
       formats = [
             //'font',
             'header',
-            'bold', 'italic', 'underline', 'strike', 'blockquote',
+            'bold', 'italic', 'underline', 'strike',    // blockquote
             'list', 'bullet', 'indent',
-            'link', 'image',
+            // 'link', 'image',
             'align', 'color', 'background'    
       ]
 

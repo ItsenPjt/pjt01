@@ -6,7 +6,7 @@ import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 
 import { BASE_URL, NOTICE } from '../common/config/host-config';
-import { getToken } from '../common/util/login-util';
+import { getToken, getUserId } from '../common/util/login-util';
 
 import Editor from '../common/EditorComponent';
 import CommentRadioBtn from '../common/CommentRadioBtn';
@@ -18,7 +18,8 @@ const NoticeInsert = () => {
 
     const API_BASE_URL = BASE_URL + NOTICE;
     const ACCESS_TOKEN = getToken();
-    
+    const USER_ID = getUserId();
+
     // headers
     const headerInfo = {
         'content-type': 'application/json',
@@ -31,7 +32,7 @@ const NoticeInsert = () => {
         boardCommentIs: 'ON',      // 공지사항 댓글 여부 (default: ON)
         boardContent: '',        // 공지사항 내용
     });
-
+    
     // title
     const titleChangeHandler = e => {
         setNoticeData({
@@ -54,16 +55,17 @@ const NoticeInsert = () => {
             ...noticeData,        // 기존 noticeData 복사 후 boardContent 추가
             boardContent: value,
         });
-        console.log(noticeData.boardContent);
     };
 
     // 공지사항 등록 서버 요청  (POST에 대한 응답처리)
     const handleInsertNotice = () => {
         if (noticeData.boardTitle === '') {
             alert('제목을 입력해주세요.');
-        } else if (noticeData.boardContent === '') {
+        } 
+        else if (noticeData.boardContent === '') {
             alert('내용을 입력해주세요.');
         }
+        // 파일 등록 없이 글만 등록한다면
         else {
             fetch(API_BASE_URL, {
                 method: 'POST',
@@ -92,7 +94,62 @@ const NoticeInsert = () => {
                     window.location.href = "/notice";       // 공지사항 목록 페이지로 이동
                 }
             });
-        }
+        } 
+        // 파일 등록
+        //else {
+            // // 게시물 등록
+            // fetch(API_BASE_URL, {
+            //     method: 'POST',
+            //     headers: headerInfo,
+            //     body: JSON.stringify(noticeData)
+            // })
+            // .then(res => {
+            //     if (res.status === 406) {
+            //         if (ACCESS_TOKEN === '') {
+            //             alert('로그인이 필요한 서비스입니다');
+            //             window.location.href = '/join';
+            //         } else {
+            //             alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
+            //             return;
+            //         }
+            //         return;
+            //     } 
+            //     else if (res.status === 500) {
+            //         alert('서버가 불안정합니다');
+            //         return;
+            //     }
+            //     return res.json();
+            // })
+            // .then((res) => {
+
+            //     const newBoardId = res.noticeDetails[0]["boardId"];
+            //     if (USER_ID === res.noticeDetails[0]["userId"]) {
+            //         fetch(`${API_BASE_URL}/${newBoardId}/files`, {
+            //             method: 'POST',
+            //             headers: {
+            //                  'Authorization': 'Bearer ' + ACCESS_TOKEN,
+            //                  "Content-Type": `multipart/form-data`
+            //             },
+            //             body: formData
+            //         })
+            //         .then(res => {
+            //             if (res.status === 406) {
+            //                 alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
+            //                 return;
+            //             } 
+            //             else if (res.status === 500) {
+            //                 alert('서버가 불안정합니다');
+            //                 return;
+            //             }
+            //             return res.json();
+            //         })
+            //         .then((res) => {
+            //             console.log(res)
+            //             //window.location.href = "/notice";       // 공지사항 목록 페이지로 이동
+            //         });
+            //     }
+            // });
+        //}
     };
 
     // 모달 닫기
@@ -130,9 +187,16 @@ const NoticeInsert = () => {
                     <Editor onChange={contentChangeHandler} value={noticeData.boardContent} />
                 </div>
 
-                <div id='notice_insert_footer_div'>
-                    <Button onClick={handleShowCancelModal} className='btn_gray btn_size_100'>취소</Button>
-                    <Button onClick={handleInsertNotice} className='btn_orange btn_size_100' id='notice_insert_btn'>등록</Button>
+                <div className='justify'>
+                    <>
+                    <form name="이 폼의 이름" action="이 데이터들을 받을 파일" method="post" encType="multipart/form-data">
+                        <input type='file' name="notice_content_file" id="notice_content_file" multiple/>
+                    </form>
+                    </>
+                    <div id='notice_insert_footer_div'>
+                        <Button onClick={handleShowCancelModal} className='btn_gray btn_size_100'>취소</Button>
+                        <Button onClick={handleInsertNotice} className='btn_orange btn_size_100' id='notice_insert_btn'>등록</Button>
+                    </div>
                 </div>
             </div>
 
