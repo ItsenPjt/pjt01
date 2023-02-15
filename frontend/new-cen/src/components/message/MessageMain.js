@@ -20,17 +20,25 @@ const MessageMain = () => {
     const API_BASE_URL = BASE_URL + MESSAGE;
     const ACCESS_TOKEN = getToken();
 
-    // mode값 
-    const [mode, setMode] = useState(); // 초기값?
-
-    const changeMode = (value) => {
-        setMode(value);
-        reloadMessages();
+    // headers
+    const headerInfo = {
+        'content-type': 'application/json',
+        'Authorization': 'Bearer ' + ACCESS_TOKEN
     }
 
-    const reloadMessages = () => {
+    // 메세지 api 데이터 
+    const [messages, setMessages] = useState([]);
 
-        fetch(`${API_BASE_URL}?mode=${mode}&page=&size=&sort=`, {
+    // 전체 선택 여부
+    const [selectAll, setSelectAll] = useState(true);
+
+    // mode값 
+    const [mode, setMode] = useState('received'); // 초기값?
+
+    const changeMode = (value) => {
+
+        setMode(value);
+        fetch(`${API_BASE_URL}?mode=${value}`, {
             method: 'GET',
             headers: headerInfo
         })
@@ -48,23 +56,19 @@ const MessageMain = () => {
         })
         .then(res => {
             setMessages(res.content);
-        });
-        console.log(mode);
+            
+        })
+        .then(() => {
+            setSelectAll(true);
+            let i = 0;
+            const check_boxes = document.querySelectorAll(".message_select_checkbox");
+            while(i < check_boxes.length) {
+                check_boxes[i].checked = false;
+                i++;
+            }
+        })
     }
  
-    // 메세지 api 데이터 
-    const [messages, setMessages] = useState([]);
-
- 
-
-    // headers
-    const headerInfo = {
-        'content-type': 'application/json',
-        'Authorization': 'Bearer ' + ACCESS_TOKEN
-    }
-
-    // 전체 선택 여부
-    const [selectAll, setSelectAll] = useState(true);
 
     // 전체 선택 / 해제
     const handleSelectAll = () => {
@@ -72,7 +76,6 @@ const MessageMain = () => {
         const check_boxes = document.querySelectorAll(".message_select_checkbox");
         if(selectAll) {
             while(i < check_boxes.length) {
-                console.log(check_boxes[i]);
                 check_boxes[i].checked = true;
                 i++;
             }
@@ -86,16 +89,27 @@ const MessageMain = () => {
         }
     }
 
+
     // 받은 메세지 모달
     const [receiveModal, setReceiveModal] = useState(false); 
 
     // 답장하기 모달
     const [replyModal, setReplyModal] = useState(false); 
 
+
     // 모달 닫기
     const handleClose = () => {
         setReceiveModal(false);
         setReplyModal(false);
+        setMessageDetail({
+            messageTitle: '',
+            messageContent: '',
+            username: ''
+        });
+        setReplyInfo({
+            userId: '',
+            username: ''
+        })
     };
 
     // 제목 클릭 시 받은 메세지 상세 모달
@@ -103,11 +117,171 @@ const MessageMain = () => {
         setReceiveModal(true);     // 받은 메세지 모달 열기
     }
 
+    // 메세지 상세
+    const [messageDetail, setMessageDetail] = useState({
+        messageTitle: '',
+        messageContent: '',
+        username: '',
+        userId: ''
+    });
+
+    const handleMessageDetail = (messageId) => {
+
+        fetch(`${API_BASE_URL}/${messageId}?mode=${mode}`, {
+            headers: headerInfo
+        })
+        .then(res => {
+            if(res.status === 400) {
+                alert("잘못된 요청 값 입니다")
+                return; 
+            }else if(res.status === 401) {
+                alert("세션이 만료되었습니다")
+                window.location.href = "/";
+            }else if(res.status === 404) {
+                alert("해당 메세지를 찾을 수 없습니다");
+                return;
+            }
+            return res.json();
+        })
+        .then(res => {
+            if(mode === 'received') {
+                setMessageDetail({
+                    messageTitle: res.messageTitle,
+                    messageContent: res.messageContent,
+                    username: res.messageSender,
+                    userId: res.senderId
+                })
+            }else if(mode === 'sent') {
+                setMessageDetail({
+                    messageTitle: res.messageTitle,
+                    messageContent: res.messageContent,
+                    username: res.messageReceiver
+                })
+            }
+
+        })
+
+
+    }
+
+    // 답장하기 수신인 정보
+    const [replyInfo, setReplyInfo] = useState({
+        userId: '',
+        username: ''
+    });
+
+
     // 답장하기 상세 모달
     const handleShowReplyModal = () => {
+        setReplyInfo({
+            userId: messageDetail.userId,
+            username: messageDetail.username
+        })
         setReceiveModal(false);     // 받은 메세지 모달은 닫기
         setReplyModal(true);     // 답장하기 모달 열기
     }
+
+    // 답장하기 메세지
+    const [replyMessage, setReplyMessage] = useState({
+        messageTitle: '',
+        messageContent: ''
+    })
+
+    // 답장하기 제목 저장
+    const saveReplyTitle = (e) => {
+        setReplyMessage({
+            ...replyMessage,
+            messageTitle: e.target.value
+        });
+    }
+
+    // 답장하기 내용 저장 
+    const saveReplyContent = (e) => {
+        setReplyMessage({
+            ...replyMessage,
+            messageContent: e.target.value
+        });
+    }
+
+    // 답장 보내기 
+    const sendReplyMessage = () => {
+        if(replyMessage.messageTitle.trim() === '') {
+            alert('제목을 입력하세요');
+            return;
+        }else if(replyMessage.messageContent.trim() === '') {
+            alert('내용을 입력하세요');
+            return;
+        }else {
+            fetch(`${API_BASE_URL}?receiverList=${replyInfo.userId}`, {
+                method: 'POST',
+                headers: headerInfo,
+                body: JSON.stringify(replyMessage)
+            })
+            .then(res => {
+                if(res.status === 400) {
+                    alert("잘못된 요청 값 입니다")
+                    return; 
+                }else if(res.status === 401) {
+                    alert("세션이 만료되었습니다")
+                    window.location.href = "/";
+                }else if(res.status === 404) {
+                    alert("수신인 목록을 다시 확인해주세요");
+                    return;
+                }
+                
+                return res.json();
+            })
+            .then(res => {
+                if(res) {
+                    alert("메세지를 전송했습니다😊");
+                    handleClose();
+                    changeMode('sent');
+                }
+            })
+        }
+    }
+
+    // 선택 메세지 삭제
+    const handleDeleteMessage = () => {
+
+        const deleteMessageList = [];
+
+        const messageSelectCheckBox = document.querySelectorAll(".message_select_checkbox");
+        
+        messageSelectCheckBox.forEach((checkBox) => {
+            if(checkBox.checked) {
+                deleteMessageList.push(checkBox.value);
+            }
+        })
+
+        if(deleteMessageList.length === 0) {
+            alert("삭제 할 메세지를 선택해주세요");
+            return;
+        }else {
+            fetch(`${API_BASE_URL}?messageId=${deleteMessageList}`, {
+                method: 'DELETE',
+                headers: headerInfo,
+            })
+            .then(res => {
+                if(res.status === 401) {
+                    alert('세션이 만료되었습니다');
+                    window.location.href = "/";
+                }else if(res.status === 400) {
+                    alert('존재하지 않는 메세지 입니다');
+                    return;
+                }
+                return res.json();
+            })
+            .then(res => {
+                if(res) {
+                    alert(`${deleteMessageList.length}개의 메세지를 삭제했습니다😊`);
+                    changeMode(mode);
+                }
+            })
+        }
+
+    }
+    
 
     // 렌더링 되자마자 할 일 => 메세지 api GET 목록 호출
     useEffect(() => {
@@ -135,12 +309,12 @@ const MessageMain = () => {
     return (
         <>
             <div id='message_btn_main'>
-                <MessageButton changeMode={changeMode}/>
+                <MessageButton changeMode={changeMode} handleDeleteMessage={handleDeleteMessage}/>
                 <div id='message_table_main'>
                     <Table responsive id='message_table'>
                         <thead>
                             <tr id='message_main_thead'>
-                                <th width="10%">보낸 사람</th>
+                                {(mode==='received'&& <th width="10%">보낸 사람</th>) || (mode==='sent'&& <th width="10%">받는 사람</th>)} 
                                 <th width="20%">제목</th>
                                 <th width="15%">날짜</th>
                                 <th width="15%" id='message_main_all_select' onClick={handleSelectAll}>전체 선택</th>
@@ -151,11 +325,11 @@ const MessageMain = () => {
                             {   
                                 messages.map((item) => {
                                     return (
-                                        <tr key={item.messageId} id='message_main_tbody'>
-                                            <td>{item.messageSender}</td>
+                                        <tr key={item.messageId} id='message_main_tbody' onClick={(messageId) => handleMessageDetail(item.messageId)}>
+                                            {(mode==='received' && <td>{item.messageSender}</td>) || (mode==='sent' && <td>{item.messageReceiver}</td>) }
                                             <th id='message_main_tbody_th' onClick={handleShowReceiveModal}>{item.messageTitle}</th>
                                             <td>{item.messageSenddate}</td>
-                                            <td><input type='checkbox' id='message_select_checkbox' /></td>
+                                            <td><input type='checkbox' defaultValue={item.messageId} className='message_select_checkbox' /></td>
                                         </tr>
                                     )
                                 })     
@@ -170,16 +344,18 @@ const MessageMain = () => {
                 <Modal.Body>
                     <div id='message_send_modal_body'>
                         <Form.Group className='mb-3'>
-                            <Form.Label id='message_form_label'>보낸 사람</Form.Label>
-                            <Form.Control type='text' className='message_form_control'/>
+                            
+                            {(mode === 'received' && <Form.Label id='message_form_label'>보낸 사람</Form.Label>)} 
+                            {(mode === 'sent' && <Form.Label id='message_form_label'>받는 사람</Form.Label>)}
+                            <Form.Control type='text' className='message_form_control' defaultValue={messageDetail.username} disabled/>
                         </Form.Group>
                         <Form.Group className='mb-3'>
                             <Form.Label id='message_form_label'>제목</Form.Label>
-                            <Form.Control type='text' className='message_form_control'/>
+                            <Form.Control type='text' className='message_form_control' defaultValue={messageDetail.messageTitle} disabled/>
                         </Form.Group>
                         <Form.Group className='mb-3'>
                             <Form.Label id='message_form_label'>내용</Form.Label>
-                            <textarea rows="5" className="form-control" id='message_send_content'/>
+                            <textarea rows="5" className="form-control" id='message_send_content' defaultValue={messageDetail.messageContent} disabled/>
                         </Form.Group>
                     </div>
 
@@ -187,9 +363,14 @@ const MessageMain = () => {
                         <Button className='btn_gray notice_btn btn_size_100' onClick={handleClose}>
                             닫기
                         </Button>
-                        <Button className='btn_orange notice_btn btn_size_100' id="notice_content_delete_btn" onClick={handleShowReplyModal}>
-                            답장하기
-                        </Button>
+                        {
+                            (   mode === 'received' && 
+                                <Button className='btn_orange notice_btn btn_size_100' id="notice_content_delete_btn" onClick={handleShowReplyModal}>
+                                    답장하기
+                                </Button> 
+                            )
+                        }
+                  
                     </div>
                 </Modal.Body>
             </Modal>
@@ -199,15 +380,15 @@ const MessageMain = () => {
                     <div id='message_send_modal_body'>
                         <Form.Group className='mb-3'>
                             <Form.Label id='message_form_label'>받는 사람</Form.Label>
-                            <Form.Control autoFocus type='text' className='message_form_control' placeholder='받는 사람' id="message_receiver"/>
+                            <Form.Control autoFocus type='text' className='message_form_control' placeholder='받는 사람' id="message_receiver" defaultValue={replyInfo.username} disabled/>
                         </Form.Group>
                         <Form.Group className='mb-3'>
                             <Form.Label id='message_form_label'>제목</Form.Label>
-                            <Form.Control type='text' className='message_form_control' placeholder='제목' id="message_title"/>
+                            <Form.Control type='text' className='message_form_control' placeholder='제목' onChange={(e) => saveReplyTitle(e)}/>
                         </Form.Group>
                         <Form.Group className='mb-3'>
-                            <Form.Label id='message_form_label'>내용</Form.Label>
-                            <textarea rows="5" className="form-control" id='message_content'/>
+                            <Form.Label id='message_form_label'>내용</Form.Label >
+                            <textarea rows="5" className="form-control" onChange={(e) => saveReplyContent(e)}/>
                         </Form.Group>
                     </div>
 
@@ -215,7 +396,7 @@ const MessageMain = () => {
                         <Button className='btn_gray notice_btn btn_size_100' onClick={handleClose}>
                             취소
                         </Button>
-                        <Button className='btn_orange notice_btn btn_size_100' id="notice_content_delete_btn">
+                        <Button className='btn_orange notice_btn btn_size_100' id="notice_content_delete_btn" onClick={sendReplyMessage}>
                             보내기
                         </Button>
                     </div>

@@ -84,3 +84,35 @@
 #message_send_modal_footer {
     text-align: center;
 }
+
+
+#receiver_list_container {
+    margin-top: 10px;
+    max-height: 70px;
+    overflow-y: scroll;
+}
+
+.receiver_list_option:hover {
+    cursor: pointer;
+    background-color: #d0d0d0d0;
+}
+
+#message_receiver_list {
+    margin-top: 10px;
+    overflow-y: scroll;
+    max-height: 50px;
+}
+
+.receiver_button {
+    margin-right: 5px;
+    border: 1px solid black;
+    border-radius: 5px;
+    font-size: 0.75em;
+}
+
+
+
+
+
+
+
