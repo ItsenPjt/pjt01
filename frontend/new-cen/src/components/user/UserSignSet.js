@@ -276,6 +276,12 @@ const UserSignSet = () => {
     };
     
 
+
+    // 로고 클릭 시
+    const onLogo = () => {
+        window.location.href = "/";
+    };
+
     // 취소 버튼 클릭 시(헤더없는 경우)
     const onLoginPage = () => {
         window.location.href = "/";
@@ -293,12 +299,12 @@ const UserSignSet = () => {
         setModal(true);     // 모달 열기
     }
 
-    
+
     return (
         <>
             <div id='mypage_main'>
                 <div id='mypage_logo_position'>
-                    <img id='mypage_logo_img' alt='logo' src="/img/logo_title.png"/>
+                    <img id='mypage_logo_img' alt='logo' src="/img/logo_title.png" onClick={onLogo} />
                 </div>
 
                 <div id='mypage_main_content'>
