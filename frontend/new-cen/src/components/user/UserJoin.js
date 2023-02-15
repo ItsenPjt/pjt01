@@ -83,6 +83,7 @@ const UserJoin = () => {
         window.location.href = "/signup";
     };
 
+    
     return (
         <div id='login_main'>
             <div id='login_logo_position'>

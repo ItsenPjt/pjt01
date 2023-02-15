@@ -88,7 +88,8 @@ const UserSignUp = () => {
 
     // 유저 이메일 입력란 검증 체인지 이벤트 핸들러
     const userEmailHandler = e => {
-        console.log(e.target.value);
+
+        //console.log(e.target.value);
 
         // eslint-disable-next-line
         const emailRegex = /^[a-z0-9\.\-_]+@([a-z0-9\-]+\.)+[a-z]{2,6}$/;
@@ -323,7 +324,7 @@ const UserSignUp = () => {
     return (
         <div id='join_main'>
             <div id='join_logo_position'>
-                <img id='join_logo_img' alt='logo' src="/img/logo_title.png" onClick={onLogo}/>
+                <img id='join_logo_img' alt='logo' src="/img/logo_title.png" onClick={onLogo} />
             </div>
 
             <div id='join_main_content'>
@@ -360,7 +361,7 @@ const UserSignUp = () => {
 
                     <Form.Group className='mb-3'>
                         <Form.Label id='join_form_label'>이름</Form.Label>
-                        <Form.Control type='text' className='join_form_control' placeholder='이름' onChange={userNameHandler}/>
+                        <Form.Control type='text' className='join_form_control' placeholder='이름' onChange={userNameHandler} />
                         <span style={
                             validate.userName
                             ? {color: 'green'}

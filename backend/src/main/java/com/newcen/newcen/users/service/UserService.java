@@ -211,6 +211,7 @@ public class UserService {
             final String deleteId) {
 
         String delEmail;
+
         try {
 
             delEmail = userRepository.selectUserEmail(deleteId);

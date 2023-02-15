@@ -139,7 +139,7 @@ const UserSignSet = () => {
     };
 
 
-    // 내 정보 수정 요청 처리
+    // 내 정보 수정 서버 요청
     const updateUserPw = e => {
 
         if (isValid()) {
@@ -161,11 +161,12 @@ const UserSignSet = () => {
                 return res.json();
             });
         } else {
-            alert(`알 수 없는 오류입니다.\n관리자에게 문의하세요`);
+            alert(`입력창을 확인하세요.`);
             window.location.href = '/signset';
         }
        
     };
+
 
 
     // 회원탈퇴 기능 처리
@@ -292,6 +293,7 @@ const UserSignSet = () => {
         setModal(true);     // 모달 열기
     }
 
+    
     return (
         <>
             <div id='mypage_main'>
@@ -336,7 +338,7 @@ const UserSignSet = () => {
                         <Button onClick={onLoginPage} className="btn_gray mypage_btn btn_size_100">
                             취소
                         </Button> 
-                        <Button className="btn_orange mypage_btn btn_size_100" id="mypage_btn"  onClick={updateUserPw}>
+                        <Button className="btn_orange mypage_btn btn_size_100" id="mypage_btn" onClick={updateUserPw}>
                             완료
                         </Button> 
                     </div>
