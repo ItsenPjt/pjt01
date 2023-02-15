@@ -51,8 +51,8 @@ public class CommentEntity {
     @Column(name="comment_user_email")
     private String userEmail;
 
-    @JoinColumn(name="comment_file_id")
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE,orphanRemoval = true)
+    @JoinColumn(name="comment_id")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE,orphanRemoval = true)
     private final List<CommentFileEntity> commentFileList = new ArrayList<>();
 
 

@@ -49,6 +49,7 @@ public class CommentService {
     //댓글 목록 조회
     public CommentListResponseDTO retrive(Long boardId) {
         List<CommentEntity> commentList = commentRepositorySupport.findAllByBoardId(boardId);
+        System.out.println("=================== "+ commentList);
         List<CommentResponseDTO> responseDTO = commentList.stream()
                 .map(CommentResponseDTO::new)
                 .collect(Collectors.toList());

@@ -31,6 +31,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
@@ -38,6 +40,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -151,22 +155,11 @@ public class QuestionsController {
             @ApiParam(value="파일들(여러 파일 업로드 가능)", required = true)
             @AuthenticationPrincipal String userId, @PathVariable Long boardId,
             @RequestPart(value="file",required = false) List<MultipartFile> multipartFile
-
     ){
-
-//        if (result.hasErrors()){
-//            log.warn("DTO 검증 에러 발생 : {} ", result.getFieldError());
-//            return ResponseEntity
-//                    .badRequest()
-//                    .body(result.getFieldError());
-//        }
         try {
-
-//            multipartFile.forEach(f -> {
-//                System.out.println("f.getOriginalFilename() = " + f.getOriginalFilename());
-//            });
-
-//            QuestionsOneResponseDTO questionResponseDTO = questionService.createFile(userId,boardId,questionFileRequestDTO.getBoardFilePath());
+            multipartFile.forEach(f -> {
+                System.out.println("f.getOriginalFilename() = " + f.getOriginalFilename());
+            });
             List<String> uploaded = awsS3Service.uploadFile(multipartFile);
             for (int i=0;i<uploaded.size();i++){
                 questionService.createFile(userId,boardId,uploaded.get(i));
@@ -207,15 +200,22 @@ public class QuestionsController {
         }
     }
     //문의사항 파일 삭제
-    @DeleteMapping("/{boardId}/files/{boardFileId}")
-    private ResponseEntity<?> deleteQuestionFile(@AuthenticationPrincipal String userId, @PathVariable("boardId") Long boardId,@PathVariable("boardFileId") String boardFileId){
+    @DeleteMapping("/{boardId}/files/{boardFileId}/{fileName}")
+    private ResponseEntity<?> deleteQuestionFile(@AuthenticationPrincipal String userId, @PathVariable("boardId") Long boardId, @PathVariable("boardFileId")  String boardFileId){
         QuestionResponseDTO deleted = questionService.deleteFile(userId, boardId,boardFileId);
+
         if (deleted==null){
             return ResponseEntity.internalServerError().body("파일 삭제에 실패했습니다..");
         }else {
             return ResponseEntity.ok().body(deleted);
         }
     }
+
+    /**
+     * Amazon S3에 업로드 된 파일을 삭제
+     * @return 성공 시 200 Success
+     */
+
     //문의사항 댓글 조회
     @GetMapping("/{boardId}/comments")
     private  ResponseEntity<?> getCommentList(Pageable pageable, @PathVariable Long boardId){
@@ -282,7 +282,6 @@ public class QuestionsController {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
     }
 
     //문의사항 댓글 파일목록 조회
@@ -360,6 +359,8 @@ public class QuestionsController {
                     .body("서버에러입니다.");
         }
     }
+
+
 }
 
 

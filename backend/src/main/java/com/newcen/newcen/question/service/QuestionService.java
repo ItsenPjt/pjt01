@@ -1,10 +1,13 @@
 package com.newcen.newcen.question.service;
 
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.newcen.newcen.common.config.security.TokenProvider;
 import com.newcen.newcen.common.dto.request.SearchCondition;
 import com.newcen.newcen.common.entity.BoardEntity;
 import com.newcen.newcen.common.entity.BoardFileEntity;
 import com.newcen.newcen.common.entity.UserEntity;
+import com.newcen.newcen.common.repository.BoardFileRepository;
 import com.newcen.newcen.question.repository.QuestionsFileRepository;
 import com.newcen.newcen.question.repository.QuestionsRepository;
 import com.newcen.newcen.question.repository.QuestionsRepositorySupport;
@@ -16,6 +19,7 @@ import com.newcen.newcen.question.response.QuestionsOneResponseDTO;
 import com.newcen.newcen.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -32,9 +36,15 @@ public class QuestionService {
     private final QuestionsRepository questionsRepository;
 
     private final QuestionsFileRepository questionsFileRepository;
-    private final TokenProvider tokenProvider;
+    private final BoardFileRepository boardFileRepository;
 
     private final QuestionsRepositorySupport questionsRepositorySupport;
+
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
+
+    private final AmazonS3 amazonS3;
+
 
     //문의사항 목록조회
     public QuestionListResponseDTO retrieve(){
@@ -151,15 +161,14 @@ public class QuestionService {
     //게시물 파일 삭제
     public QuestionResponseDTO deleteFile(String userId, Long boardId, String boardFileId){
         BoardEntity board = questionsRepositorySupport.findBoardByUserIdAndBoardId(userId,boardId);
-//        Optional<BoardEntity> board = questionsRepository.findById(boardId);
         UserEntity user = userRepository.findById(userId).get();
+        BoardFileEntity boardFile = questionsFileRepository.findById(boardFileId).get();
         if (!Objects.equals(board.getUserId(), user.getUserId())){
             throw new RuntimeException("본인이 작성한 글이 아닙니다.");
         }
         try {
-            System.out.println("====================삭제시작");
             questionsFileRepository.deleteById(boardFileId);
-            System.out.println("====================삭제끝");
+//            amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileName));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -176,7 +185,6 @@ public class QuestionService {
                 .user(user)
                 .build();
 
-        System.out.println(res.getUser());
         return new QuestionResponseDTO(res);
     }
 
