@@ -50,7 +50,7 @@ public class CommentFileService {
         return CommentFileListResponseDTO.builder().error(null).statusCode(200).data(responseDTO).build();
     }
     //댓글 파일 생성
-    public CommentFileListResponseDTO createCommentFile(final CommentFileCreateRequest dto, String userId, Long commentId){
+    public CommentFileListResponseDTO createCommentFile(String fileName,String filePath, String userId, Long commentId){
         UserEntity user = null;
         user = userRepository.findById(userId).get();
         Optional<CommentEntity> comment = commentRepository.findById(commentId);
@@ -60,7 +60,12 @@ public class CommentFileService {
         if (comment == null) {
             throw new RuntimeException("해당 게시글이 없습니다.");
         }
-        CommentFileEntity commentFile = dto.toEntity(comment.get());
+        CommentFileEntity commentFile = CommentFileEntity.builder()
+                .commentId(commentId)
+                .commentFileName(fileName)
+                .commentFilePath(filePath)
+                .userEmail(user.getUserEmail())
+                .build();
         CommentFileEntity savedCommentFile = commentFileRepository.save(commentFile);
         return retrive(commentId);
 
@@ -90,6 +95,7 @@ public class CommentFileService {
         return retrive(commentId);
 
     }
+
     //댓글 파일 삭제
     public boolean deleteCommentFile(String userId, Long commentId, String commentFileId) {
         CommentEntity getComment = commentRepository.findById(commentId).get();

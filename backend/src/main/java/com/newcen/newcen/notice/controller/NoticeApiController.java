@@ -11,6 +11,7 @@ import com.newcen.newcen.commentFile.service.CommentFileService;
 import com.newcen.newcen.common.dto.request.SearchCondition;
 import com.newcen.newcen.common.entity.BoardEntity;
 import com.newcen.newcen.common.entity.UserEntity;
+import com.newcen.newcen.common.service.AwsS3Service;
 import com.newcen.newcen.notice.dto.request.NoticeCreateFileRequestDTO;
 import com.newcen.newcen.notice.dto.request.NoticeCreateRequestDTO;
 import com.newcen.newcen.notice.dto.request.NoticeUpdateFileRequestDTO;
@@ -20,6 +21,8 @@ import com.newcen.newcen.notice.dto.response.NoticeListResponseDTO;
 import com.newcen.newcen.notice.dto.response.NoticeOneResponseDTO;
 import com.newcen.newcen.notice.repository.NoticeRepository;
 import com.newcen.newcen.notice.service.NoticeService;
+import com.newcen.newcen.question.response.QuestionResponseDTO;
+import com.newcen.newcen.question.service.QuestionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageImpl;
@@ -29,6 +32,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController     // controller + @ResponseBody --> JSON/XML 형태로 객체 데이터 반환 목적
 @Slf4j
@@ -37,7 +43,10 @@ import org.springframework.web.bind.annotation.*;
 public class NoticeApiController {
     private final NoticeRepository noticeRepository;
 
+    private final AwsS3Service awsS3Service;
+
     private final NoticeService noticeService;
+    private final QuestionService questionService;
     private final CommentService commentService;
 
     private final CommentFileService commentFileService;
@@ -167,30 +176,26 @@ public class NoticeApiController {
         }
     }
 
-    // 공지사항 파일첨부 (POST)
+    // 공지사항 파일 등록 (POST)
     @PostMapping("/{board_id}/files")
     public ResponseEntity<?> createFileNotice (
             @AuthenticationPrincipal String userId,
             @PathVariable("board_id") Long boardId,
-            @Validated @RequestBody NoticeCreateFileRequestDTO requestDTO,
-            BindingResult result
+            @RequestPart(value="file",required = false) List<MultipartFile> multipartFile
+
     ) {
-        if (result.hasErrors()) {
-            log.warn("DTO 검증 에러 발생: {}", result.getFieldError());
-
-            return ResponseEntity
-                    .badRequest()
-                    .body(result.getFieldError());
-        }
-
-        log.info("/api/notices/{}/file POST request", boardId);
 
         try {
-            NoticeOneResponseDTO responseDTO = noticeService.createFile(boardId, requestDTO, userId);
-
+            multipartFile.forEach(f -> {
+                System.out.println("f.getOriginalFilename() = " + f.getOriginalFilename());
+            });
+            List<String> uploaded = awsS3Service.uploadFile(multipartFile);
+            for (int i=0;i<uploaded.size();i++){
+                questionService.createFile(multipartFile.get(i).getOriginalFilename(), userId,boardId,uploaded.get(i));
+            }
             return ResponseEntity
                     .ok()
-                    .body(responseDTO);
+                    .body(uploaded);
         } catch (RuntimeException e) {
             log.error(e.getMessage());
             return ResponseEntity
@@ -202,35 +207,35 @@ public class NoticeApiController {
     }
 
     // 공지사항 파일 수정 (PATCH)
-    @PatchMapping("/{board_id}/files/{board_file_id}")
-    public ResponseEntity<?> updateFileNotice(
-            @AuthenticationPrincipal String userId,
-            @PathVariable("board_id") Long boardId,
-            @PathVariable("board_file_id") String boardFileId,
-            @Validated @RequestBody NoticeUpdateFileRequestDTO requestDTO,
-            BindingResult result
-    ) {
-        if (result.hasErrors()) {
-            return ResponseEntity.badRequest()
-                    .body(result.getFieldError());
-        }
-
-        log.info("/api/todos/{}/file/{} PUT request", boardId, boardFileId);
-        log.info("modifying dto : {}", requestDTO);
-
-        try {
-            NoticeOneResponseDTO responseDTO = noticeService.updateFile(boardId, boardFileId, requestDTO, userId);
-            return ResponseEntity
-                    .ok()
-                    .body(responseDTO);
-        } catch (Exception e) {
-            return ResponseEntity
-                    .internalServerError()
-                    .body(NoticeListResponseDTO
-                            .builder()
-                            .error(e.getMessage()));
-        }
-    }
+//    @PatchMapping("/{board_id}/files/{board_file_id}")
+//    public ResponseEntity<?> updateFileNotice(
+//            @AuthenticationPrincipal String userId,
+//            @PathVariable("board_id") Long boardId,
+//            @PathVariable("board_file_id") String boardFileId,
+//            @Validated @RequestBody NoticeUpdateFileRequestDTO requestDTO,
+//            BindingResult result
+//    ) {
+//        if (result.hasErrors()) {
+//            return ResponseEntity.badRequest()
+//                    .body(result.getFieldError());
+//        }
+//
+//        log.info("/api/todos/{}/file/{} PUT request", boardId, boardFileId);
+//        log.info("modifying dto : {}", requestDTO);
+//
+//        try {
+//            NoticeOneResponseDTO responseDTO = noticeService.updateFile(boardId, boardFileId, requestDTO, userId);
+//            return ResponseEntity
+//                    .ok()
+//                    .body(responseDTO);
+//        } catch (Exception e) {
+//            return ResponseEntity
+//                    .internalServerError()
+//                    .body(NoticeListResponseDTO
+//                            .builder()
+//                            .error(e.getMessage()));
+//        }
+//    }
 
     // 공지사항 파일 삭제 (DELETE)
     @DeleteMapping("/{board_id}/files/{board_file_id}")
@@ -249,10 +254,11 @@ public class NoticeApiController {
         log.info("/api/notices/{}/file/{} DELETE request", boardId, boardFileId);
 
         try {
-            NoticeOneResponseDTO responseDTO = noticeService.deleteFile(boardId, boardFileId, userId);
+            QuestionResponseDTO deleted = questionService.deleteFile(userId, boardId,boardFileId);
+//            NoticeOneResponseDTO responseDTO = noticeService .deleteFile(boardId, boardFileId, userId);
             return ResponseEntity
                     .ok()
-                    .body(responseDTO);
+                    .body(deleted);
         } catch (Exception e) {
             log.error(e.getMessage());
 
@@ -333,19 +339,22 @@ public class NoticeApiController {
     }
     //공지사항 댓글 파일 등록
     @PostMapping("/{boardId}/comments/{commentId}/files")
-    private ResponseEntity<?> createCommentFile(@AuthenticationPrincipal String userId, @PathVariable("boardId") Long boardId, @Validated @RequestBody CommentFileCreateRequest dto, @PathVariable("commentId") Long commentId
-            , BindingResult result){
-        if (result.hasErrors()){
-            log.warn("DTO 검증 에러 발생 : {} ", result.getFieldError());
-            return ResponseEntity
-                    .badRequest()
-                    .body(result.getFieldError());
-        }
+    private ResponseEntity<?> createCommentFile(@AuthenticationPrincipal String userId,
+                                                @PathVariable("boardId") Long boardId,
+                                                @PathVariable("commentId") Long commentId,
+                                                @RequestPart(value="file",required = false) List<MultipartFile> multipartFile
+            ){
+
         try {
-            CommentFileListResponseDTO commentFileList = commentFileService.createCommentFile(dto,userId,commentId);
+//            CommentFileListResponseDTO commentFileList = commentFileService.createCommentFile(dto,userId,commentId);
+            List<String> uploaded = awsS3Service.uploadFile(multipartFile);
+            for (int i=0;i<uploaded.size();i++){
+                commentFileService.createCommentFile(multipartFile.get(i).getOriginalFilename(),uploaded.get(i),userId,commentId);
+            }
+
             return ResponseEntity
                     .ok()
-                    .body(commentFileList);
+                    .body(uploaded);
         } catch (Exception e) {
             log.error(e.getMessage());
             return ResponseEntity

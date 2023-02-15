@@ -138,7 +138,7 @@ public class QuestionsController {
     }
     //문의사항 삭제
     @DeleteMapping("/{boardId}")
-    private ResponseEntity<?> deleteQuestion(@AuthenticationPrincipal String userId, @PathVariable Long boardId){
+    private ResponseEntity<?> deleteQuestion(@AuthenticationPrincipal String userId, @PathVariable("boardId") Long boardId){
 
         boolean deleted = questionService.deleteQuestion(userId, boardId);
         if (deleted==true){
@@ -162,7 +162,7 @@ public class QuestionsController {
             });
             List<String> uploaded = awsS3Service.uploadFile(multipartFile);
             for (int i=0;i<uploaded.size();i++){
-                questionService.createFile(userId,boardId,uploaded.get(i));
+                questionService.createFile(multipartFile.get(i).getOriginalFilename(), userId,boardId,uploaded.get(i));
             }
             return ResponseEntity
                     .ok()
@@ -200,21 +200,15 @@ public class QuestionsController {
         }
     }
     //문의사항 파일 삭제
-    @DeleteMapping("/{boardId}/files/{boardFileId}/{fileName}")
+    @DeleteMapping("/{boardId}/files/{boardFileId}")
     private ResponseEntity<?> deleteQuestionFile(@AuthenticationPrincipal String userId, @PathVariable("boardId") Long boardId, @PathVariable("boardFileId")  String boardFileId){
         QuestionResponseDTO deleted = questionService.deleteFile(userId, boardId,boardFileId);
-
         if (deleted==null){
             return ResponseEntity.internalServerError().body("파일 삭제에 실패했습니다..");
         }else {
             return ResponseEntity.ok().body(deleted);
         }
     }
-
-    /**
-     * Amazon S3에 업로드 된 파일을 삭제
-     * @return 성공 시 200 Success
-     */
 
     //문의사항 댓글 조회
     @GetMapping("/{boardId}/comments")
@@ -257,10 +251,7 @@ public class QuestionsController {
     //문의사항 댓글 수정
     @PatchMapping("/{boardId}/comments/{commentId}")
     private ResponseEntity<?> updateComment(@AuthenticationPrincipal String userId,@Validated @RequestBody CommentUpdateRequest dto,
-
                                             @PathVariable("boardId") Long boardId, @PathVariable("commentId") Long commentId){
-
-
         try {
             commentService.updateComment(dto, userId,boardId,commentId);
             CommentListResponseDTO retried = commentService.retrive(boardId);
@@ -292,19 +283,20 @@ public class QuestionsController {
     }
     //문의사항 댓글 파일 생성
     @PostMapping("/{boardId}/comments/{commentId}/files")
-    private ResponseEntity<?> createCommentFile(@AuthenticationPrincipal String userId,@PathVariable("boardId") Long boardId, @Validated @RequestBody CommentFileCreateRequest dto, @PathVariable("commentId") Long commentId
-    ,BindingResult result){
-        if (result.hasErrors()){
-            log.warn("DTO 검증 에러 발생 : {} ", result.getFieldError());
-            return ResponseEntity
-                    .badRequest()
-                    .body(result.getFieldError());
-        }
+    private ResponseEntity<?> createCommentFile(@AuthenticationPrincipal String userId,
+                                                @PathVariable("boardId") Long boardId,
+                                                @PathVariable("commentId") Long commentId,
+                                                @RequestPart(value="file",required = false) List<MultipartFile> multipartFile){
+
         try {
-            CommentFileListResponseDTO commentFileList = commentFileService.createCommentFile(dto,userId,commentId);
+            List<String> uploaded = awsS3Service.uploadFile(multipartFile);
+            for (int i=0;i<uploaded.size();i++){
+                commentFileService.createCommentFile(multipartFile.get(i).getOriginalFilename() ,uploaded.get(i),userId,commentId);
+            }
+//            CommentFileListResponseDTO commentFileList = commentFileService.createCommentFile(dto,userId,commentId);
             return ResponseEntity
                     .ok()
-                    .body(commentFileList);
+                    .body(uploaded);
         } catch (Exception e) {
             log.error(e.getMessage());
             return ResponseEntity
