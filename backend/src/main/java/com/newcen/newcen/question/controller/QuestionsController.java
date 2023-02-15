@@ -138,8 +138,8 @@ public class QuestionsController {
     }
     //문의사항 삭제
     @DeleteMapping("/{boardId}")
-    private ResponseEntity<?> deleteQuestion(@AuthenticationPrincipal String userId, @PathVariable("boardId") Long boardId){
-
+    private ResponseEntity<?> deleteQuestion(@AuthenticationPrincipal String userId, @PathVariable Long boardId){
+        System.out.println("============== " + boardId);
         boolean deleted = questionService.deleteQuestion(userId, boardId);
         if (deleted==true){
             return ResponseEntity.ok().body("게시글이 삭제되었습니다.");

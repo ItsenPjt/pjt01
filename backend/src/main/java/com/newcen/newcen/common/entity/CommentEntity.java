@@ -52,7 +52,7 @@ public class CommentEntity {
     private String userEmail;
 
     @JoinColumn(name="comment_id")
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE,orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL,orphanRemoval = true)
     private final List<CommentFileEntity> commentFileList = new ArrayList<>();
 
 
