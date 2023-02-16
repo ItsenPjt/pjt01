@@ -180,6 +180,7 @@ public class QuestionService {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        List<BoardFileEntity> boardFileEntityList = boardFileRepository.findByBoardId(boardId);
         BoardEntity res = BoardEntity.builder()
                 .boardTitle(board.getBoardTitle())
                 .boardContent(board.getBoardContent())
@@ -187,12 +188,15 @@ public class QuestionService {
                 .boardWriter(board.getBoardWriter())
                 .boardCommentIs(board.getBoardCommentIs())
                 .boardId(board.getBoardId())
+                .boardFileEntityList(boardFileEntityList)
                 .boardTitle(board.getBoardTitle())
                 .boardUpdateDate(board.getBoardUpdateDate())
                 .userId(userId)
                 .user(user)
                 .build();
 
+//        new QuestionsOneResponseDTO(res)
+//        questionDetail
         return new QuestionsOneResponseDTO(res);
     }
 
