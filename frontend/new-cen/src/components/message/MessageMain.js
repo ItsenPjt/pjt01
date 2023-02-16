@@ -178,20 +178,16 @@ const MessageMain = () => {
 
     const changeMode = (value) => {
         let isChanged = false;
-        // let searched = isSearched;
         let page = currentPage;
         if(mode!==value) {
             setMode(value);
             setIsSearched(false);
             isChanged = true;
-        }
-
-        if(isChanged) {
             page = 0;
         }
 
         if(isSearched) {
-            if (mode ==='received') {           // 받은 메세지 검색
+            if (value ==='received') {           // 받은 메세지 검색
             
                 fetch(`${API_BASE_URL}/search/received?page=${page}`, {
                     method: 'POST',
@@ -218,9 +214,24 @@ const MessageMain = () => {
                         }
                     }
                 });
+
+                if(isChanged) {
+                    setIsFirst(true);
+                    setIsLast(false);
+                    setSelectAll(true);
+                    setCurrentPage(0);
+
+                    let i = 0;
+                    const check_boxes = document.querySelectorAll(".message_select_checkbox");
+    
+                    while(i < check_boxes.length) {
+                        check_boxes[i].checked = false;
+                        i++;
+                    }
+                }
                 
             } 
-            else if (mode === 'sent') {       // 보낸 메세지 검색
+            else if (value === 'sent') {       // 보낸 메세지 검색
                 
                 fetch(`${API_BASE_URL}/search/sent?page=${page}`, {
                     method: 'POST',
@@ -246,6 +257,21 @@ const MessageMain = () => {
                             handleChangePage(res.totalPages-1);
                         }
                     }
+
+                    if(isChanged) {
+                        setIsFirst(true);
+                        setIsLast(false);
+                        setSelectAll(true);
+                        setCurrentPage(0);
+    
+                        let i = 0;
+                        const check_boxes = document.querySelectorAll(".message_select_checkbox");
+        
+                        while(i < check_boxes.length) {
+                            check_boxes[i].checked = false;
+                            i++;
+                        }
+                    }
                 });
             }
 
@@ -265,7 +291,6 @@ const MessageMain = () => {
                 return res.json();
             })
             .then(res => {
-                console.log(res);
                 setMessages(res.content);
                 setTotalPage(res.totalPages);
                 if(currentPage===res.totalPages) {
@@ -291,6 +316,9 @@ const MessageMain = () => {
             })
 
         }
+
+
+       
        
     }
 
