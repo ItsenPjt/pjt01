@@ -359,13 +359,15 @@ const MessageMain = () => {
     const [receiverSearchData, setReceiverSearchData] = useState({         
         messageTitle: '',
         messageContent: '',
-        messageReceiver: ''     
+        messageSender: ''  
+        // messageReceiver: ''     
     });
     // 보낸 메세지 검색
     const [sentSearchData, setSentSearchData] = useState({         
         messageTitle: '',
         messageContent: '',
-        messageSender: ''     
+        messageReceiver: '' 
+        // messageSender: ''     
     });
 
     const [eventKey, setEventKey] = useState('');
@@ -390,7 +392,7 @@ const MessageMain = () => {
                 ...sentSearchData,
                 messageTitle: '',
                 messageContent: '',
-                messageSender: ''
+                messageReceiver: ''
             })
 
             if (eventKey === '작성자') { 
@@ -398,28 +400,28 @@ const MessageMain = () => {
                     ...receiverSearchData,
                     messageTitle: '',
                     messageContent: '',
-                    messageReceiver: e.target.value
+                    messageSender: e.target.value
                 })
             } else if (eventKey === '제목') {
                 setReceiverSearchData({
                     ...receiverSearchData,
                     messageTitle: e.target.value,
                     messageContent: '',
-                    messageReceiver: ''
+                    messageSender: ''
                 })
             } else if (eventKey === '내용') {
                 setReceiverSearchData({
                     ...receiverSearchData,
                     messageTitle: '',
                     messageContent: e.target.value,
-                    messageReceiver: ''
+                    messageSender: ''
                 })
             } else if (eventKey === '제목+내용') {
                 setReceiverSearchData({
                     ...receiverSearchData,
                     messageTitle: e.target.value,
                     messageContent: e.target.value,
-                    messageReceiver: ''
+                    messageSender: ''
                 })
             }  
         } 
@@ -429,7 +431,7 @@ const MessageMain = () => {
                 ...receiverSearchData,
                 messageTitle: '',
                 messageContent: '',
-                messageReceiver: ''
+                messageSender: ''
             })
 
             if (eventKey === '작성자') { 
@@ -437,28 +439,28 @@ const MessageMain = () => {
                     ...sentSearchData,
                     messageTitle: '',
                     messageContent: '',
-                    messageSender: e.target.value
+                    messageReceiver: e.target.value
                 })
             } else if (eventKey === '제목') {
                 setSentSearchData({
                     ...sentSearchData,
                     messageTitle: e.target.value,
                     messageContent: '',
-                    messageSender: ''
+                    messageReceiver: ''
                 })
             } else if (eventKey === '내용') {
                 setSentSearchData({
                     ...sentSearchData,
                     messageTitle: '',
                     messageContent: e.target.value,
-                    messageSender: ''
+                    messageReceiver: ''
                 })
             } else if (eventKey === '제목+내용') {
                 setSentSearchData({
                     ...sentSearchData,
                     messageTitle: e.target.value,
                     messageContent: e.target.value,
-                    messageSender: ''
+                    messageReceiver: ''
                 })
             }  
         }
@@ -488,6 +490,7 @@ const MessageMain = () => {
             })
             .then((result) => {
                 if (!!result) {
+                    console.log(result.content);
                     setMessages(result.content);
                 }
             });
@@ -511,6 +514,7 @@ const MessageMain = () => {
             })
             .then((result) => {
                 if (!!result) {
+                    console.log(result.content);
                     setMessages(result.content);
                 }
             });
