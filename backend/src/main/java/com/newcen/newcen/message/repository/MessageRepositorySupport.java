@@ -122,7 +122,7 @@ public class MessageRepositorySupport extends QuerydslRepositorySupport {
     public PageImpl<MessageSentResponseDTO> getSentMessageWithSearch(SearchSentMessageCondition searchSentMessageCondition, Pageable pageable, String userId){
         JPQLQuery<MessageEntity> query = jpaQueryFactory.select(qMessageEntity)
                 .from(qMessageEntity)
-                .where(qMessageEntity.receiver.userId.eq(userId),
+                .where(qMessageEntity.sender.userId.eq(userId),
                         messageTitleEq(searchSentMessageCondition.getMessageTitle()),
                         messageContentEq(searchSentMessageCondition.getMessageContent()),
                         messageReceiverEq(searchSentMessageCondition.getMessageReceiver())
