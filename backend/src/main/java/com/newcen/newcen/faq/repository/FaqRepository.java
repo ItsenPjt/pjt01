@@ -7,8 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface FaqRepository extends JpaRepository<BoardEntity, Long> {
-
     List<BoardEntity> findByBoardType(BoardType type);
-
-
 }

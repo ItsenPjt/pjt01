@@ -6,11 +6,8 @@ import com.newcen.newcen.common.entity.BoardEntity;
 import com.newcen.newcen.common.entity.BoardType;
 import com.newcen.newcen.common.entity.QBoardEntity;
 import com.newcen.newcen.faq.dto.response.FaqDetailResponseDTO;
-import com.newcen.newcen.faq.dto.response.FaqResponseDTO;
-import com.newcen.newcen.notice.dto.response.NoticeDetailResponseDTO;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPQLQuery;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -51,20 +48,17 @@ public class FaqRepositorySupport extends QuerydslRepositorySupport {
         JPQLQuery<BoardEntity> query = jpaQueryFactory
                 .select(qBoardEntity)
                 .from(qBoardEntity)
-                .where(qBoardEntity.boardType.eq(BoardType.NOTICE)
+                .where(qBoardEntity.boardType.eq(BoardType.FAQ)
                         ,boardTitleEq(searchCondition.getBoardTitle())
                         ,boardContentEq(searchCondition.getBoardContent())
                         ,boardWriterEq(searchCondition.getBoardWriter()))
                 .orderBy(qBoardEntity.createDate.desc());
         long totalCount = query.fetchCount();
         List<BoardEntity> results = getQuerydsl().applyPagination(pageable,query).fetch();
-        System.out.println(pageable);
         List<FaqDetailResponseDTO> dtoList = results.stream()
                 .map(FaqDetailResponseDTO::new)
                 .collect(Collectors.toList());
         Pageable pageRequest = new FixedPageRequest(pageable, totalCount);
-        // 2. NoticeDetailResponseDTO 를 NoticeListResponseDTO 로 변경
-
         return new PageImpl<>(dtoList, pageRequest, totalCount);
 
     }

@@ -59,19 +59,6 @@ public class AdminExceptionAdvice extends DefaultHandlerExceptionResolver {
                 );
     }
 
-//    @ExceptionHandler({
-//            HttpRequestMethodNotSupportedException.class,
-//            MethodNotAllowedException.class
-//    })
-//    public ResponseEntity<?> methodNotAllowedHandler(Exception e) {
-//        return ResponseEntity.status(AdminExceptionEnum.NOT_SUPPORTED_METHOD.getStatus())
-//                .body(AdminExceptionEntity.builder()
-//                        .errorCode(AdminExceptionEnum.NOT_SUPPORTED_METHOD.getCode())
-//                        .errorMessage(AdminExceptionEnum.NOT_SUPPORTED_METHOD.getMessage())
-//                        .build()
-//                );
-//    }
-
 
     @ExceptionHandler({AdminCustomException.class})
     public ResponseEntity<?> adminCustomExceptionHandler(AdminCustomException ce) {
@@ -85,11 +72,5 @@ public class AdminExceptionAdvice extends DefaultHandlerExceptionResolver {
     }
 
 
-//    @Override
-//    protected ModelAndView handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex, HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
-//
-//        response.sendError(405, "Method Not Supported");
-//
-//        return super.handleHttpRequestMethodNotSupported(ex, request, response, handler);
-//    }
+
 }

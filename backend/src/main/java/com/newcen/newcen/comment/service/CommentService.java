@@ -6,7 +6,6 @@ import com.newcen.newcen.comment.dto.request.CommentCreateRequest;
 import com.newcen.newcen.comment.dto.request.CommentUpdateRequest;
 import com.newcen.newcen.comment.dto.response.CommentListResponseDTO;
 import com.newcen.newcen.comment.dto.response.CommentResponseDTO;
-
 import com.newcen.newcen.comment.repository.CommentRepository;
 import com.newcen.newcen.comment.repository.CommentRepositorySupport;
 import com.newcen.newcen.commentFile.repository.CommentFileRepositorySupport;
@@ -14,11 +13,7 @@ import com.newcen.newcen.common.entity.BoardEntity;
 import com.newcen.newcen.common.entity.CommentEntity;
 import com.newcen.newcen.common.entity.CommentFileEntity;
 import com.newcen.newcen.common.entity.UserEntity;
-import com.newcen.newcen.notice.dto.response.NoticeDetailResponseDTO;
-import com.newcen.newcen.notice.repository.NoticeRepository;
 import com.newcen.newcen.question.repository.QuestionsRepository;
-import com.newcen.newcen.question.repository.QuestionsRepositorySupport;
-import com.newcen.newcen.question.response.QuestionListResponseDTO;
 import com.newcen.newcen.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,8 +22,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -58,7 +51,6 @@ public class CommentService {
     //댓글 목록 조회
     public CommentListResponseDTO retrive(Long boardId) {
         List<CommentEntity> commentList = commentRepositorySupport.findAllByBoardId(boardId);
-        System.out.println("=================== "+ commentList);
         List<CommentResponseDTO> responseDTO = commentList.stream()
                 .map(CommentResponseDTO::new)
                 .collect(Collectors.toList());
@@ -80,7 +72,6 @@ public class CommentService {
         UserEntity user = null;
         user = userRepository.findById(userId).get();
         Optional<BoardEntity> board = questionsRepository.findById(boardId);
-        System.out.println(board.get());
         if (user == null) {
             throw new RuntimeException("해당 유저가 없습니다.");
         }
@@ -89,8 +80,7 @@ public class CommentService {
         }
 
         CommentEntity commentEntity = dto.toEntity(board.get(), user);
-        System.out.println(commentEntity);
-        CommentEntity savedComment = commentRepository.save(commentEntity);
+        commentRepository.save(commentEntity);
         return retrive(boardId);
     }
     //댓글 수정
@@ -104,13 +94,13 @@ public class CommentService {
             throw new RuntimeException("본인이 작성한 댓글이 아닙니다.");
         }
         String commentContent = null;
-        if (dto.getCommentContent() == null || dto.getCommentContent() == "") {
+        if (dto.getCommentContent() == null || dto.getCommentContent().equals("") ) {
             commentContent = getComment.getCommentContent();
         } else {
             commentContent = dto.getCommentContent();
         }
         getComment.updateComment(commentContent);
-        CommentEntity savedComment = commentRepository.save(getComment);
+        commentRepository.save(getComment);
         return retrive(boardId);
     }
     //댓글 삭제 caseCade 설정 완료 파일도 동시에 삭제

@@ -116,7 +116,7 @@ public class AdminService {
 
         String validCode = RandomStringUtils.randomNumeric(6);
         requestDTO.setValidCode(validCode);
-        ValidUserEntity savedValidUser = validUserRepository.save(requestDTO.toEntity());
+        validUserRepository.save(requestDTO.toEntity());
 
         SendEmailDTO emailDTO = new SendEmailDTO(requestDTO);
         emailService.sendSimpleMessage(emailDTO);

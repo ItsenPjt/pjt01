@@ -4,9 +4,7 @@ import com.newcen.newcen.comment.dto.request.CommentCreateRequest;
 import com.newcen.newcen.comment.dto.request.CommentUpdateRequest;
 import com.newcen.newcen.comment.dto.response.CommentListResponseDTO;
 import com.newcen.newcen.comment.dto.response.CommentResponseDTO;
-import com.newcen.newcen.comment.repository.CommentRepository;
 import com.newcen.newcen.comment.service.CommentService;
-import com.newcen.newcen.commentFile.dto.request.CommentFileCreateRequest;
 import com.newcen.newcen.commentFile.dto.request.CommentFileUpdateRequest;
 import com.newcen.newcen.commentFile.dto.response.CommentFileListResponseDTO;
 import com.newcen.newcen.commentFile.service.CommentFileService;
@@ -14,13 +12,10 @@ import com.newcen.newcen.common.dto.request.SearchCondition;
 import com.newcen.newcen.common.entity.BoardEntity;
 import com.newcen.newcen.common.entity.UserEntity;
 import com.newcen.newcen.common.service.AwsS3Service;
-import com.newcen.newcen.notice.dto.response.NoticeDetailResponseDTO;
-import com.newcen.newcen.notice.repository.NoticeFileRepository;
 import com.newcen.newcen.question.repository.QuestionsRepository;
 import com.newcen.newcen.question.request.QuestionCreateRequestDTO;
 import com.newcen.newcen.question.request.QuestionFileRequestDTO;
 import com.newcen.newcen.question.request.QuestionUpdateRequestDTO;
-import com.newcen.newcen.question.response.QuestionListResponseDTO;
 import com.newcen.newcen.question.response.QuestionResponseDTO;
 import com.newcen.newcen.question.response.QuestionsOneResponseDTO;
 import com.newcen.newcen.question.service.QuestionService;
@@ -31,8 +26,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
@@ -40,8 +33,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -60,7 +51,6 @@ public class QuestionsController {
     //문의 게시글 목록조회
     @GetMapping
     private ResponseEntity<?> getQuestionList(Pageable pageable){
-//        QuestionListResponseDTO getList = questionService.retrieve();
         PageImpl<QuestionResponseDTO> responseDTO = questionService.getPageList(pageable);
         return ResponseEntity.ok()
                 .body(responseDTO);
@@ -156,9 +146,6 @@ public class QuestionsController {
             @RequestPart(value="file",required = false) List<MultipartFile> multipartFile
     ){
         try {
-            multipartFile.forEach(f -> {
-                System.out.println("f.getOriginalFilename() = " + f.getOriginalFilename());
-            });
             List<String> uploaded = awsS3Service.uploadFile(multipartFile);
             for (int i=0;i<uploaded.size();i++){
                 questionService.createFile(multipartFile.get(i).getOriginalFilename(), userId,boardId,uploaded.get(i));

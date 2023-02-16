@@ -1,7 +1,6 @@
 package com.newcen.newcen.admin.service;
 
 import com.newcen.newcen.admin.dto.SendEmailDTO;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;

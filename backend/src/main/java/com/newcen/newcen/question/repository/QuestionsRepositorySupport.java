@@ -74,7 +74,6 @@ public class QuestionsRepositorySupport extends QuerydslRepositorySupport {
                 .orderBy(qBoardEntity.createDate.desc());
         long totalCount = query.fetchCount();
         List<BoardEntity> results = getQuerydsl().applyPagination(pageable,query).fetch();
-        System.out.println(pageable);
         List<QuestionResponseDTO> dtoList = results.stream()
                 .map(QuestionResponseDTO::new)
                 .collect(Collectors.toList());
