@@ -75,7 +75,9 @@ const NoticeComment = ( { noticeId }) => {      // NoticeContent.js 에서 받�
     var files = [];
     const FileChangeHandler = e => {        
         e.preventDefault();
-        files = e.target.files[0];    
+        files = e.target.files[0]; 
+        
+        console.log(files);
     }
 
     // 댓글 등록

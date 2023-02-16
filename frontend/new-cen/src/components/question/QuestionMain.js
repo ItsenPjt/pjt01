@@ -46,7 +46,6 @@ const QuestionMain = () => {
             })
             .then(result => {
                 if (!!result) {
-                    console.log(result);
                     setQuestions(result.content);
                 }
             });

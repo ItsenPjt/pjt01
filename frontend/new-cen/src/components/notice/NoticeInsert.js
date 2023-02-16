@@ -57,7 +57,14 @@ const NoticeInsert = () => {
         });
     };
 
-    // 공지사항 등록 서버 요청  (POST에 대한 응답처리)
+    // 파일
+    var files = [];
+    const FileChangeHandler = e => {        
+        e.preventDefault();
+        files = e.target.files;  
+    }
+
+    // 공지사항 등록
     const handleInsertNotice = () => {
         if (noticeData.boardTitle === '') {
             alert('제목을 입력해주세요.');
@@ -65,8 +72,8 @@ const NoticeInsert = () => {
         else if (noticeData.boardContent === '') {
             alert('내용을 입력해주세요.');
         }
-        // 파일 등록 없이 글만 등록한다면
-        else {
+        // 글만 입력되어있을 때 -> 공지사항 등록 서버 요청  (POST에 대한 응답처리)
+        else if (files.length === 0) {
             fetch(API_BASE_URL, {
                 method: 'POST',
                 headers: headerInfo,
@@ -95,61 +102,67 @@ const NoticeInsert = () => {
                 }
             });
         } 
-        // 파일 등록
-        //else {
-            // // 게시물 등록
-            // fetch(API_BASE_URL, {
-            //     method: 'POST',
-            //     headers: headerInfo,
-            //     body: JSON.stringify(noticeData)
-            // })
-            // .then(res => {
-            //     if (res.status === 406) {
-            //         if (ACCESS_TOKEN === '') {
-            //             alert('로그인이 필요한 서비스입니다');
-            //             window.location.href = '/join';
-            //         } else {
-            //             alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
-            //             return;
-            //         }
-            //         return;
-            //     } 
-            //     else if (res.status === 500) {
-            //         alert('서버가 불안정합니다');
-            //         return;
-            //     }
-            //     return res.json();
-            // })
-            // .then((res) => {
+        // 파일 등록 -> 공지사항 등록 서버 요청 후, 파일 등록 서버 요청
+        else {
 
-            //     const newBoardId = res.noticeDetails[0]["boardId"];
-            //     if (USER_ID === res.noticeDetails[0]["userId"]) {
-            //         fetch(`${API_BASE_URL}/${newBoardId}/files`, {
-            //             method: 'POST',
-            //             headers: {
-            //                  'Authorization': 'Bearer ' + ACCESS_TOKEN,
-            //                  "Content-Type": `multipart/form-data`
-            //             },
-            //             body: formData
-            //         })
-            //         .then(res => {
-            //             if (res.status === 406) {
-            //                 alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
-            //                 return;
-            //             } 
-            //             else if (res.status === 500) {
-            //                 alert('서버가 불안정합니다');
-            //                 return;
-            //             }
-            //             return res.json();
-            //         })
-            //         .then((res) => {
-            //             console.log(res)
-            //             //window.location.href = "/notice";       // 공지사항 목록 페이지로 이동
-            //         });
-            //     }
-            // });
-        //}
+            // 게시물 등록
+            fetch(API_BASE_URL, {
+                method: 'POST',
+                headers: headerInfo,
+                body: JSON.stringify(noticeData)
+            })
+            .then(res => {
+                if (res.status === 406) {
+                    if (ACCESS_TOKEN === '') {
+                        alert('로그인이 필요한 서비스입니다');
+                        window.location.href = '/join';
+                    } else {
+                        alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
+                        return;
+                    }
+                    return;
+                } 
+                else if (res.status === 500) {
+                    alert('서버가 불안정합니다');
+                    return;
+                }
+                return res.json();
+            })
+            .then((res) => {
+
+                // foemData
+                var formData = new FormData(); 
+                for (let i = 0; i < files.length; i++) {
+                    formData.append('file', files[i]);
+                }
+
+                // 파일 등록
+                const newBoardId = res.noticeDetails[0]["boardId"];
+                if (USER_ID === res.noticeDetails[0]["userId"]) {
+                    fetch(`${API_BASE_URL}/${newBoardId}/files`, {
+                        method: 'POST',
+                        headers: {
+                             'Authorization': 'Bearer ' + ACCESS_TOKEN
+                        },
+                        body: formData
+                    })
+                    .then(res => {
+                        if (res.status === 406) {
+                            alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
+                            return;
+                        } 
+                        else if (res.status === 500) {
+                            alert('서버가 불안정합니다');
+                            return;
+                        }
+                        return res.json();
+                    })
+                    .then((res) => {
+                        window.location.href = "/notice";       // 공지사항 목록 페이지로 이동
+                    });
+                }
+            });
+        }
     };
 
     // 모달 닫기
@@ -189,9 +202,7 @@ const NoticeInsert = () => {
 
                 <div className='justify'>
                     <>
-                    <form name="이 폼의 이름" action="이 데이터들을 받을 파일" method="post" encType="multipart/form-data">
-                        <input type='file' name="notice_content_file" id="notice_content_file" multiple/>
-                    </form>
+                        <input onChange={FileChangeHandler} type='file' name="notice_content_file" id="notice_content_file" multiple/>
                     </>
                     <div id='notice_insert_footer_div'>
                         <Button onClick={handleShowCancelModal} className='btn_gray btn_size_100'>취소</Button>

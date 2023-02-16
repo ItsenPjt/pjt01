@@ -6,7 +6,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 
-import { BASE_URL, NOTICE } from '../common/config/host-config';
+import { BASE_URL, NOTICE, AWS } from '../common/config/host-config';
 import { getToken, getUserId } from '../common/util/login-util';
 
 import NoticeComment from './NoticeComment';
@@ -18,11 +18,15 @@ const NoticeContent = () => {
     var noticeId = useParams().noticeId;
     
     const API_BASE_URL = BASE_URL + NOTICE;
+    const API_AWS_URL = BASE_URL + AWS;
+
     const ACCESS_TOKEN = getToken();        // 토큰값
     const USER_ID = getUserId();
     
     // 공지사항 api 데이터 
     const [noticeContents, setNoticeContents] = useState([]);
+    const [noticeFiles, setNoticeFiles] = useState([]);
+    const [noticeFileCount, setNoticeFileCount] = useState(0);  // 파일 개수
     const [isComment, setIsComment] = useState('');     // 수정(NoticeUpdate) 페이지로 보낼 댓글여부 데이터
 
     const [modal, setModal] = useState(false); 
@@ -58,11 +62,41 @@ const NoticeContent = () => {
             })
             .then(result => {
                 if (!!result) {
-                    setIsComment(result.noticeDetails[0]["boardCommentIs"]);
                     setNoticeContents(result.noticeDetails[0]);
+                    setIsComment(result.noticeDetails[0]["boardCommentIs"]);
+
+                    if (result.boardFileEntityList.length !== 0) {
+                        setNoticeFileCount(result.boardFileEntityList.length);
+                        setNoticeFiles(result.boardFileEntityList);
+                    }
                 }
             });
     }, [API_BASE_URL]);
+
+    // 파일 클릭 시 다운로드
+    const commentFileDown = (filePath) => {
+        fetch(`${API_AWS_URL}/files/${filePath}`, {
+            method: 'GET',
+            headers: headerInfo,
+        })
+        .then(res => {
+            if (res.status === 404) {
+                alert('다시 시도해주세요');
+                return;
+            }
+            else if (res.status === 406) {
+                alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
+                return;
+            } 
+            else if (res.status === 500) {
+                alert('서버가 불안정합니다');
+                return;
+            }
+            else {
+                window.location.href = res.url;
+            }
+        })
+    }
 
     // 모달 닫기
     const handleClose = () => {
@@ -157,8 +191,24 @@ const NoticeContent = () => {
                                 <Button onClick={onNoticePage} className='btn_indigo btn_size_100'>목록</Button>
                             </div>
                         }
-                    </>
+                    </>                    
                 </div>
+
+                {/* 공지사항 파일 */}
+                {noticeFiles.length !== 0 &&
+                    <div id='notice_content_file_txt'>
+                        첨부파일({noticeFileCount})
+                        {
+                            noticeFiles.map((item) => {
+                                return (
+                                    <span key={item.boardFileId} onClick={() => commentFileDown(item.boardFilePath)} id='notice_content_file_data'>
+                                        | {item.boardFileName}
+                                    </span>   
+                                )
+                            })
+                        }   
+                    </div>
+                }
 
                 {/* dangerouslySetInnerHTML : String형태를 html로 */}
                 <div>
