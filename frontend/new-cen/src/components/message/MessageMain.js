@@ -8,7 +8,7 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 
 import MessageButton from './MessageButton';
-import Pagination from './Pagination';
+import Pagination from '../common/Pagination';
 
 import { BASE_URL, MESSAGE } from '../common/config/host-config';
 import { getToken } from '../common/util/login-util';

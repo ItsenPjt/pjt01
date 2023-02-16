@@ -1,6 +1,6 @@
 import React from 'react';
 
-import './css/MessagePagination.css';
+import './css/Pagination.css';
 
 const Pagination = ({currentPage, totalPage, handleChangePage, isFirst, isLast}) => {
 
