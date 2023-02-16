@@ -84,14 +84,14 @@ const Header = () => {
         :(
         <Navbar className="header_nav_bar">
             <Container>
-                <Navbar.Brand href="/">
+                <Navbar.Brand href="/" id='titleLogo' >
                     <img className='cen_logo' alt='logo' src="/img/logo.png"/>
                     <span className='header_title'>
                         아이티센그룹
-                        <br/>
-                        {/* <span className='header_title_eng'>
+
+                        <span className='header_title_eng'>
                             ITCENGROUP
-                        </span> */}
+                        </span>
                     </span>
                 </Navbar.Brand>
 
