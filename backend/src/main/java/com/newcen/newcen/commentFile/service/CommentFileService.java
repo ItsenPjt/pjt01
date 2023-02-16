@@ -1,7 +1,8 @@
 package com.newcen.newcen.commentFile.service;
 
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.newcen.newcen.comment.repository.CommentRepository;
-import com.newcen.newcen.commentFile.dto.request.CommentFileCreateRequest;
 import com.newcen.newcen.commentFile.dto.request.CommentFileUpdateRequest;
 import com.newcen.newcen.commentFile.dto.response.CommentFileListResponseDTO;
 import com.newcen.newcen.commentFile.dto.response.CommentFileResponseDTO;
@@ -11,10 +12,8 @@ import com.newcen.newcen.common.entity.CommentEntity;
 import com.newcen.newcen.common.entity.CommentFileEntity;
 import com.newcen.newcen.common.entity.UserEntity;
 import com.newcen.newcen.users.repository.UserRepository;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,12 +32,15 @@ public class CommentFileService {
 
     private final CommentFileRepository commentFileRepository;
     private final CommentFileRepositorySupport commentFileRepositorySupport;
-
-    public CommentFileService(UserRepository userRepository, CommentRepository commentRepository, CommentFileRepository commentFileRepository, CommentFileRepositorySupport commentFileRepositorySupport) {
+    private final AmazonS3 amazonS3;
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
+    public CommentFileService(UserRepository userRepository, CommentRepository commentRepository, CommentFileRepository commentFileRepository, CommentFileRepositorySupport commentFileRepositorySupport, AmazonS3 amazonS3) {
         this.userRepository = userRepository;
         this.commentRepository = commentRepository;
         this.commentFileRepository = commentFileRepository;
         this.commentFileRepositorySupport = commentFileRepositorySupport;
+        this.amazonS3 = amazonS3;
     }
 
     //댓글 파일 목록조회
@@ -96,7 +98,7 @@ public class CommentFileService {
 
     }
 
-    //댓글 파일 삭제
+    //댓글 파일 삭제, s3삭제 연동
     public boolean deleteCommentFile(String userId, Long commentId, String commentFileId) {
         CommentEntity getComment = commentRepository.findById(commentId).get();
         UserEntity user = userRepository.findById(userId).get();
@@ -106,6 +108,10 @@ public class CommentFileService {
         Optional<CommentFileEntity> getCommentFile = commentFileRepository.findById(commentFileId);
         if (!Objects.equals(getComment.getCommentId(), getCommentFile.get().getCommentId())) {
             throw new RuntimeException("본인이 작성한 댓글파일이 아닙니다.");
+        }
+
+        if (getCommentFile.isPresent() && getCommentFile !=null){
+            amazonS3.deleteObject(new DeleteObjectRequest(bucket, getCommentFile.get().getCommentFileName()));
         }
         commentFileRepository.delete(getCommentFile.get());
         return true;

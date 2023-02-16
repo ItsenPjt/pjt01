@@ -4,24 +4,20 @@ import com.newcen.newcen.comment.dto.request.CommentCreateRequest;
 import com.newcen.newcen.comment.dto.request.CommentUpdateRequest;
 import com.newcen.newcen.comment.dto.response.CommentListResponseDTO;
 import com.newcen.newcen.comment.service.CommentService;
-import com.newcen.newcen.commentFile.dto.request.CommentFileCreateRequest;
 import com.newcen.newcen.commentFile.dto.request.CommentFileUpdateRequest;
 import com.newcen.newcen.commentFile.dto.response.CommentFileListResponseDTO;
 import com.newcen.newcen.commentFile.service.CommentFileService;
 import com.newcen.newcen.common.dto.request.SearchCondition;
 import com.newcen.newcen.common.entity.BoardEntity;
-import com.newcen.newcen.common.entity.UserEntity;
 import com.newcen.newcen.common.service.AwsS3Service;
-import com.newcen.newcen.notice.dto.request.NoticeCreateFileRequestDTO;
 import com.newcen.newcen.notice.dto.request.NoticeCreateRequestDTO;
-import com.newcen.newcen.notice.dto.request.NoticeUpdateFileRequestDTO;
 import com.newcen.newcen.notice.dto.request.NoticeUpdateRequestDTO;
 import com.newcen.newcen.notice.dto.response.NoticeDetailResponseDTO;
 import com.newcen.newcen.notice.dto.response.NoticeListResponseDTO;
 import com.newcen.newcen.notice.dto.response.NoticeOneResponseDTO;
 import com.newcen.newcen.notice.repository.NoticeRepository;
 import com.newcen.newcen.notice.service.NoticeService;
-import com.newcen.newcen.question.response.QuestionResponseDTO;
+import com.newcen.newcen.question.response.QuestionsOneResponseDTO;
 import com.newcen.newcen.question.service.QuestionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -254,7 +250,7 @@ public class NoticeApiController {
         log.info("/api/notices/{}/file/{} DELETE request", boardId, boardFileId);
 
         try {
-            QuestionResponseDTO deleted = questionService.deleteFile(userId, boardId,boardFileId);
+            QuestionsOneResponseDTO deleted = questionService.deleteFile(userId, boardId,boardFileId);
 //            NoticeOneResponseDTO responseDTO = noticeService .deleteFile(boardId, boardFileId, userId);
             return ResponseEntity
                     .ok()

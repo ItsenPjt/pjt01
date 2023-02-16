@@ -1,5 +1,7 @@
 package com.newcen.newcen.comment.service;
 
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.newcen.newcen.comment.dto.request.CommentCreateRequest;
 import com.newcen.newcen.comment.dto.request.CommentUpdateRequest;
 import com.newcen.newcen.comment.dto.response.CommentListResponseDTO;
@@ -7,8 +9,10 @@ import com.newcen.newcen.comment.dto.response.CommentResponseDTO;
 
 import com.newcen.newcen.comment.repository.CommentRepository;
 import com.newcen.newcen.comment.repository.CommentRepositorySupport;
+import com.newcen.newcen.commentFile.repository.CommentFileRepositorySupport;
 import com.newcen.newcen.common.entity.BoardEntity;
 import com.newcen.newcen.common.entity.CommentEntity;
+import com.newcen.newcen.common.entity.CommentFileEntity;
 import com.newcen.newcen.common.entity.UserEntity;
 import com.newcen.newcen.notice.dto.response.NoticeDetailResponseDTO;
 import com.newcen.newcen.notice.repository.NoticeRepository;
@@ -18,6 +22,7 @@ import com.newcen.newcen.question.response.QuestionListResponseDTO;
 import com.newcen.newcen.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -37,15 +42,19 @@ public class CommentService {
 
     private final UserRepository userRepository;
 
-    private final NoticeRepository noticeRepository;
 
     private final QuestionsRepository questionsRepository;
 
-    private final QuestionsRepositorySupport questionsRepositorySupport;
 
     private final CommentRepository commentRepository;
     private final CommentRepositorySupport commentRepositorySupport;
 
+    private final CommentFileRepositorySupport commentFileRepositorySupport;
+
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
+
+    private final AmazonS3 amazonS3;
     //댓글 목록 조회
     public CommentListResponseDTO retrive(Long boardId) {
         List<CommentEntity> commentList = commentRepositorySupport.findAllByBoardId(boardId);
@@ -104,14 +113,16 @@ public class CommentService {
         CommentEntity savedComment = commentRepository.save(getComment);
         return retrive(boardId);
     }
-
-
-    //댓글 삭제
+    //댓글 삭제 caseCade 설정 완료 파일도 동시에 삭제
     public boolean deleteComment(String userId, Long commentId) {
         CommentEntity getComment = commentRepository.findById(commentId).get();
         UserEntity user = userRepository.findById(userId).get();
         if (!Objects.equals(getComment.getCommentWriter(), user.getUserName())) {
             throw new RuntimeException("본인이 작성한 댓글이 아닙니다.");
+        }
+        List<CommentFileEntity> commentFileList = commentFileRepositorySupport.findCommentFileListByCommentId(commentId);
+        if (commentFileList.size() !=0 && commentFileList !=null){
+            commentFileList.forEach(t-> amazonS3.deleteObject(new DeleteObjectRequest(bucket, t.getCommentFilePath())));
         }
         commentRepository.delete(getComment);
         return true;
