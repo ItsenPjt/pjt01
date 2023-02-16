@@ -82,7 +82,7 @@ const QuestionComment = ( { questionId } ) => { // QuestionContent.js 에서 받
     const handleInserQuestionComment = () => {
 
         // 댓글과 댓글 파일 모두 입력하지 않았을 때
-        if (questionInsertComment.commentContent === '' && files.length == 0) {
+        if (questionInsertComment.commentContent === '' && files.length === 0) {
             alert('댓글 입력 혹은 파일을 선택해주세요');
         }
 

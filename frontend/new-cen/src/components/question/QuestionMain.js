@@ -67,7 +67,7 @@ const QuestionMain = () => {
                     <Table responsive id='question_table'>
                         <thead>
                             <tr id='question_main_thead'>
-                                <th width="10%">이름</th>
+                                <th width="10%">번호</th>
                                 <th width="20%">제목</th>
                                 <th width="15%">날짜</th>
                                 <th width="15%">작성자</th>

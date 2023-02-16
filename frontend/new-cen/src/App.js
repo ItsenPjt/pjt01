@@ -11,11 +11,17 @@ function App() {
     
     useEffect(() => {
 
-        if (localStorage.getItem("ACCESS_TOKEN") === null || localStorage.getItem("LOGIN_USERNAME") === null) {
-            // localStorage 에 ACCESS_TOKEN이나 LOGIN_USERNAME의 key 값으로 저장된 값이 없다면
+        // if (localStorage.getItem("ACCESS_TOKEN") === null || localStorage.getItem("LOGIN_USERNAME") === null) {
+        //     setIsLogin(false);
+        // } else {
+        //     setIsLogin(true);   // 로그인 상태 변경
+        // }
+
+        if (sessionStorage.getItem("ACCESS_TOKEN") === null || sessionStorage.getItem("LOGIN_USERNAME") === null) {
+            // sessionStorage 에 ACCESS_TOKEN이나 LOGIN_USERNAME의 key 값으로 저장된 값이 없다면
             setIsLogin(false);
         } else {
-            // localStorage 에 ACCESS_TOKEN이나 LOGIN_USERNAME의 key 값으로 저장된 값이 있다면
+            // sessionStorage 에 ACCESS_TOKEN이나 LOGIN_USERNAME의 key 값으로 저장된 값이 있다면
             setIsLogin(true);   // 로그인 상태 변경
         }
 
