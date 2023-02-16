@@ -395,7 +395,7 @@ const MessageMain = () => {
                 messageReceiver: ''
             })
 
-            if (eventKey === '작성자') { 
+            if (eventKey === '보낸 사람') { 
                 setReceiverSearchData({
                     ...receiverSearchData,
                     messageTitle: '',
@@ -416,14 +416,7 @@ const MessageMain = () => {
                     messageContent: e.target.value,
                     messageSender: ''
                 })
-            } else if (eventKey === '제목+내용') {
-                setReceiverSearchData({
-                    ...receiverSearchData,
-                    messageTitle: e.target.value,
-                    messageContent: e.target.value,
-                    messageSender: ''
-                })
-            }  
+            }
         } 
         else if (mode === 'sent') {     // 보낸 메세지
 
@@ -434,7 +427,7 @@ const MessageMain = () => {
                 messageSender: ''
             })
 
-            if (eventKey === '작성자') { 
+            if (eventKey === '받는 사람') { 
                 setSentSearchData({
                     ...sentSearchData,
                     messageTitle: '',
@@ -455,14 +448,7 @@ const MessageMain = () => {
                     messageContent: e.target.value,
                     messageReceiver: ''
                 })
-            } else if (eventKey === '제목+내용') {
-                setSentSearchData({
-                    ...sentSearchData,
-                    messageTitle: e.target.value,
-                    messageContent: e.target.value,
-                    messageReceiver: ''
-                })
-            }  
+            }
         }
     }
 
@@ -561,16 +547,29 @@ const MessageMain = () => {
                 </div>
 
                  {/* 검색 */}
-                <div id='notice_search_dropdown_div'>
-                    <DropdownButton drop = {'up'} title={'선택'} onSelect={(eventKey) => onSelectItem(eventKey)} id='notice_select_dropdown_button' >
-                        <Dropdown.Item eventKey="작성자" id='notice_selct_dropdown_item'>작성자</Dropdown.Item>
-                        <Dropdown.Item eventKey="제목" id='notice_selct_dropdown_item'>제목</Dropdown.Item>
-                        <Dropdown.Item eventKey="내용" id='notice_selct_dropdown_item'>내용</Dropdown.Item>
-                        <Dropdown.Item eventKey="제목+내용" id='notice_selct_dropdown_item'>제목 + 내용</Dropdown.Item>
-                    </DropdownButton>
-                    <Form.Control onChange={searchChangeHandler} type='text' id='notice_select_dropdown_form' placeholder='검색' onKeyDown={onKeyPress}/>
-                    <Button onClick={handleSearch} id='notice_select_dropdown_search_button' className='btn_gray'>검색</Button>
-                </div>
+                {mode === 'received' &&
+                    <div id='notice_search_dropdown_div'>
+                        <DropdownButton drop = {'up'} title={'선택'} onSelect={(eventKey) => onSelectItem(eventKey)} id='notice_select_dropdown_button' >
+                            <Dropdown.Item eventKey="보낸 사람" id='notice_selct_dropdown_item'>보낸 사람</Dropdown.Item>
+                            <Dropdown.Item eventKey="제목" id='notice_selct_dropdown_item'>제목</Dropdown.Item>
+                            <Dropdown.Item eventKey="내용" id='notice_selct_dropdown_item'>내용</Dropdown.Item>
+                        </DropdownButton>
+                        <Form.Control onChange={searchChangeHandler} type='text' id='notice_select_dropdown_form' placeholder='검색' onKeyDown={onKeyPress}/>
+                        <Button onClick={handleSearch} id='notice_select_dropdown_search_button' className='btn_gray'>검색</Button>
+                    </div>
+                }
+                {mode === 'sent' && 
+                    <div id='notice_search_dropdown_div'>
+                        <DropdownButton drop = {'up'} title={'선택'} onSelect={(eventKey) => onSelectItem(eventKey)} id='notice_select_dropdown_button' >
+                            <Dropdown.Item eventKey="받는 사람" id='notice_selct_dropdown_item'>받는 사람</Dropdown.Item>
+                            <Dropdown.Item eventKey="제목" id='notice_selct_dropdown_item'>제목</Dropdown.Item>
+                            <Dropdown.Item eventKey="내용" id='notice_selct_dropdown_item'>내용</Dropdown.Item>
+                        </DropdownButton>
+                        <Form.Control onChange={searchChangeHandler} type='text' id='notice_select_dropdown_form' placeholder='검색' onKeyDown={onKeyPress}/>
+                        <Button onClick={handleSearch} id='notice_select_dropdown_search_button' className='btn_gray'>검색</Button>
+                    </div>
+                }
+
 
                 {/* 페이지 */}
                 <Pagination currentPage={currentPage} handleChangePage={handleChangePage} isFirst={isFirst} isLast={isLast} totalPage={totalPage} />
