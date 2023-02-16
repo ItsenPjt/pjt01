@@ -6,8 +6,8 @@ let backendHost; // 백엔드 호스트 이름
 
 if(hostname === 'localhost') {
     backendHost = 'http://localhost:8080';  // 로컬 테스트용
-}else if(hostname === 'http://newcen.co.kr.s3-website.ap-northeast-2.amazonaws.com') {
-    backendHost = 'http://54.180.7.97';     // 배포 테스트용 
+}else if(hostname === 'newcen.co.kr.s3-website.ap-northeast-2.amazonaws.com') {
+    backendHost = 'http://54.180.7.97:8080';     // 배포 테스트용 
 }
 
 
