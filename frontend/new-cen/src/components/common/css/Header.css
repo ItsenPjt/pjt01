@@ -83,3 +83,22 @@
     cursor: pointer;
 }
 
+#header_menu_before_login {
+    display: flex;
+    justify-content: flex-end;
+    position: absolute;
+    right: 20%;
+}
+
+#header_menu_after_login {
+    position: absolute;
+    right: 20%;
+    top: 0;
+}
+
+#header_user_menu {
+    display: flex;
+}
+
+
+

@@ -107,27 +107,29 @@ const Header = () => {
 
                         {ACCESS_TOKEN === null || ACCESS_TOKEN === '' 
                             ? (
-                                <>
-                                <span onClick={onLoginPage} id='header_login'>
-                                    로그인
-                                </span>
-                                <span id='header_dot'>　·　</span>
-                                <span onClick={signup} id='header_signup'>
-                                    회원가입
-                                </span>
-                                </>
+                                <div id='header_menu_before_login'>
+                                    <span onClick={onLoginPage} id='header_login'>
+                                        로그인
+                                    </span>
+                                    <span id='header_dot'>　·　</span>
+                                    <span onClick={signup} id='header_signup'>
+                                        회원가입
+                                    </span>
+                                </div>
                               )
                             : (
-                                <>
+                                <div id='header_menu_after_login'>
                                     <div id='header_user'>{USER_NAME} 님 환영합니다.</div>
-                                    <NavDropdown style={{fontSize: textSize5, fontWeight: fontWeight5}} title="내정보" id="basic-nav-dropdown">
-                                        <NavDropdown.Item onClick={() => {document.location.href = '/signset'}} className='header_nav_dropdown_link'>마이페이지</NavDropdown.Item>
-                                        <NavDropdown.Item onClick={() => {document.location.href = '/message'}} className='header_nav_dropdown_link'>메세지함</NavDropdown.Item>
-                                    </NavDropdown>
-                                    <div onClick={logoutHandler} id='header_logout'>
-                                        로그아웃
+                                    <div id='header_user_menu'>
+                                        <NavDropdown style={{fontSize: textSize5, fontWeight: fontWeight5}} title="내정보" id="basic-nav-dropdown">
+                                            <NavDropdown.Item onClick={() => {document.location.href = '/signset'}} className='header_nav_dropdown_link'>마이페이지</NavDropdown.Item>
+                                            <NavDropdown.Item onClick={() => {document.location.href = '/message'}} className='header_nav_dropdown_link'>메세지함</NavDropdown.Item>
+                                        </NavDropdown>
+                                        <div onClick={logoutHandler} id='header_logout'>
+                                            로그아웃
+                                        </div>
                                     </div>
-                                </>
+                                </div>
                               )  
                         }
                     </Nav>
