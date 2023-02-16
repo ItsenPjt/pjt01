@@ -160,14 +160,7 @@ const NoticeMain = () => {
                 boardContent: e.target.value,
                 boardWriter: ''
             })
-        } else if (eventKey === '제목+내용') {
-            setSearchData({
-                ...searchData,
-                boardTitle: e.target.value,
-                boardContent: e.target.value,
-                boardWriter: ''
-            })
-        }  
+        }
     }
 
     // 검색 버튼 클릭 시 
@@ -243,7 +236,6 @@ const NoticeMain = () => {
                     <Dropdown.Item eventKey="작성자" id='notice_selct_dropdown_item'>작성자</Dropdown.Item>
                     <Dropdown.Item eventKey="제목" id='notice_selct_dropdown_item'>제목</Dropdown.Item>
                     <Dropdown.Item eventKey="내용" id='notice_selct_dropdown_item'>내용</Dropdown.Item>
-                    <Dropdown.Item eventKey="제목+내용" id='notice_selct_dropdown_item'>제목 + 내용</Dropdown.Item>
                 </DropdownButton>
                 <Form.Control onChange={searchChangeHandler} type='text' id='notice_select_dropdown_form' placeholder='검색' onKeyDown={onKeyPress}/>
                 <Button onClick={handleSearch} id='notice_select_dropdown_search_button' className='btn_gray'>검색</Button>
