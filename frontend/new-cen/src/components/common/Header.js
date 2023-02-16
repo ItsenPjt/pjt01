@@ -41,11 +41,17 @@ const Header = () => {
 
     // 로그아웃
     const logoutHandler = () => {
-        localStorage.removeItem('ACCESS_TOKEN');
-        localStorage.removeItem('LOGIN_USERID');
-        localStorage.removeItem('LOGIN_USERNAME');
-        localStorage.removeItem('LOGIN_USEREMAIL');
-        localStorage.removeItem('LOGIN_USERROLE');
+        // localStorage.removeItem('ACCESS_TOKEN');
+        // localStorage.removeItem('LOGIN_USERID');
+        // localStorage.removeItem('LOGIN_USERNAME');
+        // localStorage.removeItem('LOGIN_USEREMAIL');
+        // localStorage.removeItem('LOGIN_USERROLE');
+
+        sessionStorage.removeItem('ACCESS_TOKEN');
+        sessionStorage.removeItem('LOGIN_USERID');
+        sessionStorage.removeItem('LOGIN_USERNAME');
+        sessionStorage.removeItem('LOGIN_USEREMAIL');
+        sessionStorage.removeItem('LOGIN_USERROLE');
 
         window.location.href='/';
     }
