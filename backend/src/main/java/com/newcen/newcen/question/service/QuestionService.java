@@ -2,7 +2,6 @@ package com.newcen.newcen.question.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
-import com.newcen.newcen.common.config.security.TokenProvider;
 import com.newcen.newcen.common.dto.request.SearchCondition;
 import com.newcen.newcen.common.entity.BoardEntity;
 import com.newcen.newcen.common.entity.BoardFileEntity;
@@ -23,6 +22,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 public class QuestionService {
+
     private final UserRepository userRepository;
     private final QuestionsRepository questionsRepository;
 
@@ -110,7 +111,7 @@ public class QuestionService {
         return new QuestionResponseDTO(savedBoard);
     }
 
-    //문의사항 삭제
+    //문의사항 삭제, 삭제시 파일 삭제 추가
     public boolean deleteQuestion(String userId, Long boardId){
         BoardEntity boardGet = questionsRepositorySupport.findBoardByUserIdAndBoardId(userId,boardId);
         UserEntity user = userRepository.findById(userId).get();
@@ -164,8 +165,8 @@ public class QuestionService {
         BoardEntity savedBoard = questionsRepository.save(board);
         return new QuestionsOneResponseDTO(savedBoard);
     }
-    //게시물 파일 삭제
-    public QuestionResponseDTO deleteFile(String userId, Long boardId, String boardFileId){
+    //문의사항, 공지사항 파일 삭제
+    public QuestionsOneResponseDTO deleteFile(String userId, Long boardId, String boardFileId){
         BoardEntity board = questionsRepositorySupport.findBoardByUserIdAndBoardId(userId,boardId);
         UserEntity user = userRepository.findById(userId).get();
         BoardFileEntity boardFile = questionsFileRepository.findById(boardFileId).get();
@@ -173,7 +174,8 @@ public class QuestionService {
             throw new RuntimeException("본인이 작성한 글이 아닙니다.");
         }
         try {
-            questionsFileRepository.deleteById(boardFileId);
+//            questionsFileRepository.delete(boardFile);
+            questionsFileRepository.selfDeleteById(boardFileId);
             amazonS3.deleteObject(new DeleteObjectRequest(bucket, boardFile.getBoardFilePath()));
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -191,7 +193,7 @@ public class QuestionService {
                 .user(user)
                 .build();
 
-        return new QuestionResponseDTO(res);
+        return questionDetail(boardId);
     }
 
 

@@ -97,7 +97,6 @@ public class QuestionsController {
             @AuthenticationPrincipal String userId, @Validated @RequestBody QuestionCreateRequestDTO questionCreateRequestDTO
             , BindingResult result
     ){
-
         if (result.hasErrors()){
             log.warn("DTO 검증 에러 발생 : {} ", result.getFieldError());
             return ResponseEntity
@@ -202,7 +201,7 @@ public class QuestionsController {
     //문의사항 파일 삭제
     @DeleteMapping("/{boardId}/files/{boardFileId}")
     private ResponseEntity<?> deleteQuestionFile(@AuthenticationPrincipal String userId, @PathVariable("boardId") Long boardId, @PathVariable("boardFileId")  String boardFileId){
-        QuestionResponseDTO deleted = questionService.deleteFile(userId, boardId,boardFileId);
+        QuestionsOneResponseDTO deleted = questionService.deleteFile(userId, boardId,boardFileId);
         if (deleted==null){
             return ResponseEntity.internalServerError().body("파일 삭제에 실패했습니다..");
         }else {

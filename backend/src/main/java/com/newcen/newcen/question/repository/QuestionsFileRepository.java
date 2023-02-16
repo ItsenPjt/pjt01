@@ -2,12 +2,17 @@ package com.newcen.newcen.question.repository;
 
 import com.newcen.newcen.common.entity.BoardFileEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 
-@Repository
 public interface QuestionsFileRepository extends JpaRepository<BoardFileEntity, String> {
-
+    @Modifying
+    @Query("delete from BoardFileEntity b where b.boardFileId =:boardFileId")
+    void selfDeleteById(@Param("boardFileId") String boardFileId);
 
 
 }

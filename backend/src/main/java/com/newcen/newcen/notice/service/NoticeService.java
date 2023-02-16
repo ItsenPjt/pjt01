@@ -136,17 +136,14 @@ public class NoticeService {
 
     // 공지사항 삭제
     public boolean delete (final Long boardId, final String userId) {
-
         Optional<UserEntity> userEntity = userRepository.findById(userId);
         if (!userEntity.get().getUserRole().equals(UserRole.ADMIN)) {
             throw new RuntimeException("관리자가 아닙니다.");
         }
-
         try {
             noticeRepository.deleteById(boardId);
         } catch (Exception e) {
             log.error("삭제할 공지사항이 존재하지 않아 삭제에 실패했습니다. - ID: {}, error: {}", boardId, e.getMessage());   // [서버에 기록할 메세지]
-
             throw new RuntimeException("삭제할 공지사항이 존재하지 않아 삭제에 실패했습니다.");      // [클라이언트에게 전달할 메세지]
         }
         return true;
@@ -167,12 +164,9 @@ public class NoticeService {
 
         // 파일을 추가할 공지사항 entity
         BoardEntity boardEntity = noticeRepository.findById(boardId).get();
-
         BoardFileEntity boardFile = createFileRequestDTO.toEntity(boardEntity);
         noticeFileRepository.save(boardFile);
-
         log.info("파일이 저장되었습니다. - 파일 주소: {}", createFileRequestDTO.getBoardFilePath());
-
         return retrieveOne(boardFile.getBoardId());
     }
 
