@@ -121,10 +121,7 @@ public class QuestionService {
         BoardEntity boardGet = questionsRepositorySupport.findBoardByUserIdAndBoardId(userId,boardId);
         UserEntity user = userRepository.findById(userId).get();
         List<BoardFileEntity> boardFileEntityList = boardFileRepository.findByBoardId(boardId);
-        boardFileEntityList.forEach(t-> System.out.println(t));
         List<CommentEntity> commentList = commentRepositorySupport.findAllByBoardId(boardId);
-        commentList.forEach(t-> System.out.println(t));
-
         if (boardFileEntityList.size() !=0 && boardFileEntityList !=null){
             boardFileEntityList.forEach(t-> amazonS3.deleteObject(new DeleteObjectRequest(bucket, t.getBoardFilePath())));
         }
@@ -186,7 +183,6 @@ public class QuestionService {
             throw new RuntimeException("본인이 작성한 글이 아닙니다.");
         }
         try {
-//            questionsFileRepository.delete(boardFile);
             questionsFileRepository.selfDeleteById(boardFileId);
             amazonS3.deleteObject(new DeleteObjectRequest(bucket, boardFile.getBoardFilePath()));
         } catch (Exception e) {

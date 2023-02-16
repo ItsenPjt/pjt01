@@ -1,10 +1,12 @@
 package com.newcen.newcen.notice.service;
 
 import com.newcen.newcen.common.dto.request.SearchCondition;
-import com.newcen.newcen.common.entity.*;
+import com.newcen.newcen.common.entity.BoardEntity;
+import com.newcen.newcen.common.entity.BoardFileEntity;
+import com.newcen.newcen.common.entity.UserEntity;
+import com.newcen.newcen.common.entity.UserRole;
 import com.newcen.newcen.notice.dto.request.NoticeCreateFileRequestDTO;
 import com.newcen.newcen.notice.dto.request.NoticeCreateRequestDTO;
-import com.newcen.newcen.notice.dto.request.NoticeUpdateFileRequestDTO;
 import com.newcen.newcen.notice.dto.request.NoticeUpdateRequestDTO;
 import com.newcen.newcen.notice.dto.response.NoticeDetailResponseDTO;
 import com.newcen.newcen.notice.dto.response.NoticeListResponseDTO;
@@ -15,12 +17,10 @@ import com.newcen.newcen.notice.repository.NoticeRepositorySupport;
 import com.newcen.newcen.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -118,12 +118,12 @@ public class NoticeService {
         }
 
         if (targetEntity.isPresent()) {
-            if (dto.getBoardContent()==null || dto.getBoardContent()==""){
+            if (dto.getBoardContent()==null || dto.getBoardContent().equals("")){
                 content = targetEntity.get().getBoardContent();
             }else {
                 content = dto.getBoardContent();
             }
-            if (dto.getBoardTitle()==null || dto.getBoardTitle()==""){
+            if (dto.getBoardTitle()==null || dto.getBoardTitle().equals("")){
                 title = targetEntity.get().getBoardContent();
             }else {
                 title = dto.getBoardTitle();

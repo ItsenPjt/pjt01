@@ -58,7 +58,7 @@ public class FaqService {
         PageImpl<FaqDetailResponseDTO> result = faqRepositorySupport.getFaqListPage(pageable);
         return result;
     }
-    //공지사항 검색 및 페이지 제네이션
+    //faq 검색 및 페이지 제네이션
     public PageImpl<FaqDetailResponseDTO> getFaqListPageWithSearch(SearchCondition searchCondition, Pageable pageable){
         PageImpl<FaqDetailResponseDTO> result = faqRepositorySupport.getPageNoticeListWithSearch(searchCondition,pageable);
         return result;
@@ -106,7 +106,7 @@ public class FaqService {
         });
 
         faq.updateBoard(faqUpdateRequestDTO.getBoardTitle(), faqUpdateRequestDTO.getBoardContent());
-        Long newFaqId = faqRepository.save(faq).getBoardId();
+        faqRepository.save(faq).getBoardId();
 
         return true;
     }

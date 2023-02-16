@@ -41,18 +41,10 @@ public class MessageEntity {
     @JoinColumn(name="sender_id")
     private UserEntity sender;
 
-//    @Column(name = "sender_id")
-//    private String senderId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="receiver_id")
     private UserEntity receiver;
-
-//    @Column(name = "receiver_id")
-//    private String receiverId;
-
-
-
 
 
 

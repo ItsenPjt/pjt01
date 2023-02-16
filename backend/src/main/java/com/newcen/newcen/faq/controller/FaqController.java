@@ -29,7 +29,6 @@ public class FaqController {
     @GetMapping("/api/faqs")
     public ResponseEntity<?> getFaqListPage(Pageable pageable) {
 
-//        List<FaqResponseDTO> faqList = faqService.faqList();
         PageImpl<FaqDetailResponseDTO> faqList = faqService.getFaqListPage(pageable);
 
         return ResponseEntity
@@ -81,7 +80,6 @@ public class FaqController {
                                        @Validated @RequestBody FaqUpdateRequestDTO requestDTO) {
 
         requestDTO.setBoardId(boardId);
-//        FaqDetailResponseDTO faqDetail = faqService.faqUpdate(userId, requestDTO);
         boolean faqDetail = faqService.faqUpdate(userId, requestDTO);
         return ResponseEntity
                 .ok()

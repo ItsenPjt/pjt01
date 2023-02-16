@@ -3,7 +3,6 @@ package com.newcen.newcen.notice.dto.response;
 import com.newcen.newcen.common.entity.BoardFileEntity;
 import lombok.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Setter @Getter @ToString

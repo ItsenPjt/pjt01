@@ -166,7 +166,7 @@ public class MessageService {
                 throw new MessageCustomException(MessageExceptionEnum.UNAUTHORIZED_ACCESS);
             });
 
-            if(receiverId.size()==0) {
+            if(receiverId.isEmpty()) {
                 throw new InvalidParameterException();
             }
 

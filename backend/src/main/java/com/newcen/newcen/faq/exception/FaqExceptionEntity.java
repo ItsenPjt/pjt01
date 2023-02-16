@@ -6,8 +6,6 @@ import lombok.Getter;
 @Getter
 @Builder
 public class FaqExceptionEntity {
-
     private String errorCode;
     private String errorMessage;
-
 }

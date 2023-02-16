@@ -6,18 +6,12 @@ import com.newcen.newcen.common.entity.BoardEntity;
 import com.newcen.newcen.common.entity.BoardType;
 import com.newcen.newcen.common.entity.QBoardEntity;
 import com.newcen.newcen.notice.dto.response.NoticeDetailResponseDTO;
-import com.newcen.newcen.notice.dto.response.NoticeListResponseDTO;
-import com.querydsl.core.QueryResults;
-import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -29,12 +23,10 @@ public class NoticeRepositorySupport  extends QuerydslRepositorySupport {
 
     private final JPAQueryFactory jpaQueryFactory;
     QBoardEntity qBoardEntity = QBoardEntity.boardEntity;
-    private final EntityManager entityManager;
 
-    public NoticeRepositorySupport(JPAQueryFactory jpaQueryFactory,EntityManager entityManager) {
+    public NoticeRepositorySupport(JPAQueryFactory jpaQueryFactory) {
         super(BoardEntity.class);
         this.jpaQueryFactory = jpaQueryFactory;
-        this.entityManager = entityManager;
     }
 
 
@@ -73,13 +65,10 @@ public class NoticeRepositorySupport  extends QuerydslRepositorySupport {
                 .orderBy(qBoardEntity.createDate.desc());
         long totalCount = query.fetchCount();
         List<BoardEntity> results = getQuerydsl().applyPagination(pageable,query).fetch();
-        System.out.println(pageable);
         List<NoticeDetailResponseDTO> dtoList = results.stream()
                 .map(NoticeDetailResponseDTO::new)
                 .collect(Collectors.toList());
         Pageable pageRequest = new FixedPageRequest(pageable, totalCount);
-        // 2. NoticeDetailResponseDTO 를 NoticeListResponseDTO 로 변경
-
         return new PageImpl<>(dtoList, pageRequest, totalCount);
 
     }
