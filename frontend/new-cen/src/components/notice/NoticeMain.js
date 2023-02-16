@@ -32,32 +32,29 @@ const NoticeMain = () => {
 
     // 렌더링 되자마자 할 일 => 공지사항 api GET 목록 호출
     useEffect(() => {
-        fetch(API_BASE_URL, {
-            method: 'GET',
-            headers: headerInfo
+        fetch(API_BASE_URL)
+        .then(res => {
+            if (res.status === 406) {
+                if (ACCESS_TOKEN === '') {
+                    alert('로그인이 필요한 서비스입니다');
+                    window.location.href = '/join';
+                } else {
+                    alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
+                    return;
+                }
+                return;
+            } 
+            else if (res.status === 500) {
+                alert('서버가 불안정합니다');
+                return;
+            }
+            return res.json();
         })
-            .then(res => {
-                if (res.status === 406) {
-                    if (ACCESS_TOKEN === '') {
-                        alert('로그인이 필요한 서비스입니다');
-                        window.location.href = '/join';
-                    } else {
-                        alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
-                        return;
-                    }
-                    return;
-                } 
-                else if (res.status === 500) {
-                    alert('서버가 불안정합니다');
-                    return;
-                }
-                return res.json();
-            })
-            .then(result => {
-                if (!!result) {
-                    setNotices(result.content);
-                }
-            });
+        .then(result => {
+            if (!!result) {
+                setNotices(result.content);
+            }
+        });
     }, [API_BASE_URL]);
 
     // 제목 클릭 시 url 변경
@@ -81,6 +78,9 @@ const NoticeMain = () => {
 
         // dropdown 버튼 text 변경
         document.getElementById('notice_select_dropdown_button').innerText = ek;
+
+        // dropdown 선택 시 input값 지우기
+        document.getElementById('notice_select_dropdown_form').value = '';
     }
 
     const searchChangeHandler = e => {
@@ -105,7 +105,7 @@ const NoticeMain = () => {
                 boardContent: e.target.value,
                 boardWriter: ''
             })
-        } else if (eventKey === '제목&내용') {
+        } else if (eventKey === '제목+내용') {
             setSearchData({
                 ...searchData,
                 boardTitle: e.target.value,
@@ -117,6 +117,8 @@ const NoticeMain = () => {
 
     // 검색 버튼 클릭 시 
     const handleSearch = () => {
+        console.log(searchData);
+
         fetch(`${API_BASE_URL}/search`, {
             method: 'POST',
             headers: headerInfo,
@@ -187,7 +189,7 @@ const NoticeMain = () => {
                     <Dropdown.Item eventKey="작성자" id='notice_selct_dropdown_item'>작성자</Dropdown.Item>
                     <Dropdown.Item eventKey="제목" id='notice_selct_dropdown_item'>제목</Dropdown.Item>
                     <Dropdown.Item eventKey="내용" id='notice_selct_dropdown_item'>내용</Dropdown.Item>
-                    <Dropdown.Item eventKey="제목&내용" id='notice_selct_dropdown_item'>제목 + 내용</Dropdown.Item>
+                    <Dropdown.Item eventKey="제목+내용" id='notice_selct_dropdown_item'>제목 + 내용</Dropdown.Item>
                 </DropdownButton>
                 <Form.Control onChange={searchChangeHandler} type='text' id='notice_select_dropdown_form' placeholder='검색' onKeyDown={onKeyPress}/>
                 <Button onClick={handleSearch} id='notice_select_dropdown_search_button' className='btn_gray'>검색</Button>

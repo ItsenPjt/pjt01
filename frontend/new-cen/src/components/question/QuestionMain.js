@@ -32,28 +32,25 @@ const QuestionMain = () => {
 
     // 렌더링 되자마자 할 일 => 문의사항 api GET 목록 호출
     useEffect(() => {
-        fetch(API_BASE_URL, {
-            method: 'GET',
-            headers: headerInfo
-        })
-            .then(res => {
-                if (res.status === 403) {
-                    alert('로그인이 필요한 서비스입니다');
+        fetch(API_BASE_URL)
+        .then(res => {
+            if (res.status === 403) {
+                alert('로그인이 필요한 서비스입니다');
 
-                    window.location.href = '/join';
-                    return;
-                } 
-                else if (res.status === 500) {
-                    alert('서버가 불안정합니다');
-                    return;
-                }
-                return res.json();
-            })
-            .then(result => {
-                if (!!result) {
-                    setQuestions(result.content);
-                }
-            });
+                window.location.href = '/join';
+                return;
+            } 
+            else if (res.status === 500) {
+                alert('서버가 불안정합니다');
+                return;
+            }
+            return res.json();
+        })
+        .then(result => {
+            if (!!result) {
+                setQuestions(result.content);
+            }
+        });
     }, [API_BASE_URL]);
 
     // 제목 클릭 시 url 변경
@@ -77,6 +74,9 @@ const QuestionMain = () => {
 
         // dropdown 버튼 text 변경
         document.getElementById('notice_select_dropdown_button').innerText = ek;
+        
+        // dropdown 선택 시 input값 지우기
+        document.getElementById('notice_select_dropdown_form').value = '';
     }
 
     const searchChangeHandler = e => {
@@ -101,7 +101,7 @@ const QuestionMain = () => {
                 boardContent: e.target.value,
                 boardWriter: ''
             })
-        } else if (eventKey === '제목&내용') {
+        } else if (eventKey === '제목+내용') {
             setSearchData({
                 ...searchData,
                 boardTitle: e.target.value,
@@ -183,7 +183,7 @@ const QuestionMain = () => {
                     <Dropdown.Item eventKey="작성자" id='notice_selct_dropdown_item'>작성자</Dropdown.Item>
                     <Dropdown.Item eventKey="제목" id='notice_selct_dropdown_item'>제목</Dropdown.Item>
                     <Dropdown.Item eventKey="내용" id='notice_selct_dropdown_item'>내용</Dropdown.Item>
-                    <Dropdown.Item eventKey="제목&내용" id='notice_selct_dropdown_item'>제목 + 내용</Dropdown.Item>
+                    <Dropdown.Item eventKey="제목+내용" id='notice_selct_dropdown_item'>제목 + 내용</Dropdown.Item>
                 </DropdownButton>
                 <Form.Control onChange={searchChangeHandler} type='text' id='notice_select_dropdown_form' placeholder='검색' onKeyDown={onKeyPress}/>
                 <Button onClick={handleSearch} id='notice_select_dropdown_search_button' className='btn_gray'>검색</Button>
