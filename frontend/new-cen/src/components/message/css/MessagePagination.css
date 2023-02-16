@@ -6,3 +6,36 @@
     margin-right: auto;
     margin-top: 20px;
 }
+
+#selected-page {
+    background: #5D5A5A;
+    color: white;
+    padding: 0 5px;
+    font-weight: 500;
+    border-radius: 8px;
+}
+
+#selected-page:hover {
+    cursor: default;
+}
+
+#first-page,
+#prev-page,
+#last-page,
+#next-page,
+#unselected-page {
+    cursor: pointer;
+    font-weight: 500;
+    padding: 0 5px;
+
+}
+
+#first-page-disabled,
+#prev-page-disabled,
+#last-page-disabled,
+#next-page-disabled {
+    cursor: default;
+    font-weight: 500;
+    padding: 0 5px;
+
+}

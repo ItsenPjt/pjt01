@@ -40,7 +40,7 @@ const MessageMain = () => {
         
         setCurrentPage(page);
 
-        fetch(`${API_BASE_URL}?mode=received&page=${page}&sort=`, {
+        fetch(`${API_BASE_URL}?mode=${mode}&page=${page}&sort=`, {
             method: 'GET',
             headers: headerInfo
         })
@@ -65,7 +65,7 @@ const MessageMain = () => {
                 setIsFirst(false);
             }
 
-            if(page===totalPage) {
+            if(page===totalPage-1) {
                 setIsLast(true);
             }else {
                 setIsLast(false);
@@ -89,9 +89,14 @@ const MessageMain = () => {
 
     const changeMode = (value) => {
 
-        setMode(value);
-        setCurrentPage(0);
-        fetch(`${API_BASE_URL}?mode=${value}&page=0`, {
+        let isChanged = false;
+
+        if(mode!==value) {
+            setMode(value);
+            setCurrentPage(0);
+            isChanged = true;
+        }
+        fetch(`${API_BASE_URL}?mode=${value}&page=${currentPage}`, {
             method: 'GET',
             headers: headerInfo
         })
@@ -109,18 +114,24 @@ const MessageMain = () => {
         })
         .then(res => {
             setMessages(res.content);
-            setCurrentPage(0);
-            setIsFirst(true);
-            setIsLast(false);
             setTotalPage(res.totalPages);
+            if(currentPage===res.totalPages) {
+                handleChangePage(res.totalPages-1);
+            }
+            
         })
         .then(() => {
-            setSelectAll(true);
-            let i = 0;
-            const check_boxes = document.querySelectorAll(".message_select_checkbox");
-            while(i < check_boxes.length) {
-                check_boxes[i].checked = false;
-                i++;
+            
+            if(isChanged) {
+                setIsFirst(true);
+                setIsLast(false);
+                setSelectAll(true);
+                let i = 0;
+                const check_boxes = document.querySelectorAll(".message_select_checkbox");
+                while(i < check_boxes.length) {
+                    check_boxes[i].checked = false;
+                    i++;
+                }
             }
         })
     }
@@ -334,6 +345,7 @@ const MessageMain = () => {
                     changeMode(mode);
                 }
             })
+          
         }
 
     }
@@ -394,7 +406,7 @@ const MessageMain = () => {
                         </tbody>
                     </Table >   
                 </div>
-                <Pagination currentPage={currentPage} handleChangePage={handleChangePage} isFirst={isFirst} isLast={isLast} totalPage={totalPage}/>
+                <Pagination currentPage={currentPage} handleChangePage={handleChangePage} isFirst={isFirst} isLast={isLast} totalPage={totalPage} />
             </div>
 
             {/* Modal */}
