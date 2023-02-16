@@ -7,6 +7,8 @@ import './css/FAQMain.css';
 import { BASE_URL, FAQ } from '../common/config/host-config';
 import { useNavigate } from "react-router-dom";
 
+import { getUserRole } from '../common/util/login-util';
+
 // 자주 묻는 질문 메인
 const FAQMain = () => {
 
@@ -14,6 +16,13 @@ const FAQMain = () => {
     let i = 0;
 
     const API_BASE_URL = BASE_URL + FAQ;
+
+    // 사용자 권한
+    const USER_ROLE = getUserRole();
+
+    console.log(USER_ROLE);
+
+
 
     // 자주 묻는 질문 리스트
     const [faqList, setFaqList] = useState([]);
@@ -47,7 +56,9 @@ const FAQMain = () => {
     return (
         <>
             <div id='faq_btn_main'>
-                <FAQButton />
+                {
+                    USER_ROLE === 'ADMIN' && <FAQButton />
+                }
                 <div id='faq_table_main'>
                     <Table responsive id='faq_table'>
                         <thead>

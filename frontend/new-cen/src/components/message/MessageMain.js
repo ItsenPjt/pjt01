@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 
-import { useParams} from 'react-router-dom';
-
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 
 import MessageButton from './MessageButton';
+import Pagination from './Pagination';
+
 
 import { BASE_URL, MESSAGE } from '../common/config/host-config';
 import { getToken } from '../common/util/login-util';
@@ -26,19 +26,21 @@ const MessageMain = () => {
         'Authorization': 'Bearer ' + ACCESS_TOKEN
     }
 
-    // 메세지 api 데이터 
-    const [messages, setMessages] = useState([]);
 
-    // 전체 선택 여부
-    const [selectAll, setSelectAll] = useState(true);
+    // Pagination
+    const [currentPage, setCurrentPage] = useState(0);
 
-    // mode값 
-    const [mode, setMode] = useState('received'); // 초기값?
+    const [totalPage, setTotalPage] = useState(0);
 
-    const changeMode = (value) => {
+    const [isFirst, setIsFirst] = useState(true);
 
-        setMode(value);
-        fetch(`${API_BASE_URL}?mode=${value}`, {
+    const [isLast, setIsLast] = useState(false);
+
+    const handleChangePage = (page) => {
+        
+        setCurrentPage(page);
+
+        fetch(`${API_BASE_URL}?mode=received&page=${page}&sort=`, {
             method: 'GET',
             headers: headerInfo
         })
@@ -56,7 +58,61 @@ const MessageMain = () => {
         })
         .then(res => {
             setMessages(res.content);
-            
+            setTotalPage(res.totalPages);
+            if(page===0) {
+                setIsFirst(true);
+            }else if(page>0) {
+                setIsFirst(false);
+            }
+
+            if(page===totalPage) {
+                setIsLast(true);
+            }else {
+                setIsLast(false);
+            }
+
+        });
+
+    }
+
+
+
+
+    // 메세지 api 데이터 
+    const [messages, setMessages] = useState([]);
+
+    // 전체 선택 여부
+    const [selectAll, setSelectAll] = useState(true);
+
+    // mode값 
+    const [mode, setMode] = useState('received'); // 초기값?
+
+    const changeMode = (value) => {
+
+        setMode(value);
+        setCurrentPage(0);
+        fetch(`${API_BASE_URL}?mode=${value}&page=0`, {
+            method: 'GET',
+            headers: headerInfo
+        })
+        .then(res => {
+
+            if(res.status === 500) {
+                alert("서버가 불안정합니다");
+                return;
+            }else if(res.status === 400) {
+                alert("잘못된 요청 값 입니다");
+                return;
+            }
+
+            return res.json();
+        })
+        .then(res => {
+            setMessages(res.content);
+            setCurrentPage(0);
+            setIsFirst(true);
+            setIsLast(false);
+            setTotalPage(res.totalPages);
         })
         .then(() => {
             setSelectAll(true);
@@ -285,7 +341,7 @@ const MessageMain = () => {
 
     // 렌더링 되자마자 할 일 => 메세지 api GET 목록 호출
     useEffect(() => {
-        fetch(`${API_BASE_URL}?mode=received&page=&size=&sort=`, {
+        fetch(`${API_BASE_URL}?mode=received&page=${currentPage}&sort=`, {
             method: 'GET',
             headers: headerInfo
         })
@@ -303,6 +359,7 @@ const MessageMain = () => {
         })
         .then(res => {
             setMessages(res.content);
+            setTotalPage(res.totalPages);
         });
     }, [API_BASE_URL]);
 
@@ -337,6 +394,7 @@ const MessageMain = () => {
                         </tbody>
                     </Table >   
                 </div>
+                <Pagination currentPage={currentPage} handleChangePage={handleChangePage} isFirst={isFirst} isLast={isLast} totalPage={totalPage}/>
             </div>
 
             {/* Modal */}
