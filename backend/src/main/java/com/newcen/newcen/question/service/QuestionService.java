@@ -5,8 +5,10 @@ import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.newcen.newcen.common.dto.request.SearchCondition;
 import com.newcen.newcen.common.entity.BoardEntity;
 import com.newcen.newcen.common.entity.BoardFileEntity;
+import com.newcen.newcen.common.entity.CommentFileEntity;
 import com.newcen.newcen.common.entity.UserEntity;
 import com.newcen.newcen.common.repository.BoardFileRepository;
+import com.newcen.newcen.common.repository.CommentFileRepository;
 import com.newcen.newcen.question.repository.QuestionsFileRepository;
 import com.newcen.newcen.question.repository.QuestionsRepository;
 import com.newcen.newcen.question.repository.QuestionsRepositorySupport;
@@ -32,6 +34,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 public class QuestionService {
+    private final CommentFileRepository commentFileRepository;
 
     private final UserRepository userRepository;
     private final QuestionsRepository questionsRepository;
@@ -116,13 +119,22 @@ public class QuestionService {
         BoardEntity boardGet = questionsRepositorySupport.findBoardByUserIdAndBoardId(userId,boardId);
         UserEntity user = userRepository.findById(userId).get();
         List<BoardFileEntity> boardFileEntityList = boardFileRepository.findByBoardId(boardId);
+        boardFileEntityList.forEach(t-> System.out.println(t));
+
+        List<CommentFileEntity> commentFileEntities =commentFileRepository.findByBoardId(boardId);
+        commentFileEntities.forEach(t-> System.out.println(t));
+
+
         if (boardFileEntityList.size() !=0 && boardFileEntityList !=null){
-            boardFileEntityList.forEach(t-> amazonS3.deleteObject(new DeleteObjectRequest(bucket, t.getBoardFilePath())));
+//            boardFileEntityList.forEach(t-> amazonS3.deleteObject(new DeleteObjectRequest(bucket, t.getBoardFilePath())));
+        }
+        if (commentFileEntities.size() !=0 && commentFileEntities !=null){
+//            commentFileEntities.forEach(t-> amazonS3.deleteObject(new DeleteObjectRequest(bucket, t.getCommentFilePath())));
         }
         if (!Objects.equals(boardGet.getUserId(), user.getUserId())){
             throw new RuntimeException("본인이 작성한 글이 아닙니다.");
         }
-        questionsRepository.delete(boardGet);
+//        questionsRepository.delete(boardGet);
         return true;
     }
 
