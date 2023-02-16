@@ -1,13 +1,20 @@
 #footer_div {
+    display: flex;
     margin-top: 20px;
+    justify-content: space-around;
 }
 
 #footer_img {
-    float: left;
+    display: inline-block;
+
+    margin-left: 150px;
 }
 
 #footer_txt {
-    color: gray;
-
+    color: dimgray;
     font-size: 15px;
+
+    margin-top: 10px;
+
+    margin-right: 150px;
 }
