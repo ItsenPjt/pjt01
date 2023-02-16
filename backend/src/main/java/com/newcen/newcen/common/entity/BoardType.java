@@ -6,7 +6,6 @@ public enum BoardType {
     NOTICE,
     QUESTION,
     FAQ;
-
    @JsonCreator
     public static BoardType from(String s){
        return BoardType.valueOf(s.toUpperCase());
