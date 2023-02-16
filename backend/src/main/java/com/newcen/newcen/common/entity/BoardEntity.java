@@ -64,11 +64,11 @@ public class BoardEntity {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name="board_id")
     @JsonIgnore
-    private final List<CommentEntity> commentEntityList = new ArrayList<>();
+    private List<CommentEntity> commentEntityList = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name="board_id")
-    private final List<BoardFileEntity> boardFileEntityList = new ArrayList<>();
+    private List<BoardFileEntity> boardFileEntityList = new ArrayList<>();
     public void updateBoard(String boardTitle, String boardContent){
         this.boardContent = boardContent;
         this.boardTitle = boardTitle;
@@ -83,6 +83,7 @@ public class BoardEntity {
         this.boardTitle = boardTitle;
         this.boardWriter = boardWriter;
         this.boardContent = boardContent;
+        this.commentEntityList = commentEntityList;
         this.createDate = createDate;
         this.boardUpdateDate = boardUpdateDate;
         this.boardCommentIs = boardCommentIs;
