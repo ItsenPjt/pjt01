@@ -106,29 +106,30 @@ public class NoticeService {
     // 공지사항 수정
     public NoticeOneResponseDTO update (
             final Long boardId,     // boardId : 수정 대상의 공지사항 id
-            final NoticeUpdateRequestDTO updateRequestDTO,
+            final NoticeUpdateRequestDTO dto,
             final String userId
     ) {
         Optional<BoardEntity> targetEntity = noticeRepository.findById(boardId);    // 수정 target 조회
         Optional<UserEntity> userEntity = userRepository.findById(userId);
-
+        String content =null;
+        String title = null;
         if (!userEntity.get().getUserRole().equals(UserRole.ADMIN)) {
             throw new RuntimeException("관리자가 아닙니다.");
         }
 
         if (targetEntity.isPresent()) {
-            BoardEntity boardEntity =
-                    new BoardEntity(targetEntity.get().getBoardId(),
-                                    BoardType.NOTICE,
-                                    updateRequestDTO.getBoardTitle(),
-                                    userEntity.get().getUserName(),
-                                    updateRequestDTO.getBoardContent(),
-                                    targetEntity.get().getCreateDate(),
-                                    LocalDateTime.now(),
-                                    updateRequestDTO.getBoardCommentIs(),
-                                    userEntity.get().getUserId());
-
-            noticeRepository.save(boardEntity);
+            if (dto.getBoardContent()==null || dto.getBoardContent()==""){
+                content = targetEntity.get().getBoardContent();
+            }else {
+                content = dto.getBoardContent();
+            }
+            if (dto.getBoardTitle()==null || dto.getBoardTitle()==""){
+                title = targetEntity.get().getBoardContent();
+            }else {
+                title = dto.getBoardTitle();
+            }
+            targetEntity.get().updateBoard(title, content);
+            noticeRepository.save(targetEntity.get());
         }
 
         return retrieveOne(boardId);
