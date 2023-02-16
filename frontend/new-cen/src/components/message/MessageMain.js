@@ -360,14 +360,12 @@ const MessageMain = () => {
         messageTitle: '',
         messageContent: '',
         messageSender: ''  
-        // messageReceiver: ''     
     });
     // 보낸 메세지 검색
     const [sentSearchData, setSentSearchData] = useState({         
         messageTitle: '',
         messageContent: '',
         messageReceiver: '' 
-        // messageSender: ''     
     });
 
     const [eventKey, setEventKey] = useState('');
@@ -377,15 +375,13 @@ const MessageMain = () => {
         setEventKey(ek);
 
         // dropdown 버튼 text 변경
-        document.getElementById('notice_select_dropdown_button').innerText = ek;
+        document.getElementById('message_select_dropdown_button').innerText = ek;
 
         // dropdown 선택 시 input값 지우기
-        document.getElementById('notice_select_dropdown_form').value = '';
+        document.getElementById('message_select_dropdown_form').value = '';
     }
 
     const searchChangeHandler = e => {
-        console.log(mode);
-
         if (mode ==='received') {           // 받는 메세지
 
             setSentSearchData({
@@ -454,56 +450,68 @@ const MessageMain = () => {
 
     // 검색 버튼 클릭 시 
     const handleSearch = () => {
-        console.log(receiverSearchData);
-        console.log(sentSearchData);
 
         if (mode ==='received') {           // 받은 메세지 검색
-            fetch(`${API_BASE_URL}/search/received`, {
-                method: 'POST',
-                headers: headerInfo,
-                body: JSON.stringify(receiverSearchData)
-            })
-            .then(res => {
-                if (res.status === 406) {
-                    alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
-                    return;
-                } 
-                else if (res.status === 500) {
-                    alert('서버가 불안정합니다');
-                    return;
-                }
-                return res.json();
-            })
-            .then((result) => {
-                if (!!result) {
-                    console.log(result.content);
-                    setMessages(result.content);
-                }
-            });
+            if (document.getElementById('message_select_dropdown_button').innerText === '선택') {
+                alert('검색 카테고리를 먼저 선택해주세요');
+            }
+            else if (receiverSearchData.messageTitle === '' && receiverSearchData.messageContent === '' && receiverSearchData.messageSender === '') {
+                alert('검색어를 입력해주세요');
+            }
+            else {
+                fetch(`${API_BASE_URL}/search/received`, {
+                    method: 'POST',
+                    headers: headerInfo,
+                    body: JSON.stringify(receiverSearchData)
+                })
+                .then(res => {
+                    if (res.status === 406) {
+                        alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
+                        return;
+                    } 
+                    else if (res.status === 500) {
+                        alert('서버가 불안정합니다');
+                        return;
+                    }
+                    return res.json();
+                })
+                .then((result) => {
+                    if (!!result) {
+                        setMessages(result.content);
+                    }
+                });
+            }
         } 
         else if (mode === 'sent') {       // 보낸 메세지 검색
-            fetch(`${API_BASE_URL}/search/sent`, {
-                method: 'POST',
-                headers: headerInfo,
-                body: JSON.stringify(sentSearchData)
-            })
-            .then(res => {
-                if (res.status === 406) {
-                    alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
-                    return;
-                } 
-                else if (res.status === 500) {
-                    alert('서버가 불안정합니다');
-                    return;
-                }
-                return res.json();
-            })
-            .then((result) => {
-                if (!!result) {
-                    console.log(result.content);
-                    setMessages(result.content);
-                }
-            });
+            if (document.getElementById('message_select_dropdown_button').innerText === '선택') {
+                alert('검색 카테고리를 먼저 선택해주세요');
+            }
+            else if (sentSearchData.messageTitle === '' && sentSearchData.messageContent === '' && sentSearchData.messageReceiver === '') {
+                alert('검색어를 입력해주세요');
+            }
+            else {
+                fetch(`${API_BASE_URL}/search/sent`, {
+                    method: 'POST',
+                    headers: headerInfo,
+                    body: JSON.stringify(sentSearchData)
+                })
+                .then(res => {
+                    if (res.status === 406) {
+                        alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
+                        return;
+                    } 
+                    else if (res.status === 500) {
+                        alert('서버가 불안정합니다');
+                        return;
+                    }
+                    return res.json();
+                })
+                .then((result) => {
+                    if (!!result) {
+                        setMessages(result.content);
+                    }
+                });
+            } 
         }
     }
 
@@ -548,25 +556,25 @@ const MessageMain = () => {
 
                  {/* 검색 */}
                 {mode === 'received' &&
-                    <div id='notice_search_dropdown_div'>
-                        <DropdownButton drop = {'up'} title={'선택'} onSelect={(eventKey) => onSelectItem(eventKey)} id='notice_select_dropdown_button' >
-                            <Dropdown.Item eventKey="보낸 사람" id='notice_selct_dropdown_item'>보낸 사람</Dropdown.Item>
-                            <Dropdown.Item eventKey="제목" id='notice_selct_dropdown_item'>제목</Dropdown.Item>
-                            <Dropdown.Item eventKey="내용" id='notice_selct_dropdown_item'>내용</Dropdown.Item>
+                    <div id='message_search_dropdown_div'>
+                        <DropdownButton drop = {'up'} title={'선택'} onSelect={(eventKey) => onSelectItem(eventKey)} id='message_select_dropdown_button' >
+                            <Dropdown.Item eventKey="보낸 사람" id='message_selct_dropdown_item'>보낸 사람</Dropdown.Item>
+                            <Dropdown.Item eventKey="제목" id='message_selct_dropdown_item'>제목</Dropdown.Item>
+                            <Dropdown.Item eventKey="내용" id='message_selct_dropdown_item'>내용</Dropdown.Item>
                         </DropdownButton>
-                        <Form.Control onChange={searchChangeHandler} type='text' id='notice_select_dropdown_form' placeholder='검색' onKeyDown={onKeyPress}/>
-                        <Button onClick={handleSearch} id='notice_select_dropdown_search_button' className='btn_gray'>검색</Button>
+                        <Form.Control onChange={searchChangeHandler} type='text' id='message_select_dropdown_form' placeholder='검색' onKeyDown={onKeyPress}/>
+                        <Button onClick={handleSearch} id='message_select_dropdown_search_button' className='btn_gray'>검색</Button>
                     </div>
                 }
                 {mode === 'sent' && 
-                    <div id='notice_search_dropdown_div'>
-                        <DropdownButton drop = {'up'} title={'선택'} onSelect={(eventKey) => onSelectItem(eventKey)} id='notice_select_dropdown_button' >
-                            <Dropdown.Item eventKey="받는 사람" id='notice_selct_dropdown_item'>받는 사람</Dropdown.Item>
-                            <Dropdown.Item eventKey="제목" id='notice_selct_dropdown_item'>제목</Dropdown.Item>
-                            <Dropdown.Item eventKey="내용" id='notice_selct_dropdown_item'>내용</Dropdown.Item>
+                    <div id='message_search_dropdown_div'>
+                        <DropdownButton drop = {'up'} title={'선택'} onSelect={(eventKey) => onSelectItem(eventKey)} id='message_select_dropdown_button' >
+                            <Dropdown.Item eventKey="받는 사람" id='message_selct_dropdown_item'>받는 사람</Dropdown.Item>
+                            <Dropdown.Item eventKey="제목" id='message_selct_dropdown_item'>제목</Dropdown.Item>
+                            <Dropdown.Item eventKey="내용" id='message_selct_dropdown_item'>내용</Dropdown.Item>
                         </DropdownButton>
-                        <Form.Control onChange={searchChangeHandler} type='text' id='notice_select_dropdown_form' placeholder='검색' onKeyDown={onKeyPress}/>
-                        <Button onClick={handleSearch} id='notice_select_dropdown_search_button' className='btn_gray'>검색</Button>
+                        <Form.Control onChange={searchChangeHandler} type='text' id='message_select_dropdown_form' placeholder='검색' onKeyDown={onKeyPress}/>
+                        <Button onClick={handleSearch} id='message_select_dropdown_search_button' className='btn_gray'>검색</Button>
                     </div>
                 }
 
