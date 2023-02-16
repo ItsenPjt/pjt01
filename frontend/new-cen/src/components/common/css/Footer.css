@@ -1,0 +1,13 @@
+#footer_div {
+    margin-top: 20px;
+}
+
+#footer_img {
+    float: left;
+}
+
+#footer_txt {
+    color: gray;
+
+    font-size: 15px;
+}
