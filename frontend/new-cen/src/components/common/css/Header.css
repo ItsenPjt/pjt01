@@ -8,21 +8,29 @@
     right: 0; */
 }
 
+#titleLogo {
+    display: flex;
+}
+
 .header_title {
+    display: flex;
+    flex-wrap: wrap;
+
     color: white;
     font-weight: 650;
     font-size: 25px;
-    margin-left: 5%;
+    margin-left: 2%;
 }
 
 .header_title_eng {
     color: white;
-    font-size: 15px;
+    font-size: 13px;
     margin-left: 5%;
+    top: -10px;
 }
 
 .cen_logo {
-    height: 50px;
+    height: 60px;
 }
 
 .me-auto {
