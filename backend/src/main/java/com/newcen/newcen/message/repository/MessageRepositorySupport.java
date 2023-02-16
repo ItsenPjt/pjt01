@@ -3,6 +3,8 @@ package com.newcen.newcen.message.repository;
 import com.newcen.newcen.comment.dto.request.FixedPageRequest;
 import com.newcen.newcen.common.dto.request.SearchReceivedMessageCondition;
 import com.newcen.newcen.common.dto.request.SearchSentMessageCondition;
+import com.newcen.newcen.message.dto.response.MessageReceivedDetailResponseDTO;
+import com.newcen.newcen.message.dto.response.MessageReceivedListResponseDTO;
 import com.newcen.newcen.message.dto.response.MessageReceivedResponseDTO;
 import com.newcen.newcen.message.dto.response.MessageSentResponseDTO;
 import com.newcen.newcen.message.entity.MessageEntity;

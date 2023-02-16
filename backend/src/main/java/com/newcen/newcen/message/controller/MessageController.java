@@ -106,17 +106,12 @@ public class MessageController {
         if(userId.equals("anonymousUser")) {
             throw new MessageCustomException(MessageExceptionEnum.UNAUTHORIZED_ACCESS);
         }
-        if (searchSentMessageCondition.getMessageContent() ==null && searchSentMessageCondition.getMessageTitle()==null && searchSentMessageCondition.getMessageReceiver()==null){
-            PageImpl<MessageSentResponseDTO> responseDTO = messageService.getSentMessagePageList(pageable,userId);
-            return ResponseEntity
-                    .ok()
-                    .body(responseDTO);
-        } else {
+
         PageImpl<MessageSentResponseDTO> sentList = messageService.getSentMessagePageListWithSearch(searchSentMessageCondition,pageable,userId);
         return ResponseEntity
                 .ok()
                 .body(sentList);
-        }
+
     }
 
 
