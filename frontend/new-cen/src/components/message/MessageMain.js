@@ -6,7 +6,7 @@ import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 
 import MessageButton from './MessageButton';
-import Pagination from './Pagination';
+import Pagination from '../common/Pagination';
 
 
 import { BASE_URL, MESSAGE } from '../common/config/host-config';

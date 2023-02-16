@@ -8,6 +8,8 @@ import Form from 'react-bootstrap/Form';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 
+import Pagination from '../common/Pagination';
+
 import QuestionButton from './QuestionButton';
 
 import { BASE_URL, QUESTION } from '../common/config/host-config';
@@ -30,6 +32,54 @@ const QuestionMain = () => {
         'Authorization': 'Bearer ' + ACCESS_TOKEN
     }
 
+    // Pagination 
+    const [currentPage, setCurrentPage] = useState(0);
+
+    const [totalPage, setTotalPage] = useState(0);
+
+    const [isFirst, setIsFirst] = useState(true);
+
+    const [isLast, setIsLast] = useState(false);
+
+    const handleChangePage = (page) => {
+
+        setCurrentPage(page);
+
+        fetch(`${API_BASE_URL}?page=${page}`)
+        .then(res => {
+            if (res.status === 403) {
+                alert('로그인이 필요한 서비스입니다');
+
+                window.location.href = '/join';
+                return;
+            } 
+            else if (res.status === 500) {
+                alert('서버가 불안정합니다');
+                return;
+            }
+            return res.json();
+        })
+        .then(result => {
+            if (!!result) {
+                setQuestions(result.content);
+                setTotalPage(result.totalPages);
+            }
+
+            if(page===0) {
+                setIsFirst(true);
+            }else if(page>0) {
+                setIsFirst(false);
+            }
+
+            if(page===totalPage-1) {
+                setIsLast(true);
+            }else {
+                setIsLast(false);
+            }
+        });
+    }
+ 
+
     // 렌더링 되자마자 할 일 => 문의사항 api GET 목록 호출
     useEffect(() => {
         fetch(API_BASE_URL)
@@ -49,6 +99,7 @@ const QuestionMain = () => {
         .then(result => {
             if (!!result) {
                 setQuestions(result.content);
+                setTotalPage(result.totalPages);
             }
         });
     }, [API_BASE_URL]);
@@ -164,7 +215,7 @@ const QuestionMain = () => {
                                     i++;
                                     return (
                                         <tr key={item.boardId} id='question_main_tbody'>
-                                            <td>{i}</td>
+                                            <td>{item.boardId}</td>
                                             <th id='question_main_tbody_th' onClick={() => onTitleClick(item.boardId)}>{item.boardTitle}</th>
                                             <td>{item.createDate.substring(0, 10)}</td>
                                             <td>{item.boardWriter}</td>
@@ -188,6 +239,8 @@ const QuestionMain = () => {
                 <Form.Control onChange={searchChangeHandler} type='text' id='notice_select_dropdown_form' placeholder='검색' onKeyDown={onKeyPress}/>
                 <Button onClick={handleSearch} id='notice_select_dropdown_search_button' className='btn_gray'>검색</Button>
             </div>
+            <Pagination currentPage={currentPage} handleChangePage={handleChangePage} isFirst={isFirst} isLast={isLast} totalPage={totalPage} />
+
         </>
     )
 }
