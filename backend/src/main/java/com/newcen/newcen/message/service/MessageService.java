@@ -80,7 +80,6 @@ public class MessageService {
             PageImpl<MessageSentResponseDTO> result = messageRepositorySupport.getSentMessage(pageable,userId);
             return result;
         }
-
         PageImpl<MessageSentResponseDTO> result = messageRepositorySupport.getSentMessageWithSearch(searchSentMessageCondition,pageable,userId);
         return result;
     }
