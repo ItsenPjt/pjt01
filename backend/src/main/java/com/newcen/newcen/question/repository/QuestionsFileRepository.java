@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface QuestionsFileRepository extends JpaRepository<BoardFileEntity, String> {
     @Modifying
+    @Transactional
     @Query("delete from BoardFileEntity b where b.boardFileId =:boardFileId")
     void selfDeleteById(@Param("boardFileId") String boardFileId);
 
