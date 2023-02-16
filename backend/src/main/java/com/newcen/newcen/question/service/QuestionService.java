@@ -2,13 +2,12 @@ package com.newcen.newcen.question.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
+import com.newcen.newcen.comment.repository.CommentRepository;
+import com.newcen.newcen.comment.repository.CommentRepositorySupport;
+import com.newcen.newcen.commentFile.repository.CommentFileRepository;
 import com.newcen.newcen.common.dto.request.SearchCondition;
-import com.newcen.newcen.common.entity.BoardEntity;
-import com.newcen.newcen.common.entity.BoardFileEntity;
-import com.newcen.newcen.common.entity.CommentFileEntity;
-import com.newcen.newcen.common.entity.UserEntity;
+import com.newcen.newcen.common.entity.*;
 import com.newcen.newcen.common.repository.BoardFileRepository;
-import com.newcen.newcen.common.repository.CommentFileRepository;
 import com.newcen.newcen.question.repository.QuestionsFileRepository;
 import com.newcen.newcen.question.repository.QuestionsRepository;
 import com.newcen.newcen.question.repository.QuestionsRepositorySupport;
@@ -24,7 +23,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -34,6 +32,10 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 public class QuestionService {
+    private final CommentRepository commentRepository;
+
+    private final CommentRepositorySupport commentRepositorySupport;
+
     private final CommentFileRepository commentFileRepository;
 
     private final UserRepository userRepository;
@@ -120,21 +122,19 @@ public class QuestionService {
         UserEntity user = userRepository.findById(userId).get();
         List<BoardFileEntity> boardFileEntityList = boardFileRepository.findByBoardId(boardId);
         boardFileEntityList.forEach(t-> System.out.println(t));
-
-        List<CommentFileEntity> commentFileEntities =commentFileRepository.findByBoardId(boardId);
-        commentFileEntities.forEach(t-> System.out.println(t));
-
+        List<CommentEntity> commentList = commentRepositorySupport.findAllByBoardId(boardId);
+        commentList.forEach(t-> System.out.println(t));
 
         if (boardFileEntityList.size() !=0 && boardFileEntityList !=null){
-//            boardFileEntityList.forEach(t-> amazonS3.deleteObject(new DeleteObjectRequest(bucket, t.getBoardFilePath())));
+            boardFileEntityList.forEach(t-> amazonS3.deleteObject(new DeleteObjectRequest(bucket, t.getBoardFilePath())));
         }
-        if (commentFileEntities.size() !=0 && commentFileEntities !=null){
-//            commentFileEntities.forEach(t-> amazonS3.deleteObject(new DeleteObjectRequest(bucket, t.getCommentFilePath())));
+        if (commentList.size() !=0 && commentList !=null){
+            commentList.forEach(t->t.getCommentFileList().forEach(yy->amazonS3.deleteObject(new DeleteObjectRequest(bucket, yy.getCommentFilePath()))));
         }
         if (!Objects.equals(boardGet.getUserId(), user.getUserId())){
             throw new RuntimeException("본인이 작성한 글이 아닙니다.");
         }
-//        questionsRepository.delete(boardGet);
+        questionsRepository.delete(boardGet);
         return true;
     }
 
