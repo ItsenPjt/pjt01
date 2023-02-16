@@ -1,13 +1,8 @@
 import React from 'react';
 
-import { useState } from 'react';
-
 import './css/MessagePagination.css';
 
 const Pagination = ({currentPage, totalPage, handleChangePage, isFirst, isLast}) => {
-
-
-    // const [pageNumbers, setPageNumbers] = useState([]);
 
 
     const pageNumbers = [];
@@ -15,29 +10,20 @@ const Pagination = ({currentPage, totalPage, handleChangePage, isFirst, isLast})
     let startPage = 0;
     let endPage = 0;
 
-    console.log('totalPage: ', totalPage);
-    console.log('currentPage: ', currentPage+1);
-
-
-    startPage = parseInt(currentPage/5)*5
+    startPage = parseInt(currentPage/5)*5;
 
 
     if(totalPage < 5) {
         startPage = 0;
-        endPage = totalPage;
+        endPage = totalPage-1;
     }else if(currentPage < 5) {
         startPage = 0;
         endPage = 4;
-    }else if(startPage+5>totalPage) {
-        startPage = parseInt(totalPage/5)*5
-        endPage = totalPage-1
- 
-    }else if(currentPage+4 < totalPage) {
-        endPage = startPage + 4;
+    }else if(startPage+4<totalPage) {
+        endPage = startPage+4;
+    }else if(startPage+4>=totalPage) {
+        endPage = totalPage-1;
     }
-
-    console.log('startPage: ', startPage);
-    console.log('endPage: ', endPage);
 
 
     for(let i=startPage; i<=endPage; i++) {
@@ -70,7 +56,15 @@ const Pagination = ({currentPage, totalPage, handleChangePage, isFirst, isLast})
 
         {
             pageNumbers.map((page) => {
-                return  <span key={page} onClick={() => handleChangePage(page)}>{page+1}</span>
+                return  (
+                    (
+                        page===currentPage
+                        ?
+                        <span key={page} id='selected-page' onClick={() => handleChangePage(page)}>{page+1}</span>
+                        :
+                        <span key={page} id='unselected-page' onClick={() => handleChangePage(page)}>{page+1}</span>
+                    )
+                )         
             })
         }
         
@@ -84,7 +78,7 @@ const Pagination = ({currentPage, totalPage, handleChangePage, isFirst, isLast})
             :
             <>
                 {
-                    startPage<(totalPage-6)
+                    startPage+5<totalPage
                     ?
                     <>
                         <span id='next-page' onClick={() => handleChangePage(startPage+5)}>다음</span>
@@ -94,6 +88,7 @@ const Pagination = ({currentPage, totalPage, handleChangePage, isFirst, isLast})
                         <span id='next-page-disabled'>다음</span>
                     </>
                 }
+                
                 <span id='last-page' onClick={() => handleChangePage(totalPage-1)}>마지막</span>
             </>
         }
