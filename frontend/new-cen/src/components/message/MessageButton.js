@@ -202,8 +202,8 @@ const MessageButton = ({changeMode, handleDeleteMessage}) => {
             <div className='justify'>
                 <div id='message_button_txt'>메세지</div>
                 <div id='message_button_group'>
-                    <Button className='btn_indigo' id='message_button_sent' onClick={() => changeMode('sent')}>보낸 쪽지</Button>
-                    <Button className='btn_indigo' id='message_button_reception' onClick={() => changeMode('received')}>받은 쪽지</Button>
+                    <Button className='btn_indigo' id='message_button_sent' onClick={() => changeMode('sent')}>보낸 메세지</Button>
+                    <Button className='btn_indigo' id='message_button_reception' onClick={() => changeMode('received')}>받은 메세지</Button>
                     <Button className='btn_indigo' id='message_button_select_delete' onClick={handleDeleteMessage}>선택 삭제</Button>
                     <Button onClick={handleSendModal} className='btn_orange' id='message_button_send'>메세지 보내기</Button>
                 </div>
