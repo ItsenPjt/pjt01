@@ -23,6 +23,26 @@
     float: right;
 }
 
+/* 공지사항 파일 */
+#notice_update_content_file_txt {
+    float: right;
+
+    color: rgba(11, 61, 155, 0.527);
+    border: 1px solid #aaa;
+    
+    border-radius: 10px;    
+    margin-top: 5px;
+
+    padding: 5px;
+}
+
+#notice_update_content_file_data{
+    font-weight: 600;
+    margin-left: 10px;
+
+    cursor: pointer;
+}
+
 /* button className-- */
 .btn_gray {
     background-color: #717172;

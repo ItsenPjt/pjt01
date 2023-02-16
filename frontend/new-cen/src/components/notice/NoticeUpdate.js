@@ -4,6 +4,8 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip';
 
 import { BASE_URL, NOTICE } from '../common/config/host-config';
 import { getToken } from '../common/util/login-util';
@@ -35,6 +37,8 @@ const NoticeUpdate = () => {
         boardCommentIs: comment,      // 공지사항 댓글 여부 (초기값 : NoticeContent.js에서 보낸 댓글여부 값)
         boardContent: '',        // 공지사항 내용
     });
+    const [noticeFiles, setNoticeFiles] = useState([]);
+    const [noticeFileCount, setNoticeFileCount] = useState(0);  // 파일 개수
     const [modal, setModal] = useState(false); 
 
     // title
@@ -61,6 +65,13 @@ const NoticeUpdate = () => {
         });
     };
 
+    // 파일
+    var files = [];
+    const FileChangeHandler = e => {        
+        e.preventDefault();
+        files = e.target.files;  
+    }
+
     // 렌더링 되자마자 할 일 => 공지사항 api GET 목록 호출
     useEffect(() => {
         fetch(`${API_BASE_URL}/${noticeId}`, {
@@ -85,12 +96,17 @@ const NoticeUpdate = () => {
                 return res.json();
             })
             .then(result => {
-                console.log(result.noticeDetails[0]);
+                console.log(result);
                 setNoticeData({
                     boardTitle: result.noticeDetails[0].boardTitle,
                     boardCommentIs: result.noticeDetails[0].boardCommentIs,
                     boardContent: result.noticeDetails[0].boardContent
                 })
+
+                if (result.boardFileEntityList.length !== 0) {
+                    setNoticeFileCount(result.boardFileEntityList.length);
+                    setNoticeFiles(result.boardFileEntityList);
+                }
             });
     }, [API_BASE_URL]);
 
@@ -120,6 +136,41 @@ const NoticeUpdate = () => {
         })
         .then(() => {
             window.location.href = `/notice/${noticeId}`;       // 해당 공지사항 페이지로 이동
+        });
+    }
+
+    const handleDeleteBoardFile = (fileId) => {
+        console.log(fileId);
+
+        fetch(`${API_BASE_URL}/${noticeId}/files/${fileId}`, {
+            method: 'DELETE',
+            headers: headerInfo,
+        })
+        .then(res => {
+            if (res.status === 404) {
+                alert('다시 시도해주세요');
+                return;
+            }
+            else if (res.status === 406) {
+                if (ACCESS_TOKEN === '') {
+                    alert('로그인이 필요한 서비스입니다');
+                    window.location.href = '/join';
+                } else {
+                    alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
+                    return;
+                }
+                return;
+            } 
+            else if (res.status === 500) {
+                alert('서버가 불안정합니다');
+                return;
+            }
+            return res.json();
+        })
+        .then((res) => {
+            console.log(res);
+
+            //window.location.href = `/notice/update/${noticeId}`;       // 해당 공지사항 페이지로 이동
         });
     }
 
@@ -154,13 +205,70 @@ const NoticeUpdate = () => {
                     <CommentRadioBtn updateBeforeComment={noticeData.boardCommentIs} commentStatus={commentChangeHandler}/>
                 </div>
 
+                {/* 공지사항 파일 */}
+                {noticeFiles.length !== 0 &&
+                    <div>
+                        {['bottom'].map((placement) => (
+                            <OverlayTrigger
+                                key={placement}
+                                placement={placement}
+                                overlay={
+                                    <Tooltip id={`tooltip-${placement}`}>
+                                        파일명 클릭 시 삭제
+                                    </Tooltip>
+                                }
+                            >
+                                <div id='notice_update_content_file_txt'>
+                                    첨부파일({noticeFileCount})
+                                    {
+                                        noticeFiles.map((item) => {
+                                            return (
+                                                <span key={item.boardFileId} onClick={() => {handleDeleteBoardFile(item.boardFileId)}} id='notice_update_content_file_data'>
+                                                    | {item.boardFileName}
+                                                </span>   
+                                            )
+                                        })
+                                    }   
+                                </div>                    
+                            </OverlayTrigger>
+                        ))}
+                    </div>
+                }
+
                 <div>
                     <Editor onChange={contentChangeHandler} value={noticeData.boardContent}/>
                 </div>
 
-                <div id='notice_update_footer_div'>
-                    <Button onClick={handleShowCancelModal} className='btn_gray btn_size_100'>취소</Button>
-                    <Button onClick={handleUpdateNotice} className='btn_orange btn_size_100' id='notice_update_btn'>수정</Button>
+                <div className='justify'>
+                    <div>
+                         {noticeFiles.length !== 0 ?
+                            <>
+                                {['top'].map((placement) => (
+                                    <OverlayTrigger
+                                        key={placement}
+                                        placement={placement}
+                                        overlay={
+                                            <Tooltip id={`tooltip-${placement}`}>
+                                                기존 파일 존재 시 추가 불가능
+                                            </Tooltip>
+                                        }
+                                    >
+                                        <Button className='btn_gray btn_size_100'>파일 추가</Button>
+                                    </OverlayTrigger>
+                                ))}                   
+                            </>
+                            :
+                            <>
+                                <input onChange={FileChangeHandler} type='file' name="notice_content_file" id="notice_content_file" multiple/>
+                            </>
+
+                        }
+                        
+                    </div>
+                    <div id='notice_update_footer_div'>
+                        <Button onClick={handleShowCancelModal} className='btn_gray btn_size_100'>취소</Button>
+                        <Button onClick={handleUpdateNotice} className='btn_orange btn_size_100' id='notice_update_btn'>수정</Button>
+                    </div>
                 </div>
             </div>
 

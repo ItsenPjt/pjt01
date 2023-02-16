@@ -254,11 +254,17 @@ const UserSignSet = () => {
                 if (res.status === 200) {
                     alert('회원탈퇴가 완료되었습니다.\n소중한 인연이 언젠가 또 닿기를 바랍니다.\n감사합니다.');
 
-                    localStorage.removeItem('ACCESS_TOKEN');
-                    localStorage.removeItem('LOGIN_USERNAME');
-                    localStorage.removeItem('LOGIN_USEREMAIL');
-                    localStorage.removeItem('LOGIN_USERROLE');
-                    localStorage.removeItem('LOGIN_USERID');
+                    // localStorage.removeItem('ACCESS_TOKEN');
+                    // localStorage.removeItem('LOGIN_USERNAME');
+                    // localStorage.removeItem('LOGIN_USEREMAIL');
+                    // localStorage.removeItem('LOGIN_USERROLE');
+                    // localStorage.removeItem('LOGIN_USERID');
+
+                    sessionStorage.removeItem('ACCESS_TOKEN');
+                    sessionStorage.removeItem('LOGIN_USERNAME');
+                    sessionStorage.removeItem('LOGIN_USEREMAIL');
+                    sessionStorage.removeItem('LOGIN_USERROLE');
+                    sessionStorage.removeItem('LOGIN_USERID');
 
                     // 메인 페이지로 리다이렉트
                     window.location.href = '/';

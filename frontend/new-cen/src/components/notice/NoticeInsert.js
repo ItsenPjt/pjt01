@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip';
 
 import { BASE_URL, NOTICE } from '../common/config/host-config';
 import { getToken, getUserId } from '../common/util/login-util';
@@ -201,9 +203,21 @@ const NoticeInsert = () => {
                 </div>
 
                 <div className='justify'>
-                    <>
-                        <input onChange={FileChangeHandler} type='file' name="notice_content_file" id="notice_content_file" multiple/>
-                    </>
+                    <div>
+                        {['top'].map((placement) => (
+                            <OverlayTrigger
+                                key={placement}
+                                placement={placement}
+                                overlay={
+                                    <Tooltip id={`tooltip-${placement}`}>
+                                        ctrl 클릭 후 <br />여러 파일 선택 가능
+                                    </Tooltip>
+                                }
+                            >
+                                <input onChange={FileChangeHandler} type='file' name="notice_content_file" id="notice_content_file" multiple/>
+                            </OverlayTrigger>
+                        ))}
+                    </div>
                     <div id='notice_insert_footer_div'>
                         <Button onClick={handleShowCancelModal} className='btn_gray btn_size_100'>취소</Button>
                         <Button onClick={handleInsertNotice} className='btn_orange btn_size_100' id='notice_insert_btn'>등록</Button>
