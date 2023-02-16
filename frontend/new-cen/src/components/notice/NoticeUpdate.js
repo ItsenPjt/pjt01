@@ -8,7 +8,7 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 
 import { BASE_URL, NOTICE } from '../common/config/host-config';
-import { getToken } from '../common/util/login-util';
+import { getToken, getUserId } from '../common/util/login-util';
 
 import Editor from '../common/EditorComponent';
 import CommentRadioBtn from '../common/CommentRadioBtn';
@@ -24,6 +24,7 @@ const NoticeUpdate = () => {
     
     const API_BASE_URL = BASE_URL + NOTICE;
     const ACCESS_TOKEN = getToken();
+    const USER_ID = getUserId();
 
     // headers
     const headerInfo = {
@@ -65,13 +66,6 @@ const NoticeUpdate = () => {
         });
     };
 
-    // 파일
-    var files = [];
-    const FileChangeHandler = e => {        
-        e.preventDefault();
-        files = e.target.files;  
-    }
-
     // 렌더링 되자마자 할 일 => 공지사항 api GET 목록 호출
     useEffect(() => {
         fetch(`${API_BASE_URL}/${noticeId}`, {
@@ -110,37 +104,116 @@ const NoticeUpdate = () => {
             });
     }, [API_BASE_URL]);
 
-    // 공지사항 api PATCH 수정 호출
-    const handleUpdateNotice = () => {
-        fetch(`${API_BASE_URL}/${noticeId}`, {
-            method: 'PATCH',
-            headers: headerInfo,
-            body: JSON.stringify(noticeData)
-        })
-        .then(res => {
-            if (res.status === 406) {
-                if (ACCESS_TOKEN === '') {
-                    alert('로그인이 필요한 서비스입니다');
-                    window.location.href = '/join';
-                } else {
-                    alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
-                    return;
-                }
-                return;
-            } 
-            else if (res.status === 500) {
-                alert('서버가 불안정합니다');
-                return;
-            }
-            return res.json();
-        })
-        .then(() => {
-            window.location.href = `/notice/${noticeId}`;       // 해당 공지사항 페이지로 이동
-        });
+    // 파일
+    var files = [];
+    const FileChangeHandler = e => {        
+        e.preventDefault();
+        files = e.target.files;  
     }
 
+    // 공지사항 수정
+    const handleUpdateNotice = () => {
+        if (noticeData.boardTitle === '') {
+            alert('제목을 입력해주세요.');
+        } 
+        else if (noticeData.boardContent === '') {
+            alert('내용을 입력해주세요.');
+        } 
+        // 글만 입력되어있을 때 -> 공지사항 수정 서버 요청  (PATCH에 대한 응답처리)
+        else if (files.length === 0) {
+            console.log('글만 수정');
+
+            fetch(`${API_BASE_URL}/${noticeId}`, {
+                method: 'PATCH',
+                headers: headerInfo,
+                body: JSON.stringify(noticeData)
+            })
+            .then(res => {
+                if (res.status === 406) {
+                    if (ACCESS_TOKEN === '') {
+                        alert('로그인이 필요한 서비스입니다');
+                        window.location.href = '/join';
+                    } else {
+                        alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
+                        return;
+                    }
+                    return;
+                } 
+                else if (res.status === 500) {
+                    alert('서버가 불안정합니다');
+                    return;
+                }
+                return res.json();
+            })
+            .then(() => {
+                window.location.href = `/notice/${noticeId}`;       // 해당 공지사항 페이지로 이동
+            });
+        } 
+        // 파일 등록 -> 공지사항 수정 서버 요청 후, 파일 등록 서버 요청
+        else {
+
+            //게시물 수정
+            fetch(`${API_BASE_URL}/${noticeId}`, {
+                method: 'PATCH',
+                headers: headerInfo,
+                body: JSON.stringify(noticeData)
+            })
+            .then(res => {
+                if (res.status === 406) {
+                    if (ACCESS_TOKEN === '') {
+                        alert('로그인이 필요한 서비스입니다');
+                        window.location.href = '/join';
+                    } else {
+                        alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
+                        return;
+                    }
+                    return;
+                } 
+                else if (res.status === 500) {
+                    alert('서버가 불안정합니다');
+                    return;
+                }
+                return res.json();
+            })
+            .then((res) => {
+
+                // foemData
+                var formData = new FormData(); 
+                for (let i = 0; i < files.length; i++) {
+                    formData.append('file', files[i]);
+                }
+
+                // 파일 등록
+                const newBoardId = res.noticeDetails[0]["boardId"];
+                if (USER_ID === res.noticeDetails[0]["userId"]) {
+                    fetch(`${API_BASE_URL}/${newBoardId}/files`, {
+                        method: 'POST',
+                        headers: {
+                             'Authorization': 'Bearer ' + ACCESS_TOKEN
+                        },
+                        body: formData
+                    })
+                    .then(res => {
+                        if (res.status === 406) {
+                            alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
+                            return;
+                        } 
+                        else if (res.status === 500) {
+                            alert('서버가 불안정합니다');
+                            return;
+                        }
+                        return res.json();
+                    })
+                    .then(() => {
+                        window.location.href = `/notice/${noticeId}`;       // 공지사항 목록 페이지로 이동
+                    });
+                }
+            });
+        }
+    }
+
+    // 공지사항 파일 삭제
     const handleDeleteBoardFile = (fileId) => {
-        console.log(fileId);
 
         fetch(`${API_BASE_URL}/${noticeId}/files/${fileId}`, {
             method: 'DELETE',
@@ -168,9 +241,10 @@ const NoticeUpdate = () => {
             return res.json();
         })
         .then((res) => {
-            console.log(res);
+            setNoticeFileCount(res.boardFileList.length);
+            setNoticeFiles(res.boardFileList);
 
-            //window.location.href = `/notice/update/${noticeId}`;       // 해당 공지사항 페이지로 이동
+            return res.boardFildList;
         });
     }
 
@@ -239,32 +313,9 @@ const NoticeUpdate = () => {
                     <Editor onChange={contentChangeHandler} value={noticeData.boardContent}/>
                 </div>
 
-                <div className='justify'>
-                    <div>
-                         {noticeFiles.length !== 0 ?
-                            <>
-                                {['top'].map((placement) => (
-                                    <OverlayTrigger
-                                        key={placement}
-                                        placement={placement}
-                                        overlay={
-                                            <Tooltip id={`tooltip-${placement}`}>
-                                                기존 파일 존재 시 추가 불가능
-                                            </Tooltip>
-                                        }
-                                    >
-                                        <Button className='btn_gray btn_size_100'>파일 추가</Button>
-                                    </OverlayTrigger>
-                                ))}                   
-                            </>
-                            :
-                            <>
-                                <input onChange={FileChangeHandler} type='file' name="notice_content_file" id="notice_content_file" multiple/>
-                            </>
+                <div className='justify'> 
+                    <input onChange={FileChangeHandler} type='file' name="notice_content_file" id="notice_content_file" multiple/>
 
-                        }
-                        
-                    </div>
                     <div id='notice_update_footer_div'>
                         <Button onClick={handleShowCancelModal} className='btn_gray btn_size_100'>취소</Button>
                         <Button onClick={handleUpdateNotice} className='btn_orange btn_size_100' id='notice_update_btn'>수정</Button>

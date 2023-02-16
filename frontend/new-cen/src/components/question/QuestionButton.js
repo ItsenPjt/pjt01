@@ -3,14 +3,10 @@ import { useNavigate } from 'react-router-dom';
 
 import Button from 'react-bootstrap/Button';
 
-import { getUserRole } from '../common/util/login-util';
-
 import './css/QuestionButton.css';
 
 // 문의사항 버튼들
 const QuestionButton = () => {
-    const USER_ROLE = getUserRole();        // 권한
-
     const navigate = useNavigate();
     const onInsertPage = () => {
         const path = `/question/insert`;
