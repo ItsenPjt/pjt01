@@ -45,8 +45,6 @@
 
 
 
-
-
 ### :dizzy: NewCen의 모토
 
 `신입사원 소통은 손쉽고 빠르게!`
@@ -94,6 +92,14 @@
 
 
 
+
+
+
+
+
+
+
+
 ## :dizzy:주요 기능
 
 - 서비스 설명 : 사원 커뮤니티 서비스
@@ -130,6 +136,12 @@
 # **Ⅱ. 기술스택**
 
 ## :computer: 개발환경
+
+- s3를 활용하여 파일 저장 및 react 배포
+- SpringBoot, JPA, QueryDsl을 활용하여 서버 api 개발
+- RDS를 활용하여 데이터 베이스 저장
+
+
 
 ### ![제목 없는 다이어그램](https://user-images.githubusercontent.com/82326116/219445525-5ad878c2-ba57-4a70-b01c-744d0bff8c0b.jpg)
 
