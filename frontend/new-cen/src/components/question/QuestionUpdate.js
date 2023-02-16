@@ -222,9 +222,10 @@ const QuestionUpdate = () => {
             return res.json();
         })
         .then((res) => {
-            console.log(res);
+            setQuestionFileCount(res.boardFileList.length);
+            setQuestionFiles(res.boardFileList);
 
-            //window.location.href = `/notice/update/${noticeId}`;       // 해당 공지사항 페이지로 이동
+            return res.boardFileList;
         });
     }
 

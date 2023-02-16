@@ -204,14 +204,12 @@ const NoticeUpdate = () => {
                         }
                         return res.json();
                     })
-                    .then((res) => {
+                    .then(() => {
                         window.location.href = `/notice/${noticeId}`;       // 공지사항 목록 페이지로 이동
                     });
                 }
             });
         }
-
-        
     }
 
     // 공지사항 파일 삭제
@@ -243,9 +241,10 @@ const NoticeUpdate = () => {
             return res.json();
         })
         .then((res) => {
-            console.log(res);
+            setNoticeFileCount(res.boardFileList.length);
+            setNoticeFiles(res.boardFileList);
 
-            //window.location.href = `/notice/update/${noticeId}`;       // 해당 공지사항 페이지로 이동
+            return res.boardFildList;
         });
     }
 
