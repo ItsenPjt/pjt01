@@ -74,9 +74,10 @@ public class MessageRepositorySupport extends QuerydslRepositorySupport {
         JPQLQuery<MessageEntity> query = jpaQueryFactory.select(qMessageEntity)
                 .from(qMessageEntity)
                 .where(qMessageEntity.receiver.userId.eq(userId),
-                        messageTitleEq(searchReceivedMessageCondition.getMessageTitle()),
-                        messageContentEq(searchReceivedMessageCondition.getMessageContent()),
-                        messageSenderEq(searchReceivedMessageCondition.getMessageSender())
+//                        messageTitleEq(searchReceivedMessageCondition.getMessageTitle()),
+//                        messageContentEq(searchReceivedMessageCondition.getMessageContent()),
+                        messageSenderEq(searchReceivedMessageCondition.getMessageSender()),
+                        ContentMessageTitleEq(searchReceivedMessageCondition.getMessageContent(),searchReceivedMessageCondition.getMessageTitle())
                         )
                 .orderBy(qMessageEntity.messageSenddate.desc());
 
@@ -90,16 +91,30 @@ public class MessageRepositorySupport extends QuerydslRepositorySupport {
 
         return new PageImpl<>(dtoList, pageRequest, totalCount);
     }
+    private BooleanExpression ContentMessageTitleEq(String messageContent,String messageTitle){
+
+        if(!messageTitle.isEmpty() && !messageContent.isEmpty()){
+            return qMessageEntity.messageContent.contains(messageContent).or(qMessageEntity.messageTitle.contains(messageTitle));
+        }
+        if(!messageTitle.isEmpty() && messageContent.isEmpty()){
+            return qMessageEntity.messageTitle.contains(messageTitle);
+        }
+        if(messageTitle.isEmpty() && !messageContent.isEmpty()){
+            return qMessageEntity.messageContent.contains(messageContent);
+        }
+        return null;
+    }
+
 
     private BooleanExpression messageTitleEq(String messageTitle){
-        if(messageTitle == null || messageTitle.isEmpty()){
+        if(messageTitle.isEmpty()){
             return null;
         }
         return qMessageEntity.messageTitle.contains(messageTitle);
     }
 
     private BooleanExpression messageContentEq(String messageContent){
-        if(messageContent == null || messageContent.isEmpty()){
+        if(messageContent.isEmpty()){
             return null;
         }
         return qMessageEntity.messageContent.contains(messageContent);
@@ -112,7 +127,7 @@ public class MessageRepositorySupport extends QuerydslRepositorySupport {
         return qMessageEntity.messageSender.contains(messageSender);
     }
     private BooleanExpression messageReceiverEq(String messageReceiver){
-        if(messageReceiver == null || messageReceiver.isEmpty()){
+        if(messageReceiver.isEmpty()){
             return null;
         }
         return qMessageEntity.messageReceiver.contains(messageReceiver);
@@ -124,8 +139,9 @@ public class MessageRepositorySupport extends QuerydslRepositorySupport {
                 .from(qMessageEntity)
                 .where(qMessageEntity.sender.userId.eq(userId),
                         messageTitleEq(searchSentMessageCondition.getMessageTitle()),
-                        messageContentEq(searchSentMessageCondition.getMessageContent()),
-                        messageReceiverEq(searchSentMessageCondition.getMessageReceiver())
+                        ContentMessageTitleEq(searchSentMessageCondition.getMessageContent(),searchSentMessageCondition.getMessageTitle())
+//                        messageContentEq(searchSentMessageCondition.getMessageContent()),
+//                        messageReceiverEq(searchSentMessageCondition.getMessageReceiver())
                 )
                 .orderBy(qMessageEntity.messageSenddate.desc());
 
