@@ -32,6 +32,10 @@ const NoticeMain = () => {
         'Authorization': 'Bearer ' + ACCESS_TOKEN
     }
 
+    // 검색 여부
+    const [isSearched, setIsSearched] = useState(false);
+    
+
      // Pagination 
      const [currentPage, setCurrentPage] = useState(0);
 
@@ -45,43 +49,89 @@ const NoticeMain = () => {
 
         setCurrentPage(page);
 
+        if(isSearched) {
+            if (document.getElementById('notice_select_dropdown_button').innerText === '선택') {
+                alert('검색 카테고리를 먼저 선택해주세요');
+            }
+            else if (searchData.boardTitle === '' && searchData.boardContent === '' && searchData.boardWriter === '') {
+                alert('검색어를 입력해주세요');
+            }
+            else {
+                fetch(`${API_BASE_URL}/search?page=${page}`, {
+                    method: 'POST',
+                    headers: headerInfo,
+                    body: JSON.stringify(searchData)
+                })
+                .then(res => {
+                    if (res.status === 406) {
+                        alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
+                        return;
+                    } 
+                    else if (res.status === 500) {
+                        alert('서버가 불안정합니다');
+                        return;
+                    }
+                    return res.json();
+                })
+                .then((result) => {
+                    if (!!result) {
+                        setNotices(result.content);
+                        setTotalPage(result.totalPages);
+                    }
 
-        fetch(`${API_BASE_URL}?page=${page}`)
-        .then(res => {
-            if (res.status === 406) {
-                if (ACCESS_TOKEN === '') {
-                    alert('로그인이 필요한 서비스입니다');
-                    window.location.href = '/join';
-                } else {
-                    alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
+                    if(page===0) {
+                        setIsFirst(true);
+                    }else if(page>0) {
+                        setIsFirst(false);
+                    }
+         
+                    if(page===totalPage-1) {
+                        setIsLast(true);
+                    }else {
+                        setIsLast(false);
+                    }
+                });
+            } 
+        }else {
+            fetch(`${API_BASE_URL}?page=${page}`)
+            .then(res => {
+                if (res.status === 406) {
+                    if (ACCESS_TOKEN === '') {
+                        alert('로그인이 필요한 서비스입니다');
+                        window.location.href = '/join';
+                    } else {
+                        alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
+                        return;
+                    }
+                    return;
+                } 
+                else if (res.status === 500) {
+                    alert('서버가 불안정합니다');
                     return;
                 }
-                return;
-            } 
-            else if (res.status === 500) {
-                alert('서버가 불안정합니다');
-                return;
-            }
-            return res.json();
-        })
-        .then(result => {
-            if (!!result) {
-                setNotices(result.content);
-                setTotalPage(result.totalPages);
-            }
+                return res.json();
+            })
+            .then(result => {
+                if (!!result) {
+                    setNotices(result.content);
+                    setTotalPage(result.totalPages);
+                }
+    
+                if(page===0) {
+                    setIsFirst(true);
+                }else if(page>0) {
+                    setIsFirst(false);
+                }
+    
+                if(page===totalPage-1) {
+                    setIsLast(true);
+                }else {
+                    setIsLast(false);
+                }
+            });
+        }
 
-            if(page===0) {
-                setIsFirst(true);
-            }else if(page>0) {
-                setIsFirst(false);
-            }
 
-            if(page===totalPage-1) {
-                setIsLast(true);
-            }else {
-                setIsLast(false);
-            }
-        });
     }
 
     // 렌더링 되자마자 할 일 => 공지사항 api GET 목록 호출
@@ -166,6 +216,7 @@ const NoticeMain = () => {
     // 검색 버튼 클릭 시 
     const handleSearch = () => {
 
+
         if (document.getElementById('notice_select_dropdown_button').innerText === '선택') {
             alert('검색 카테고리를 먼저 선택해주세요');
         }
@@ -173,7 +224,13 @@ const NoticeMain = () => {
             alert('검색어를 입력해주세요');
         }
         else {
-            fetch(`${API_BASE_URL}/search`, {
+            
+            setIsSearched(true);
+            setIsFirst(true);
+            setIsLast(false);
+            setCurrentPage(0);
+
+            fetch(`${API_BASE_URL}/search?page=0`, {
                 method: 'POST',
                 headers: headerInfo,
                 body: JSON.stringify(searchData)
@@ -192,6 +249,7 @@ const NoticeMain = () => {
             .then((result) => {
                 if (!!result) {
                     setNotices(result.content);
+                    setTotalPage(result.totalPages);
                 }
             });
         } 

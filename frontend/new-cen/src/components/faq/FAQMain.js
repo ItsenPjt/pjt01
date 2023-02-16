@@ -27,6 +27,9 @@ const FAQMain = () => {
     // 자주 묻는 질문 리스트
     const [faqList, setFaqList] = useState([]);
 
+    // 검색 여부
+    const [isSearched, setIsSearched] = useState(false);
+
     // 자주 묻는 질문 상세
     const navigate = useNavigate();
     const handleFaqContent = (boardId) => {
@@ -47,33 +50,83 @@ const FAQMain = () => {
      const handleChangePage = (page) => {
  
         setCurrentPage(page);
+        
+        if(isSearched) {
+
+            if (document.getElementById('notice_select_dropdown_button').innerText === '선택') {
+                alert('검색 카테고리를 먼저 선택해주세요');
+            }
+            else if (searchData.boardTitle === '' && searchData.boardContent === '' && searchData.boardWriter === '') {
+                alert('검색어를 입력해주세요');
+            }
+            else {
+                fetch(`${API_BASE_URL}/search?page=${page}`, {
+                    method: 'POST',
+                    headers: {
+                        'content-type': 'application/json', 
+                    },
+                    body: JSON.stringify(searchData)
+                })
+                .then(res => {
+                    if (res.status === 406) {
+                        alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
+                        return;
+                    } 
+                    else if (res.status === 500) {
+                        alert('서버가 불안정합니다');
+                        return;
+                    }
+                    return res.json();
+                })
+                .then((result) => {
+                    if (!!result) {
+                        setFaqList(result.content);
+                        setTotalPage(result.totalPages);
+                    }
+
+                    if(page===0) {
+                        setIsFirst(true);
+                    }else if(page>0) {
+                        setIsFirst(false);
+                    }
+         
+                    if(page===totalPage-1) {
+                        setIsLast(true);
+                    }else {
+                        setIsLast(false);
+                    }
+                });
+            }
+
+        }else {
+            fetch(`${API_BASE_URL}?page=${page}`)
+            .then(res => {
+                if (res.status === 500) {
+                    alert('서버가 불안정합니다');
+                    return;
+                }
+                return res.json();
+            })
+            .then(result => {
+                if (!!result) {
+                    setFaqList(result.content);
+                    setTotalPage(result.totalPages);
+                }
+     
+                if(page===0) {
+                    setIsFirst(true);
+                }else if(page>0) {
+                    setIsFirst(false);
+                }
+     
+                if(page===totalPage-1) {
+                    setIsLast(true);
+                }else {
+                    setIsLast(false);
+                }
+            });
+        }
  
-        fetch(`${API_BASE_URL}?page=${page}`)
-        .then(res => {
-            if (res.status === 500) {
-                alert('서버가 불안정합니다');
-                return;
-            }
-            return res.json();
-        })
-        .then(result => {
-            if (!!result) {
-                setFaqList(result.content);
-                setTotalPage(result.totalPages);
-            }
- 
-            if(page===0) {
-                setIsFirst(true);
-            }else if(page>0) {
-                setIsFirst(false);
-            }
- 
-            if(page===totalPage-1) {
-                setIsLast(true);
-            }else {
-                setIsLast(false);
-            }
-        });
      }
   
 
@@ -143,6 +196,8 @@ const FAQMain = () => {
 
     // 검색 버튼 클릭 시 
     const handleSearch = () => {
+
+
         if (document.getElementById('notice_select_dropdown_button').innerText === '선택') {
             alert('검색 카테고리를 먼저 선택해주세요');
         }
@@ -150,7 +205,13 @@ const FAQMain = () => {
             alert('검색어를 입력해주세요');
         }
         else {
-            fetch(`${API_BASE_URL}/search`, {
+
+            setIsSearched(true);
+            setIsFirst(true);
+            setIsLast(false);
+            setCurrentPage(0);
+
+            fetch(`${API_BASE_URL}/search?page=0`, {
                 method: 'POST',
                 headers: {
                     'content-type': 'application/json', 
@@ -171,6 +232,7 @@ const FAQMain = () => {
             .then((result) => {
                 if (!!result) {
                     setFaqList(result.content);
+                    setTotalPage(result.totalPages);
                 }
             });
         }

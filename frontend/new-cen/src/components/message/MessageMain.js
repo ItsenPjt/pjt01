@@ -27,6 +27,9 @@ const MessageMain = () => {
         'Authorization': 'Bearer ' + ACCESS_TOKEN
     }
 
+    // 검색 여부
+    const [isSearched, setIsSearched] = useState(false);
+
     // Pagination
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPage, setTotalPage] = useState(0);
@@ -38,37 +41,130 @@ const MessageMain = () => {
         
         setCurrentPage(page);
 
-        fetch(`${API_BASE_URL}?mode=${mode}&page=${page}&sort=`, {
-            method: 'GET',
-            headers: headerInfo
-        })
-        .then(res => {
+        if(isSearched) {
 
-            if(res.status === 500) {
-                alert("서버가 불안정합니다");
-                return;
-            }else if(res.status === 400) {
-                alert("잘못된 요청 값 입니다");
-                return;
+            if (mode ==='received') {           // 받은 메세지 검색
+                if (document.getElementById('message_select_dropdown_button').innerText === '선택') {
+                    alert('검색 카테고리를 먼저 선택해주세요');
+                }
+                else if (receiverSearchData.messageTitle === '' && receiverSearchData.messageContent === '' && receiverSearchData.messageSender === '') {
+                    alert('검색어를 입력해주세요');
+                }
+                else {
+                    fetch(`${API_BASE_URL}/search/received?page=${page}`, {
+                        method: 'POST',
+                        headers: headerInfo,
+                        body: JSON.stringify(receiverSearchData)
+                    })
+                    .then(res => {
+                        if (res.status === 406) {
+                            alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
+                            return;
+                        } 
+                        else if (res.status === 500) {
+                            alert('서버가 불안정합니다');
+                            return;
+                        }
+                        return res.json();
+                    })
+                    .then((result) => {
+                        if (!!result) {
+                            setMessages(result.content);
+                            setTotalPage(result.totalPages);
+                            if (page===0) {
+                                setIsFirst(true);
+                            } else if(page>0) {
+                                setIsFirst(false);
+                            }
+                
+                            if (page===totalPage-1) {
+                                setIsLast(true);
+                            } else {
+                                setIsLast(false);
+                            }
+                        }
+                    });
+                }
+            } 
+            else if (mode === 'sent') {       // 보낸 메세지 검색
+                if (document.getElementById('message_select_dropdown_button').innerText === '선택') {
+                    alert('검색 카테고리를 먼저 선택해주세요');
+                }
+                else if (sentSearchData.messageTitle === '' && sentSearchData.messageContent === '' && sentSearchData.messageReceiver === '') {
+                    alert('검색어를 입력해주세요');
+                }
+                else {
+                    fetch(`${API_BASE_URL}/search/sent?page=${page}`, {
+                        method: 'POST',
+                        headers: headerInfo,
+                        body: JSON.stringify(sentSearchData)
+                    })
+                    .then(res => {
+                        if (res.status === 406) {
+                            alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
+                            return;
+                        } 
+                        else if (res.status === 500) {
+                            alert('서버가 불안정합니다');
+                            return;
+                        }
+                        return res.json();
+                    })
+                    .then((result) => {
+                        if (!!result) {
+                            setMessages(result.content);
+                            setTotalPage(result.totalPages);
+                            if (page===0) {
+                                setIsFirst(true);
+                            } else if(page>0) {
+                                setIsFirst(false);
+                            }
+                
+                            if (page===totalPage-1) {
+                                setIsLast(true);
+                            } else {
+                                setIsLast(false);
+                            }
+                        }
+                    });
+                } 
             }
 
-            return res.json();
-        })
-        .then(res => {
-            setMessages(res.content);
-            setTotalPage(res.totalPages);
-            if (page===0) {
-                setIsFirst(true);
-            } else if(page>0) {
-                setIsFirst(false);
-            }
+        }else {
+            fetch(`${API_BASE_URL}?mode=${mode}&page=${page}&sort=`, {
+                method: 'GET',
+                headers: headerInfo
+            })
+            .then(res => {
+    
+                if(res.status === 500) {
+                    alert("서버가 불안정합니다");
+                    return;
+                }else if(res.status === 400) {
+                    alert("잘못된 요청 값 입니다");
+                    return;
+                }
+    
+                return res.json();
+            })
+            .then(res => {
+                setMessages(res.content);
+                setTotalPage(res.totalPages);
+                if (page===0) {
+                    setIsFirst(true);
+                } else if(page>0) {
+                    setIsFirst(false);
+                }
+    
+                if (page===totalPage-1) {
+                    setIsLast(true);
+                } else {
+                    setIsLast(false);
+                }
+            });
+        }
 
-            if (page===totalPage-1) {
-                setIsLast(true);
-            } else {
-                setIsLast(false);
-            }
-        });
+        
     }
 
     // 메세지 api 데이터 
@@ -82,49 +178,120 @@ const MessageMain = () => {
 
     const changeMode = (value) => {
         let isChanged = false;
-
+        // let searched = isSearched;
+        let page = currentPage;
         if(mode!==value) {
             setMode(value);
-            setCurrentPage(0);
+            setIsSearched(false);
             isChanged = true;
         }
-        fetch(`${API_BASE_URL}?mode=${value}&page=${currentPage}`, {
-            method: 'GET',
-            headers: headerInfo
-        })
-        .then(res => {
-            if(res.status === 500) {
-                alert("서버가 불안정합니다");
-                return;
-            } else if(res.status === 400) {
-                alert("잘못된 요청 값 입니다");
-                return;
-            }
-            return res.json();
-        })
-        .then(res => {
-            setMessages(res.content);
-            setTotalPage(res.totalPages);
-            if(currentPage===res.totalPages) {
-                handleChangePage(res.totalPages-1);
-            }
-        })
-        .then(() => {
+
+        if(isChanged) {
+            page = 0;
+        }
+
+        if(isSearched) {
+            if (mode ==='received') {           // 받은 메세지 검색
             
-            if(isChanged) {
-                setIsFirst(true);
-                setIsLast(false);
-                setSelectAll(true);
-
-                let i = 0;
-                const check_boxes = document.querySelectorAll(".message_select_checkbox");
-
-                while(i < check_boxes.length) {
-                    check_boxes[i].checked = false;
-                    i++;
-                }
+                fetch(`${API_BASE_URL}/search/received?page=${page}`, {
+                    method: 'POST',
+                    headers: headerInfo,
+                    body: JSON.stringify(receiverSearchData)
+                })
+                .then(res => {
+                    if (res.status === 406) {
+                        alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
+                        return;
+                    } 
+                    else if (res.status === 500) {
+                        alert('서버가 불안정합니다');
+                        return;
+                    }
+                    return res.json();
+                })
+                .then((res) => {
+                    if (!!res) {
+                        setMessages(res.content);
+                        setTotalPage(res.totalPages);
+                        if(currentPage===res.totalPages) {
+                            handleChangePage(res.totalPages-1);
+                        }
+                    }
+                });
+                
+            } 
+            else if (mode === 'sent') {       // 보낸 메세지 검색
+                
+                fetch(`${API_BASE_URL}/search/sent?page=${page}`, {
+                    method: 'POST',
+                    headers: headerInfo,
+                    body: JSON.stringify(sentSearchData)
+                })
+                .then(res => {
+                    if (res.status === 406) {
+                        alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
+                        return;
+                    } 
+                    else if (res.status === 500) {
+                        alert('서버가 불안정합니다');
+                        return;
+                    }
+                    return res.json();
+                })
+                .then((res) => {
+                    if (!!res) {
+                        setMessages(res.content);
+                        setTotalPage(res.totalPages);
+                        if(currentPage===res.totalPages) {
+                            handleChangePage(res.totalPages-1);
+                        }
+                    }
+                });
             }
-        })
+
+        }else {
+            fetch(`${API_BASE_URL}?mode=${value}&page=${page}`, {
+                method: 'GET',
+                headers: headerInfo
+            })
+            .then(res => {
+                if(res.status === 500) {
+                    alert("서버가 불안정합니다");
+                    return;
+                } else if(res.status === 400) {
+                    alert("잘못된 요청 값 입니다");
+                    return;
+                }
+                return res.json();
+            })
+            .then(res => {
+                console.log(res);
+                setMessages(res.content);
+                setTotalPage(res.totalPages);
+                if(currentPage===res.totalPages) {
+                    handleChangePage(res.totalPages-1);
+                }
+            })
+            .then(() => {
+                
+                if(isChanged) {
+                    setIsFirst(true);
+                    setIsLast(false);
+                    setSelectAll(true);
+                    setCurrentPage(0);
+
+                    let i = 0;
+                    const check_boxes = document.querySelectorAll(".message_select_checkbox");
+    
+                    while(i < check_boxes.length) {
+                        check_boxes[i].checked = false;
+                        i++;
+                    }
+                }
+            })
+
+        }
+       
     }
 
     // 전체 선택 / 해제
@@ -451,6 +618,7 @@ const MessageMain = () => {
     // 검색 버튼 클릭 시 
     const handleSearch = () => {
 
+
         if (mode ==='received') {           // 받은 메세지 검색
             if (document.getElementById('message_select_dropdown_button').innerText === '선택') {
                 alert('검색 카테고리를 먼저 선택해주세요');
@@ -459,7 +627,12 @@ const MessageMain = () => {
                 alert('검색어를 입력해주세요');
             }
             else {
-                fetch(`${API_BASE_URL}/search/received`, {
+                setIsSearched(true);
+                setIsFirst(true);
+                setIsLast(false);
+                setCurrentPage(0);
+
+                fetch(`${API_BASE_URL}/search/received?page=0`, {
                     method: 'POST',
                     headers: headerInfo,
                     body: JSON.stringify(receiverSearchData)
@@ -478,6 +651,7 @@ const MessageMain = () => {
                 .then((result) => {
                     if (!!result) {
                         setMessages(result.content);
+                        setTotalPage(result.totalPages);
                     }
                 });
             }
@@ -490,7 +664,12 @@ const MessageMain = () => {
                 alert('검색어를 입력해주세요');
             }
             else {
-                fetch(`${API_BASE_URL}/search/sent`, {
+                setIsSearched(true);
+                setIsFirst(true);
+                setIsLast(false);
+                setCurrentPage(0);
+
+                fetch(`${API_BASE_URL}/search/sent?page=0`, {
                     method: 'POST',
                     headers: headerInfo,
                     body: JSON.stringify(sentSearchData)
@@ -509,6 +688,7 @@ const MessageMain = () => {
                 .then((result) => {
                     if (!!result) {
                         setMessages(result.content);
+                        setTotalPage(result.totalPages);
                     }
                 });
             } 
