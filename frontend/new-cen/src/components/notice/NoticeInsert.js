@@ -159,7 +159,7 @@ const NoticeInsert = () => {
                         }
                         return res.json();
                     })
-                    .then((res) => {
+                    .then(() => {
                         window.location.href = "/notice";       // 공지사항 목록 페이지로 이동
                     });
                 }
