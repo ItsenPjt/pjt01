@@ -193,7 +193,7 @@ public class QuestionService {
                 .user(user)
                 .build();
 
-        return questionDetail(boardId);
+        return new QuestionsOneResponseDTO(res);
     }
 
 
