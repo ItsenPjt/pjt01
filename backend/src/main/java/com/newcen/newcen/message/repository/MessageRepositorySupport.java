@@ -138,7 +138,7 @@ public class MessageRepositorySupport extends QuerydslRepositorySupport {
         JPQLQuery<MessageEntity> query = jpaQueryFactory.select(qMessageEntity)
                 .from(qMessageEntity)
                 .where(qMessageEntity.sender.userId.eq(userId),
-                        messageTitleEq(searchSentMessageCondition.getMessageTitle()),
+                        messageReceiverEq(searchSentMessageCondition.getMessageReceiver()),
                         ContentMessageTitleEq(searchSentMessageCondition.getMessageContent(),searchSentMessageCondition.getMessageTitle())
 //                        messageContentEq(searchSentMessageCondition.getMessageContent()),
 //                        messageReceiverEq(searchSentMessageCondition.getMessageReceiver())
