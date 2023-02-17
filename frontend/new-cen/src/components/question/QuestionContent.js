@@ -6,7 +6,7 @@ import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 
 import { BASE_URL, QUESTION, AWS } from '../common/config/host-config';
-import { getToken, getUserId } from '../common/util/login-util';
+import { getToken, getUserId, getUserRole } from '../common/util/login-util';
 
 import QuestionComment from './QuestionComment';
 
@@ -21,7 +21,8 @@ const QuestionContent = () => {
 
     const ACCESS_TOKEN = getToken();
     const USER_ID = getUserId();        // 권한
-
+    const USER_ROLE = getUserRole();
+    
     // 문의사항 api 데이터 
     const [questionContents, setQuestionContents] = useState([]);
     const [questionFiles, setQuestionFiles] = useState([]);
@@ -158,8 +159,8 @@ const QuestionContent = () => {
                     </div>
                     
                     <>
-                        {/* 게시물 등록한 사람인 경우에만 '수정','삭제' 버튼 보이도록 */}
-                        {USER_ID === questionContents.userId
+                        {/* 관리자나, 게시물 등록한 사람인 경우에만 '수정','삭제' 버튼 보이도록 */}
+                        {USER_ID === questionContents.userId || USER_ROLE === 'ADMIN'
                         ? 
                             <div id='question_content_body_div'>
                                 <Button onClick={onUpdatePage} className='btn_gray btn_size_100'>수정</Button>
@@ -172,6 +173,15 @@ const QuestionContent = () => {
                             </div>
                         }
                     </>
+                </div>
+
+                {/* dangerouslySetInnerHTML : String형태를 html로 */}
+                <div>
+                    <Form id='question_contents'
+                        dangerouslySetInnerHTML={{
+                            __html: questionContents.boardContent
+                        }} 
+                    />
                 </div>
 
                 {/* 문의사항 파일 */}
@@ -189,15 +199,6 @@ const QuestionContent = () => {
                         }   
                     </div>
                 }
-
-                {/* dangerouslySetInnerHTML : String형태를 html로 */}
-                <div>
-                    <Form id='question_contents'
-                        dangerouslySetInnerHTML={{
-                            __html: questionContents.boardContent
-                        }} 
-                    />
-                </div>
 
                 {/* 댓글 */}
                 <QuestionComment questionId = {questionId}/>

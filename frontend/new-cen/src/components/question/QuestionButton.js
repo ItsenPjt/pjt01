@@ -25,7 +25,6 @@ const QuestionButton = () => {
                 <Button className='btn_indigo' id='question_button_like_asc'>좋아요 순</Button>
                 <Button className='btn_indigo' id='question_button_commente_asc'>댓글 순</Button> */}
                 
-                
                 { ACCESS_TOKEN !== null &&                 
                     <Button onClick={onInsertPage} className='btn_orange btn_size_100' id='question_button_insert'>글쓰기</Button>
                 }

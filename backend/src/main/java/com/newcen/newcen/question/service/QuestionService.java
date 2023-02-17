@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -118,8 +119,31 @@ public class QuestionService {
 
     //문의사항 삭제, 삭제시 파일 삭제 추가
     public boolean deleteQuestion(String userId, Long boardId){
-        BoardEntity boardGet = questionsRepositorySupport.findBoardByUserIdAndBoardId(userId,boardId);
+
         UserEntity user = userRepository.findById(userId).get();
+        if (user.getUserRole() == UserRole.ADMIN){
+            Optional<BoardEntity> boardGetByAdmin = questionsRepository.findById(boardId);
+            if(boardGetByAdmin.isPresent()){
+                List<BoardFileEntity> boardFileEntityList = boardFileRepository.findByBoardId(boardId);
+                List<CommentEntity> commentList = commentRepositorySupport.findAllByBoardId(boardId);
+                if (boardFileEntityList.size() !=0 && !boardFileEntityList.isEmpty()){
+                    boardFileEntityList.forEach(t-> amazonS3.deleteObject(new DeleteObjectRequest(bucket, t.getBoardFilePath())));
+                }
+                if (commentList.size() !=0 && !commentList.isEmpty()){
+                    commentList.forEach(t->t.getCommentFileList().forEach(yy->amazonS3.deleteObject(new DeleteObjectRequest(bucket, yy.getCommentFilePath()))));
+                }
+
+                questionsRepository.delete(boardGetByAdmin.get());
+                return true;
+            }else
+                return false;
+        }
+        BoardEntity boardGet = questionsRepositorySupport.findBoardByUserIdAndBoardId(userId,boardId);
+
+        if (!Objects.equals(boardGet.getUserId(), user.getUserId())){
+            throw new RuntimeException("본인이 작성한 글이 아닙니다.");
+        }
+
         List<BoardFileEntity> boardFileEntityList = boardFileRepository.findByBoardId(boardId);
         List<CommentEntity> commentList = commentRepositorySupport.findAllByBoardId(boardId);
         if (boardFileEntityList.size() !=0 && !boardFileEntityList.isEmpty()){
@@ -128,9 +152,7 @@ public class QuestionService {
         if (commentList.size() !=0 && !commentList.isEmpty()){
             commentList.forEach(t->t.getCommentFileList().forEach(yy->amazonS3.deleteObject(new DeleteObjectRequest(bucket, yy.getCommentFilePath()))));
         }
-        if (!Objects.equals(boardGet.getUserId(), user.getUserId())){
-            throw new RuntimeException("본인이 작성한 글이 아닙니다.");
-        }
+
         questionsRepository.delete(boardGet);
         return true;
     }

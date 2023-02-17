@@ -14,7 +14,7 @@ public interface ValidUserRepository extends JpaRepository<ValidUserEntity, Stri
     ValidUserEntity findByValidUserEmail(String email);
 
     // valid 이메일 삭제 후 존재 여부 조회
-    @Query("SELECT u.validUserEmail FROM ValidUserEntity u WHERE u.validUserEmail =: validUserEmail")
+    @Query("SELECT u.validUserEmail FROM ValidUserEntity u WHERE u.validUserEmail =:validUserEmail")
     Optional<ValidUserEntity> selectValidUserEmail(@Param("validUserEmail") String email);
 
     // 이메일 중복 검사

@@ -17,7 +17,6 @@ const UserSignSet = () => {
 
     const [modal, setModal] = useState(false); 
 
-
     const API_BASE_URL = BASE_URL + USER;
 
     const ACCESS_TOKEN = getToken();
@@ -30,7 +29,6 @@ const UserSignSet = () => {
         'content-type': 'application/json'
         , 'Authorization': 'Bearer ' + ACCESS_TOKEN
     };
-
     
     // 비번 검증 메세지 저장
     const [message, setMessage] = useState({
@@ -48,7 +46,6 @@ const UserSignSet = () => {
     const [userValue, setUserValue] = useState({
         userPassword: ''
     });
-
 
     // 비밀번호 입력란 검증 체인지 이벤트 핸들러
     const userPasswordHandler = e => {
@@ -94,7 +91,6 @@ const UserSignSet = () => {
         });
     };
 
-
     // 비밀번호 재확인 입력란 검증 체인지 이벤트 핸들러
     const userPasswordCheckHandler = e => {
 
@@ -125,7 +121,6 @@ const UserSignSet = () => {
         });
     };
 
-
     // validate 객체 안의 모든 논리값이 true인지 검사하는 함수
     const isValid = () => {
 
@@ -138,7 +133,6 @@ const UserSignSet = () => {
         return true;
     };
 
-
     // 내 정보 수정 서버 요청
     const updateUserPw = e => {
 
@@ -149,9 +143,9 @@ const UserSignSet = () => {
                 body: JSON.stringify(userValue)
             })
             .then(res => {
-                // console.log(res.status);
                 if (res.status === 200) {
                     alert(`회원정보가 정상적으로 변경되었습니다.`);
+
                     // 메인 페이지로 리다이렉트
                     window.location.href = '/';                 
                 } else {
@@ -163,14 +157,10 @@ const UserSignSet = () => {
         } else {
             alert(`입력창을 확인하세요.`);
             window.location.href = '/signset';
-        }
-       
+        }   
     };
 
-
-
     // 회원탈퇴 기능 처리
-
     const outOk = '해피엔딩';
     
     // 탈퇴 검증 완료 여부
@@ -183,12 +173,9 @@ const UserSignSet = () => {
         outUser: ''
     });
 
-
     // 탈퇴 입력문구 검증 체인지 이벤트 핸들러
     const outUserHandler = e => {
         
-        console.log(e.target.value);
-
         if (!e.target.value) {  // 탈퇴 문구 미 입력 시
             setOutValiDate({
                 ...outValiDate,
@@ -199,7 +186,7 @@ const UserSignSet = () => {
                 ...outValiDate,
                 outUser: false
             });
-        } else if (outOk.valueOf === e.target.value) {
+        } else if (outOk.valueOf(e.target.value)) {
             setOutValiDate({
                 ...outValiDate,
                 outUser: true
@@ -210,14 +197,11 @@ const UserSignSet = () => {
             outUser: e.target.value
         });
 
-
         if(e.target.value === outOk) {
             e.target.style.color = '#99434C';
             e.target.style.fontWeight = 'bold';
         }
-
     };
-
     
     // outValiDate 객체 안의 모든 논리값 true인지 검사하는 함수
     const outIsValid = () => {
@@ -228,24 +212,16 @@ const UserSignSet = () => {
             let value = outValiDate[key];
             if (!value) return false;
         }
-        
-
         return true;
     };
 
-    
     // 회원탈퇴 요청 서버로 보내기
     const outOfHere = e => {
-
-        //console.log('회원 탈퇴 서버요청!');
-
-        // e.preventDefault();  // 태그 기본 동작 중지
 
         // 입력값 검증을 올바르게 했는지 검사
         if (outIsValid()) {
             
             // alert('[FE] 회원탈퇴를 진행합니다.');
-
             fetch(`${API_BASE_URL}/signout`, {
                 method: 'DELETE',
                 headers: headerInfo
@@ -253,12 +229,6 @@ const UserSignSet = () => {
             .then(res => {
                 if (res.status === 200) {
                     alert('회원탈퇴가 완료되었습니다.\n소중한 인연이 언젠가 또 닿기를 바랍니다.\n감사합니다.');
-
-                    // localStorage.removeItem('ACCESS_TOKEN');
-                    // localStorage.removeItem('LOGIN_USERNAME');
-                    // localStorage.removeItem('LOGIN_USEREMAIL');
-                    // localStorage.removeItem('LOGIN_USERROLE');
-                    // localStorage.removeItem('LOGIN_USERID');
 
                     sessionStorage.removeItem('ACCESS_TOKEN');
                     sessionStorage.removeItem('LOGIN_USERNAME');
@@ -278,11 +248,8 @@ const UserSignSet = () => {
             alert(`입력창을 확인하세요.`);
             window.location.href = '/signset';
         }
-
     };
     
-
-
     // 로고 클릭 시
     const onLogo = () => {
         window.location.href = "/";
@@ -293,18 +260,15 @@ const UserSignSet = () => {
         window.location.href = "/";
     };
 
-
     // 모달 닫기
     const handleClose = () => {
         setModal(false);
     };
 
-
     // 회원 탈퇴 버튼 클릭 시 경고 모달
     const handleShowModal = () => {
         setModal(true);     // 모달 열기
     }
-
 
     return (
         <>
