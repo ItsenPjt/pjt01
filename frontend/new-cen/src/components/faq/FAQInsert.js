@@ -12,7 +12,6 @@ import './css/FAQInsert.css';
 import { BASE_URL, FAQ } from '../common/config/host-config';
 import { getToken } from '../common/util/login-util';
 
-
 // 자주 묻는 질문 추가
 const FAQInsert = () => {
 
@@ -30,7 +29,6 @@ const FAQInsert = () => {
         boardTitle: '',
         boardContent: ''
     });
-
 
     const insertFaq = () => {
 
@@ -60,10 +58,6 @@ const FAQInsert = () => {
                 window.location.href = "/faq";
             }
         })
-        
-        
-
-
     }
 
     const handleEditTitle = (e) => {
@@ -80,7 +74,6 @@ const FAQInsert = () => {
         })
     }
 
-
     const [modal, setModal] = useState(false); 
 
     // 모달 닫기
@@ -93,8 +86,6 @@ const FAQInsert = () => {
         setModal(true);     // 모달 열기
     }
     
-
-
     // 자주 묻는 질문 목록 페이지로
     const onFaqPage = () => {
         const path = `/faq`;

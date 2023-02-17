@@ -163,8 +163,6 @@ const MessageMain = () => {
                 }
             });
         }
-
-        
     }
 
     // 메세지 api 데이터 
@@ -274,7 +272,6 @@ const MessageMain = () => {
                     }
                 });
             }
-
         }else {
             fetch(`${API_BASE_URL}?mode=${value}&page=${page}`, {
                 method: 'GET',
@@ -313,13 +310,8 @@ const MessageMain = () => {
                         i++;
                     }
                 }
-            })
-
-        }
-
-
-       
-       
+           })
+        }  
     }
 
     // 전체 선택 / 해제
@@ -659,8 +651,6 @@ const MessageMain = () => {
 
     // 검색 버튼 클릭 시 
     const handleSearch = () => {
-
-
         if (mode ==='received') {           // 받은 메세지 검색
             if (document.getElementById('message_select_dropdown_button').innerText === '선택') {
                 alert('검색 카테고리를 먼저 선택해주세요');

@@ -1,7 +1,6 @@
 import React, { useState, useEffect }  from 'react';
 import { useParams} from 'react-router-dom';
 
-
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
@@ -36,7 +35,6 @@ const FAQUpdate = () => {
             ...faqContent,
             boardTitle: e.target.value
         })
-        console.log(e.target.value);
     }
     
     // 자주 묻는 질문 내용 수정 값
@@ -45,7 +43,6 @@ const FAQUpdate = () => {
             ...faqContent,
             boardContent: value
         })
-        console.log(value);
     }
 
     // 자주 묻는 질문 수정 버튼
@@ -73,9 +70,7 @@ const FAQUpdate = () => {
             const path = `/faq/${faqId}`;
             window.location.href = path;
         })
-
     }
-
 
     // 렌더링 되자마자 할 일 => FAQ api GET 상세 호출
     useEffect(() => {
@@ -92,7 +87,6 @@ const FAQUpdate = () => {
             setFaqContent(res);
         })
     }, [API_BASE_URL]); 
-
 
     const [modal, setModal] = useState(false); 
 

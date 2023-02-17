@@ -90,7 +90,6 @@ const NoticeUpdate = () => {
                 return res.json();
             })
             .then(result => {
-                console.log(result);
                 setNoticeData({
                     boardTitle: result.noticeDetails[0].boardTitle,
                     boardCommentIs: result.noticeDetails[0].boardCommentIs,
@@ -121,7 +120,6 @@ const NoticeUpdate = () => {
         } 
         // 글만 입력되어있을 때 -> 공지사항 수정 서버 요청  (PATCH에 대한 응답처리)
         else if (files.length === 0) {
-            console.log('글만 수정');
 
             fetch(`${API_BASE_URL}/${noticeId}`, {
                 method: 'PATCH',

@@ -46,7 +46,6 @@ const UserFindInfo = () => {
         validCode: ''
     });
 
-
     // 이메일 존재 여부 확인 요청(해당 이메일 인증코드 같이 받아서 저장)
     const checkEmail = userEmail => {
 
@@ -86,14 +85,10 @@ const UserFindInfo = () => {
                 userEmail: msg
             });
         });
-
     };
-
 
     // 유저 이메일 입력란 검증 체인지 이벤트 핸들러
     const userEmailHandler = e => {
-
-        //console.log(e.target.value);
 
         // eslint-disable-next-line
         const emailRegex = /^[a-z0-9\.\-_]+@([a-z0-9\-]+\.)+[a-z]{2,6}$/;
@@ -117,13 +112,10 @@ const UserFindInfo = () => {
             ...userValue,
             userEmail: e.target.value
         });
-
     };
-
 
     // 사내 인증코드 입력란 검증 체인지 이벤트 핸들러
     const validCodeHandler = e => {
-        // console.log(e.target.value);
         
         // 사내코드 검증 시작
         let msg;
@@ -150,12 +142,9 @@ const UserFindInfo = () => {
         });
 
     };
-    
 
     // 유저 이름 입력란 검증 체인지 이벤트 핸들러
     const userNameHandler = e => {
-
-        //console.log(e.target.value);
 
         const nameRegex = /^[가-힣]{2,10}$/;
 
@@ -190,7 +179,6 @@ const UserFindInfo = () => {
             userName: e.target.value
         });
     };
-
 
     // 비밀번호 입력란 검증 체인지 이벤트 핸들러
     const userPasswordHandler = e => {
@@ -236,7 +224,6 @@ const UserFindInfo = () => {
         });
     };
 
-
     // 비밀번호 재확인 입력란 검증 체인지 이벤트 핸들러
     const userPasswordCheckHandler = e => {
 
@@ -267,7 +254,6 @@ const UserFindInfo = () => {
         });
     };
 
-
     // validate 객체 안의 모든 논리값이 true인지 검사하는 함수
     const isValid = () => {
 
@@ -279,7 +265,6 @@ const UserFindInfo = () => {
         }
         return true;
     };
-
 
     // 익명 사용자 정보 수정 서버 요청
     const anonymousUserUpdate = e => {
@@ -293,14 +278,12 @@ const UserFindInfo = () => {
                 body: JSON.stringify(userValue)
             })
             .then(res => {
-                // console.log(res.status);
                 if (res.status === 200) {
                     alert(`회원정보가 정상적으로 변경되었습니다.`);
                     // 메인 페이지로 리다이렉트
                     window.location.href = '/';
                 } else {
                     alert(`회원정보 수정에 실패했습니다.\n잠시 후 다시 시도해 주세요.`);
-                    // window.location.href = '/findinfo';
                 }
                 return res.json();
             });
@@ -308,8 +291,6 @@ const UserFindInfo = () => {
             alert(`입력창을 확인하세요.`);
         }
     };
-
-
 
     // 로고 클릭 시
     const onLogo = () => {
@@ -327,7 +308,6 @@ const UserFindInfo = () => {
     //     const path = `/`;
     //     navigate(path);
     // };
-
 
     return (
         <div id='find_pw_main'>

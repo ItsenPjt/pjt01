@@ -14,13 +14,10 @@ import UserFindInfo from '../user/UserFindInfo'
 import UserJoin from '../user/UserJoin'
 import UserSignUp from '../user/UserSignUp'
 
-
-
 const BeforeLoginRouter = () => {
   return (
 
     // 로그인 전 - insert, update 불가
-
     <>
         <Header />
         <Routes>  
@@ -38,8 +35,6 @@ const BeforeLoginRouter = () => {
 
             <Route path="/faq" element={<FAQTemplate />} />
             <Route path="/faq/:faqId" element={<FAQContent />}/>
-
-            {/* <Route path="/admin" element={<AdminTemplate />} /> */}
 
             <Route path="/message" element={<MessageTemplate />} />
         </Routes>

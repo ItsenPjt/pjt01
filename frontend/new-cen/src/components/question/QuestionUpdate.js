@@ -107,7 +107,6 @@ const QuestionUpdate = () => {
         } 
         // 글만 입력되어있을 때 -> 문의사항 수정 서버 요청  (PATCH에 대한 응답처리)
         else if (files.length === 0) {
-
             fetch(`${API_BASE_URL}/${questionId}`, {
                 method: 'PATCH',
                 headers: headerInfo,
@@ -189,12 +188,10 @@ const QuestionUpdate = () => {
                 }
              });
         }
-        
     }
 
     // 문의사항 파일 삭제
     const handleDeleteBoardFile = (fileId) => {
-        console.log(fileId);
 
         fetch(`${API_BASE_URL}/${questionId}/files/${fileId}`, {
             method: 'DELETE',
@@ -289,7 +286,6 @@ const QuestionUpdate = () => {
                 <div>
                     <Editor onChange={contentChangeHandler} value={questionData.boardContent}/>
                 </div>
-
 
                 <div className='justify'> 
                     <input onChange={FileChangeHandler} type='file' name="notice_content_file" id="notice_content_file" multiple/>

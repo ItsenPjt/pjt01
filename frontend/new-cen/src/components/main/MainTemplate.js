@@ -11,8 +11,6 @@ const MainTemplate = () => {
             <Footer />
         </>
     )
-
-    
 }
 
 export default MainTemplate;
