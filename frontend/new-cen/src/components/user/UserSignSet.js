@@ -186,7 +186,7 @@ const UserSignSet = () => {
                 ...outValiDate,
                 outUser: false
             });
-        } else if (outOk.valueOf === e.target.value) {
+        } else if (outOk.valueOf(e.target.value)) {
             setOutValiDate({
                 ...outValiDate,
                 outUser: true
@@ -222,7 +222,6 @@ const UserSignSet = () => {
         if (outIsValid()) {
             
             // alert('[FE] 회원탈퇴를 진행합니다.');
-
             fetch(`${API_BASE_URL}/signout`, {
                 method: 'DELETE',
                 headers: headerInfo
