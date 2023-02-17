@@ -35,7 +35,7 @@ public class CommentRepositorySupport  extends QuerydslRepositorySupport {
                 .where(qCommentEntity.boardId.eq(boardId))
                 .orderBy(qCommentEntity.commentCreateDate.desc())
                 .fetch();
-        if (fetch ==null){
+        if (fetch.isEmpty() || fetch ==null){
             fetch = new ArrayList<>();
             return fetch;
         }else {
