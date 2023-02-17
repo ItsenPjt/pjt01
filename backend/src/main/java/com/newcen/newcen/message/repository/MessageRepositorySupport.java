@@ -32,7 +32,6 @@ public class MessageRepositorySupport extends QuerydslRepositorySupport {
 
     QMessageEntity qMessageEntity = QMessageEntity.messageEntity;
 
-
     //받은 메세지 목록 조회
     public PageImpl<MessageReceivedResponseDTO> getReceivedMessage(Pageable pageable, String userId){
         JPQLQuery<MessageEntity> query = jpaQueryFactory.select(qMessageEntity)
@@ -74,8 +73,6 @@ public class MessageRepositorySupport extends QuerydslRepositorySupport {
         JPQLQuery<MessageEntity> query = jpaQueryFactory.select(qMessageEntity)
                 .from(qMessageEntity)
                 .where(qMessageEntity.receiver.userId.eq(userId),
-//                        messageTitleEq(searchReceivedMessageCondition.getMessageTitle()),
-//                        messageContentEq(searchReceivedMessageCondition.getMessageContent()),
                         messageSenderEq(searchReceivedMessageCondition.getMessageSender()),
                         ContentMessageTitleEq(searchReceivedMessageCondition.getMessageContent(),searchReceivedMessageCondition.getMessageTitle())
                         )
@@ -104,7 +101,6 @@ public class MessageRepositorySupport extends QuerydslRepositorySupport {
         }
         return null;
     }
-
 
     private BooleanExpression messageTitleEq(String messageTitle){
         if(messageTitle.isEmpty()){
@@ -140,8 +136,6 @@ public class MessageRepositorySupport extends QuerydslRepositorySupport {
                 .where(qMessageEntity.sender.userId.eq(userId),
                         messageReceiverEq(searchSentMessageCondition.getMessageReceiver()),
                         ContentMessageTitleEq(searchSentMessageCondition.getMessageContent(),searchSentMessageCondition.getMessageTitle())
-//                        messageContentEq(searchSentMessageCondition.getMessageContent()),
-//                        messageReceiverEq(searchSentMessageCondition.getMessageReceiver())
                 )
                 .orderBy(qMessageEntity.messageSenddate.desc());
 

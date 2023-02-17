@@ -101,12 +101,12 @@ public class QuestionService {
         BoardEntity boardGet = questionsRepositorySupport.findBoardByUserIdAndBoardId(userId,boardId);
         String content =null;
         String title = null;
-        if (dto.getBoardContent()==null || dto.getBoardContent()==""){
+        if (dto.getBoardContent().isEmpty()|| dto.getBoardContent().equals("")){
             content = boardGet.getBoardContent();
         }else {
             content = dto.getBoardContent();
         }
-        if (dto.getBoardTitle()==null || dto.getBoardTitle()==""){
+        if (dto.getBoardTitle().isEmpty()|| dto.getBoardTitle().equals("")){
             title = boardGet.getBoardContent();
         }else {
             title = dto.getBoardTitle();
@@ -224,9 +224,6 @@ public class QuestionService {
                 .userId(userId)
                 .user(user)
                 .build();
-
-//        new QuestionsOneResponseDTO(res)
-//        questionDetail
         return new QuestionsOneResponseDTO(res);
     }
 

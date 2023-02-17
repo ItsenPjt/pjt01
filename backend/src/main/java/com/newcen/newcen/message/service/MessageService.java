@@ -67,7 +67,7 @@ public class MessageService {
     }
     //받은 메세지 목록 검색 조회 페이지 제네이션
     public PageImpl<MessageReceivedResponseDTO> getReceivedMessagePageListWithSearch(SearchReceivedMessageCondition searchReceivedMessageCondition, Pageable pageable, String userId){
-        if (searchReceivedMessageCondition.getMessageContent() ==null && searchReceivedMessageCondition.getMessageSender()==null && searchReceivedMessageCondition.getMessageTitle() ==null){
+        if (searchReceivedMessageCondition.getMessageContent().isEmpty() && searchReceivedMessageCondition.getMessageSender().isEmpty()  && searchReceivedMessageCondition.getMessageTitle().isEmpty()){
             PageImpl<MessageReceivedResponseDTO> result = messageRepositorySupport.getReceivedMessage(pageable,userId);
             return result;
         }
@@ -76,7 +76,7 @@ public class MessageService {
     }
     //보낸 메세지 목록 검색 조회 페이지 제네이션
     public PageImpl<MessageSentResponseDTO> getSentMessagePageListWithSearch(SearchSentMessageCondition searchSentMessageCondition, Pageable pageable, String userId){
-        if (searchSentMessageCondition.getMessageContent() ==null && searchSentMessageCondition.getMessageReceiver()==null && searchSentMessageCondition.getMessageTitle() ==null){
+        if (searchSentMessageCondition.getMessageContent().isEmpty()  && searchSentMessageCondition.getMessageReceiver().isEmpty()  && searchSentMessageCondition.getMessageTitle().isEmpty() ){
             PageImpl<MessageSentResponseDTO> result = messageRepositorySupport.getSentMessage(pageable,userId);
             return result;
         }

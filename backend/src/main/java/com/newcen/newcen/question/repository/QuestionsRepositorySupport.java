@@ -68,8 +68,6 @@ public class QuestionsRepositorySupport extends QuerydslRepositorySupport {
                 .select(qBoardEntity)
                 .from(qBoardEntity)
                 .where(qBoardEntity.boardType.eq(BoardType.QUESTION)
-//                        ,boardTitleEq(searchCondition.getBoardTitle())
-//                        ,boardContentEq(searchCondition.getBoardContent())
                         ,ContentMessageTitleEq(searchCondition.getBoardContent(),searchCondition.getBoardTitle())
                         ,boardWriterEq(searchCondition.getBoardWriter()))
                 .orderBy(qBoardEntity.createDate.desc());
@@ -79,8 +77,6 @@ public class QuestionsRepositorySupport extends QuerydslRepositorySupport {
                 .map(QuestionResponseDTO::new)
                 .collect(Collectors.toList());
         Pageable pageRequest = new FixedPageRequest(pageable, totalCount);
-        // 2. NoticeDetailResponseDTO 를 NoticeListResponseDTO 로 변경
-
         return new PageImpl<>(dtoList, pageRequest, totalCount);
 
     }
