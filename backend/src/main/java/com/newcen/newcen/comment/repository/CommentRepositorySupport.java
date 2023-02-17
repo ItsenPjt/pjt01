@@ -2,10 +2,8 @@ package com.newcen.newcen.comment.repository;
 
 import com.newcen.newcen.comment.dto.request.FixedPageRequest;
 import com.newcen.newcen.comment.dto.response.CommentResponseDTO;
-import com.newcen.newcen.commentFile.dto.response.CommentFileResponseDTO;
-import com.newcen.newcen.commentFile.repository.CommentFileRepository;
-import com.newcen.newcen.commentFile.repository.CommentFileRepositorySupport;
-import com.newcen.newcen.common.entity.*;
+import com.newcen.newcen.common.entity.CommentEntity;
+import com.newcen.newcen.common.entity.QCommentEntity;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.PageImpl;
@@ -22,11 +20,10 @@ public class CommentRepositorySupport  extends QuerydslRepositorySupport {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    private final CommentFileRepositorySupport commentFileRepositorySupport;
-    public CommentRepositorySupport(JPAQueryFactory jpaQueryFactory, CommentFileRepositorySupport commentFileRepositorySupport) {
+    public CommentRepositorySupport(JPAQueryFactory jpaQueryFactory) {
         super(CommentEntity.class);
         this.jpaQueryFactory = jpaQueryFactory;
-        this.commentFileRepositorySupport = commentFileRepositorySupport;
+
     }
     QCommentEntity qCommentEntity=  QCommentEntity.commentEntity;
     public List<CommentEntity> findAllByBoardId(Long boardId){
@@ -41,7 +38,6 @@ public class CommentRepositorySupport  extends QuerydslRepositorySupport {
         }else {
             return fetch;
         }
-
     }
     public PageImpl<CommentResponseDTO> getCommentListPage(Pageable pageable,Long boardId){
         JPQLQuery<CommentEntity> query = jpaQueryFactory
@@ -52,17 +48,10 @@ public class CommentRepositorySupport  extends QuerydslRepositorySupport {
         long totalCount = query.fetchCount();
         List<CommentEntity> results = getQuerydsl().applyPagination(pageable,query).fetch();
 
-
-//        List<CommentFileEntity> commentFileList = commentFileRepositorySupport.findCommentFileListByCommentId(commentId);
-//        List<CommentFileResponseDTO> responseDTO =commentFileList.stream()
-//                .map(c->new CommentFileResponseDTO(c))
-//                .collect(Collectors.toList());
-
         List<CommentResponseDTO> dtoList = results.stream()
                 .map(CommentResponseDTO::new)
                 .collect(Collectors.toList());
         Pageable pageRequest = new FixedPageRequest(pageable, totalCount);
-        // 2. NoticeDetailResponseDTO 를 NoticeListResponseDTO 로 변경
         return new PageImpl<>(dtoList, pageRequest, totalCount);
 
     }

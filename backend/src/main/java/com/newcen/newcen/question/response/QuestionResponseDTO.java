@@ -34,6 +34,8 @@ public class QuestionResponseDTO {
 
     private String userId;
 
+    private List<BoardFileEntity> boardFileEntityList;
+
     public QuestionResponseDTO(BoardEntity boardEntity){
         this.boardId = boardEntity.getBoardId();
         this.boardCommentIs= boardEntity.getBoardCommentIs();
@@ -44,6 +46,7 @@ public class QuestionResponseDTO {
         this.boardWriter=boardEntity.getUser().getUserName();
         this.boardType = boardEntity.getBoardType();
         this.userId = boardEntity.getUserId();
+        this.boardFileEntityList = boardEntity.getBoardFileEntityList();
     }
 
 

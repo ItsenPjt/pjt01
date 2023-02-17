@@ -40,7 +40,6 @@ public class MessageController {
         log.info("pageable : {}", pageable);
 
         if(mode.equals("received")) {
-//            MessageReceivedListResponseDTO messageList = messageService.receivedMessageList(userId);
             PageImpl<MessageReceivedResponseDTO> responseDTO = messageService.getReceivedMessagePageList(pageable,userId);
 
             log.info("Received Message List Return Success😄");
@@ -48,7 +47,6 @@ public class MessageController {
                     .ok()
                     .body(responseDTO);
         }else if(mode.equals("sent")) {
-//            MessageSentListResponseDTO messageList = messageService.sentMessageList(userId);
             PageImpl<MessageSentResponseDTO> responseDTO = messageService.getSentMessagePageList(pageable,userId);
 
             log.info("Received Message List Return Success😄");
@@ -108,17 +106,12 @@ public class MessageController {
         if(userId.equals("anonymousUser")) {
             throw new MessageCustomException(MessageExceptionEnum.UNAUTHORIZED_ACCESS);
         }
-        if (searchSentMessageCondition.getMessageContent() ==null && searchSentMessageCondition.getMessageTitle()==null && searchSentMessageCondition.getMessageReceiver()==null){
-            PageImpl<MessageSentResponseDTO> responseDTO = messageService.getSentMessagePageList(pageable,userId);
-            return ResponseEntity
-                    .ok()
-                    .body(responseDTO);
-        } else {
+
         PageImpl<MessageSentResponseDTO> sentList = messageService.getSentMessagePageListWithSearch(searchSentMessageCondition,pageable,userId);
         return ResponseEntity
                 .ok()
                 .body(sentList);
-        }
+
     }
 
 

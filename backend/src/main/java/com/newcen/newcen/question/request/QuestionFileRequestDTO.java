@@ -1,8 +1,6 @@
 package com.newcen.newcen.question.request;
 
-import com.newcen.newcen.common.entity.BoardEntity;
 import com.newcen.newcen.common.entity.BoardFileEntity;
-import com.newcen.newcen.common.utill.BaseResponseBody;
 import lombok.*;
 
 

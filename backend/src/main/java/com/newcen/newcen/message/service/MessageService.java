@@ -80,7 +80,6 @@ public class MessageService {
             PageImpl<MessageSentResponseDTO> result = messageRepositorySupport.getSentMessage(pageable,userId);
             return result;
         }
-
         PageImpl<MessageSentResponseDTO> result = messageRepositorySupport.getSentMessageWithSearch(searchSentMessageCondition,pageable,userId);
         return result;
     }
@@ -166,7 +165,7 @@ public class MessageService {
                 throw new MessageCustomException(MessageExceptionEnum.UNAUTHORIZED_ACCESS);
             });
 
-            if(receiverId.size()==0) {
+            if(receiverId.isEmpty()) {
                 throw new InvalidParameterException();
             }
 

@@ -3,13 +3,13 @@ import { useNavigate } from 'react-router-dom';
 
 import Button from 'react-bootstrap/Button';
 
-import { getUserRole } from '../common/util/login-util';
+import { getToken } from '../common/util/login-util';
 
 import './css/QuestionButton.css';
 
 // 문의사항 버튼들
 const QuestionButton = () => {
-    const USER_ROLE = getUserRole();        // 권한
+    const ACCESS_TOKEN = getToken();        // 토큰값
 
     const navigate = useNavigate();
     const onInsertPage = () => {
@@ -24,7 +24,11 @@ const QuestionButton = () => {
                 {/* <Button className='btn_indigo' id='question_button_date_asc'>날짜 순</Button>
                 <Button className='btn_indigo' id='question_button_like_asc'>좋아요 순</Button>
                 <Button className='btn_indigo' id='question_button_commente_asc'>댓글 순</Button> */}
-                <Button onClick={onInsertPage} className='btn_orange btn_size_100' id='question_button_insert'>글쓰기</Button>
+                
+                
+                { ACCESS_TOKEN !== null &&                 
+                    <Button onClick={onInsertPage} className='btn_orange btn_size_100' id='question_button_insert'>글쓰기</Button>
+                }
             </div>
         </div>      
     )

@@ -29,7 +29,6 @@ public class AwsController {
                 .contentType(contentType(fileName))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
                 .body(downloadInputStream.toByteArray());
-//        return awsS3Service.getObject(fileName);
     }
 
     private MediaType contentType(String filename) {

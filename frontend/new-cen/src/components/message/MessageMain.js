@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 
-import { useParams} from 'react-router-dom';
-
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
 
 import MessageButton from './MessageButton';
+import Pagination from '../common/Pagination';
 
 import { BASE_URL, MESSAGE } from '../common/config/host-config';
 import { getToken } from '../common/util/login-util';
@@ -26,6 +27,146 @@ const MessageMain = () => {
         'Authorization': 'Bearer ' + ACCESS_TOKEN
     }
 
+    // 검색 여부
+    const [isSearched, setIsSearched] = useState(false);
+
+    // Pagination
+    const [currentPage, setCurrentPage] = useState(0);
+    const [totalPage, setTotalPage] = useState(0);
+
+    const [isFirst, setIsFirst] = useState(true);
+    const [isLast, setIsLast] = useState(false);
+
+    const handleChangePage = (page) => {
+        
+        setCurrentPage(page);
+
+        if(isSearched) {
+
+            if (mode ==='received') {           // 받은 메세지 검색
+                if (document.getElementById('message_select_dropdown_button').innerText === '선택') {
+                    alert('검색 카테고리를 먼저 선택해주세요');
+                }
+                else if (receiverSearchData.messageTitle === '' && receiverSearchData.messageContent === '' && receiverSearchData.messageSender === '') {
+                    alert('검색어를 입력해주세요');
+                }
+                else {
+                    fetch(`${API_BASE_URL}/search/received?page=${page}`, {
+                        method: 'POST',
+                        headers: headerInfo,
+                        body: JSON.stringify(receiverSearchData)
+                    })
+                    .then(res => {
+                        if (res.status === 406) {
+                            alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
+                            return;
+                        } 
+                        else if (res.status === 500) {
+                            alert('서버가 불안정합니다');
+                            return;
+                        }
+                        return res.json();
+                    })
+                    .then((result) => {
+                        if (!!result) {
+                            setMessages(result.content);
+                            setTotalPage(result.totalPages);
+                            if (page===0) {
+                                setIsFirst(true);
+                            } else if(page>0) {
+                                setIsFirst(false);
+                            }
+                
+                            if (page===totalPage-1) {
+                                setIsLast(true);
+                            } else {
+                                setIsLast(false);
+                            }
+                        }
+                    });
+                }
+            } 
+            else if (mode === 'sent') {       // 보낸 메세지 검색
+                if (document.getElementById('message_select_dropdown_button').innerText === '선택') {
+                    alert('검색 카테고리를 먼저 선택해주세요');
+                }
+                else if (sentSearchData.messageTitle === '' && sentSearchData.messageContent === '' && sentSearchData.messageReceiver === '') {
+                    alert('검색어를 입력해주세요');
+                }
+                else {
+                    fetch(`${API_BASE_URL}/search/sent?page=${page}`, {
+                        method: 'POST',
+                        headers: headerInfo,
+                        body: JSON.stringify(sentSearchData)
+                    })
+                    .then(res => {
+                        if (res.status === 406) {
+                            alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
+                            return;
+                        } 
+                        else if (res.status === 500) {
+                            alert('서버가 불안정합니다');
+                            return;
+                        }
+                        return res.json();
+                    })
+                    .then((result) => {
+                        if (!!result) {
+                            setMessages(result.content);
+                            setTotalPage(result.totalPages);
+                            if (page===0) {
+                                setIsFirst(true);
+                            } else if(page>0) {
+                                setIsFirst(false);
+                            }
+                
+                            if (page===totalPage-1) {
+                                setIsLast(true);
+                            } else {
+                                setIsLast(false);
+                            }
+                        }
+                    });
+                } 
+            }
+
+        }else {
+            fetch(`${API_BASE_URL}?mode=${mode}&page=${page}&sort=`, {
+                method: 'GET',
+                headers: headerInfo
+            })
+            .then(res => {
+    
+                if(res.status === 500) {
+                    alert("서버가 불안정합니다");
+                    return;
+                }else if(res.status === 400) {
+                    alert("잘못된 요청 값 입니다");
+                    return;
+                }
+    
+                return res.json();
+            })
+            .then(res => {
+                setMessages(res.content);
+                setTotalPage(res.totalPages);
+                if (page===0) {
+                    setIsFirst(true);
+                } else if(page>0) {
+                    setIsFirst(false);
+                }
+    
+                if (page===totalPage-1) {
+                    setIsLast(true);
+                } else {
+                    setIsLast(false);
+                }
+            });
+        }
+
+        
+    }
+
     // 메세지 api 데이터 
     const [messages, setMessages] = useState([]);
 
@@ -36,51 +177,134 @@ const MessageMain = () => {
     const [mode, setMode] = useState('received'); // 초기값?
 
     const changeMode = (value) => {
+        let isChanged = false;
+        // let searched = isSearched;
+        let page = currentPage;
+        if(mode!==value) {
+            setMode(value);
+            setIsSearched(false);
+            isChanged = true;
+        }
 
-        setMode(value);
-        fetch(`${API_BASE_URL}?mode=${value}`, {
-            method: 'GET',
-            headers: headerInfo
-        })
-        .then(res => {
+        if(isChanged) {
+            page = 0;
+        }
 
-            if(res.status === 500) {
-                alert("서버가 불안정합니다");
-                return;
-            }else if(res.status === 400) {
-                alert("잘못된 요청 값 입니다");
-                return;
-            }
-
-            return res.json();
-        })
-        .then(res => {
-            setMessages(res.content);
+        if(isSearched) {
+            if (mode ==='received') {           // 받은 메세지 검색
             
-        })
-        .then(() => {
-            setSelectAll(true);
-            let i = 0;
-            const check_boxes = document.querySelectorAll(".message_select_checkbox");
-            while(i < check_boxes.length) {
-                check_boxes[i].checked = false;
-                i++;
+                fetch(`${API_BASE_URL}/search/received?page=${page}`, {
+                    method: 'POST',
+                    headers: headerInfo,
+                    body: JSON.stringify(receiverSearchData)
+                })
+                .then(res => {
+                    if (res.status === 406) {
+                        alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
+                        return;
+                    } 
+                    else if (res.status === 500) {
+                        alert('서버가 불안정합니다');
+                        return;
+                    }
+                    return res.json();
+                })
+                .then((res) => {
+                    if (!!res) {
+                        setMessages(res.content);
+                        setTotalPage(res.totalPages);
+                        if(currentPage===res.totalPages) {
+                            handleChangePage(res.totalPages-1);
+                        }
+                    }
+                });
+                
+            } 
+            else if (mode === 'sent') {       // 보낸 메세지 검색
+                
+                fetch(`${API_BASE_URL}/search/sent?page=${page}`, {
+                    method: 'POST',
+                    headers: headerInfo,
+                    body: JSON.stringify(sentSearchData)
+                })
+                .then(res => {
+                    if (res.status === 406) {
+                        alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
+                        return;
+                    } 
+                    else if (res.status === 500) {
+                        alert('서버가 불안정합니다');
+                        return;
+                    }
+                    return res.json();
+                })
+                .then((res) => {
+                    if (!!res) {
+                        setMessages(res.content);
+                        setTotalPage(res.totalPages);
+                        if(currentPage===res.totalPages) {
+                            handleChangePage(res.totalPages-1);
+                        }
+                    }
+                });
             }
-        })
+
+        }else {
+            fetch(`${API_BASE_URL}?mode=${value}&page=${page}`, {
+                method: 'GET',
+                headers: headerInfo
+            })
+            .then(res => {
+                if(res.status === 500) {
+                    alert("서버가 불안정합니다");
+                    return;
+                } else if(res.status === 400) {
+                    alert("잘못된 요청 값 입니다");
+                    return;
+                }
+                return res.json();
+            })
+            .then(res => {
+                console.log(res);
+                setMessages(res.content);
+                setTotalPage(res.totalPages);
+                if(currentPage===res.totalPages) {
+                    handleChangePage(res.totalPages-1);
+                }
+            })
+            .then(() => {
+                
+                if(isChanged) {
+                    setIsFirst(true);
+                    setIsLast(false);
+                    setSelectAll(true);
+                    setCurrentPage(0);
+
+                    let i = 0;
+                    const check_boxes = document.querySelectorAll(".message_select_checkbox");
+    
+                    while(i < check_boxes.length) {
+                        check_boxes[i].checked = false;
+                        i++;
+                    }
+                }
+            })
+
+        }
+       
     }
- 
 
     // 전체 선택 / 해제
     const handleSelectAll = () => {
         let i = 0;
         const check_boxes = document.querySelectorAll(".message_select_checkbox");
-        if(selectAll) {
+        if (selectAll) {
             while(i < check_boxes.length) {
                 check_boxes[i].checked = true;
                 i++;
             }
             setSelectAll(false);
-        }else {
+        } else {
             while(i < check_boxes.length) {
                 check_boxes[i].checked = false;
                 i++;
@@ -89,13 +313,11 @@ const MessageMain = () => {
         }
     }
 
-
     // 받은 메세지 모달
     const [receiveModal, setReceiveModal] = useState(false); 
 
     // 답장하기 모달
     const [replyModal, setReplyModal] = useState(false); 
-
 
     // 모달 닫기
     const handleClose = () => {
@@ -126,7 +348,6 @@ const MessageMain = () => {
     });
 
     const handleMessageDetail = (messageId) => {
-
         fetch(`${API_BASE_URL}/${messageId}?mode=${mode}`, {
             headers: headerInfo
         })
@@ -160,8 +381,6 @@ const MessageMain = () => {
             }
 
         })
-
-
     }
 
     // 답장하기 수신인 정보
@@ -169,7 +388,6 @@ const MessageMain = () => {
         userId: '',
         username: ''
     });
-
 
     // 답장하기 상세 모달
     const handleShowReplyModal = () => {
@@ -208,10 +426,10 @@ const MessageMain = () => {
         if(replyMessage.messageTitle.trim() === '') {
             alert('제목을 입력하세요');
             return;
-        }else if(replyMessage.messageContent.trim() === '') {
+        } else if(replyMessage.messageContent.trim() === '') {
             alert('내용을 입력하세요');
             return;
-        }else {
+        } else {
             fetch(`${API_BASE_URL}?receiverList=${replyInfo.userId}`, {
                 method: 'POST',
                 headers: headerInfo,
@@ -245,19 +463,18 @@ const MessageMain = () => {
     const handleDeleteMessage = () => {
 
         const deleteMessageList = [];
-
         const messageSelectCheckBox = document.querySelectorAll(".message_select_checkbox");
         
         messageSelectCheckBox.forEach((checkBox) => {
-            if(checkBox.checked) {
+            if (checkBox.checked) {
                 deleteMessageList.push(checkBox.value);
             }
         })
 
-        if(deleteMessageList.length === 0) {
+        if (deleteMessageList.length === 0) {
             alert("삭제 할 메세지를 선택해주세요");
             return;
-        }else {
+        } else {
             fetch(`${API_BASE_URL}?messageId=${deleteMessageList}`, {
                 method: 'DELETE',
                 headers: headerInfo,
@@ -279,13 +496,11 @@ const MessageMain = () => {
                 }
             })
         }
-
     }
-    
 
     // 렌더링 되자마자 할 일 => 메세지 api GET 목록 호출
     useEffect(() => {
-        fetch(`${API_BASE_URL}?mode=received&page=&size=&sort=`, {
+        fetch(`${API_BASE_URL}?mode=received&page=${currentPage}&sort=`, {
             method: 'GET',
             headers: headerInfo
         })
@@ -294,7 +509,7 @@ const MessageMain = () => {
             if(res.status === 500) {
                 alert("서버가 불안정합니다");
                 return;
-            }else if(res.status === 400) {
+            } else if(res.status === 400) {
                 alert("잘못된 요청 값 입니다");
                 return;
             }
@@ -303,8 +518,203 @@ const MessageMain = () => {
         })
         .then(res => {
             setMessages(res.content);
+            setTotalPage(res.totalPages);
         });
     }, [API_BASE_URL]);
+    
+    // 받은 메세지 검색
+    const [receiverSearchData, setReceiverSearchData] = useState({         
+        messageTitle: '',
+        messageContent: '',
+        messageSender: ''  
+    });
+    // 보낸 메세지 검색
+    const [sentSearchData, setSentSearchData] = useState({         
+        messageTitle: '',
+        messageContent: '',
+        messageReceiver: '' 
+    });
+
+    const [eventKey, setEventKey] = useState('');
+
+    // dropdown 선택
+    const onSelectItem = (ek) => {
+        setEventKey(ek);
+
+        // dropdown 버튼 text 변경
+        document.getElementById('message_select_dropdown_button').innerText = ek;
+
+        // dropdown 선택 시 input값 지우기
+        document.getElementById('message_select_dropdown_form').value = '';
+    }
+
+    const searchChangeHandler = e => {
+        if (mode ==='received') {           // 받는 메세지
+
+            setSentSearchData({
+                ...sentSearchData,
+                messageTitle: '',
+                messageContent: '',
+                messageReceiver: ''
+            })
+
+            if (eventKey === '보낸 사람') { 
+                setReceiverSearchData({
+                    ...receiverSearchData,
+                    messageTitle: '',
+                    messageContent: '',
+                    messageSender: e.target.value
+                })
+            } else if (eventKey === '제목') {
+                setReceiverSearchData({
+                    ...receiverSearchData,
+                    messageTitle: e.target.value,
+                    messageContent: '',
+                    messageSender: ''
+                })
+            } else if (eventKey === '내용') {
+                setReceiverSearchData({
+                    ...receiverSearchData,
+                    messageTitle: '',
+                    messageContent: e.target.value,
+                    messageSender: ''
+                })
+            } else if (eventKey === '제목+내용') {
+                setReceiverSearchData({
+                    ...receiverSearchData,
+                    messageTitle: e.target.value,
+                    messageContent: e.target.value,
+                    messageSender: ''
+                })
+            }  
+        } 
+        else if (mode === 'sent') {     // 보낸 메세지
+
+            setReceiverSearchData({
+                ...receiverSearchData,
+                messageTitle: '',
+                messageContent: '',
+                messageSender: ''
+            })
+
+            if (eventKey === '받는 사람') { 
+                setSentSearchData({
+                    ...sentSearchData,
+                    messageTitle: '',
+                    messageContent: '',
+                    messageReceiver: e.target.value
+                })
+            } else if (eventKey === '제목') {
+                setSentSearchData({
+                    ...sentSearchData,
+                    messageTitle: e.target.value,
+                    messageContent: '',
+                    messageReceiver: ''
+                })
+            } else if (eventKey === '내용') {
+                setSentSearchData({
+                    ...sentSearchData,
+                    messageTitle: '',
+                    messageContent: e.target.value,
+                    messageReceiver: ''
+                })
+            } else if (eventKey === '제목+내용') {
+                setSentSearchData({
+                    ...sentSearchData,
+                    messageTitle: e.target.value,
+                    messageContent: e.target.value,
+                    messageReceiver: ''
+                })
+            }  
+        }
+    }
+
+    // 검색 버튼 클릭 시 
+    const handleSearch = () => {
+
+
+        if (mode ==='received') {           // 받은 메세지 검색
+            if (document.getElementById('message_select_dropdown_button').innerText === '선택') {
+                alert('검색 카테고리를 먼저 선택해주세요');
+            }
+            else if (receiverSearchData.messageTitle === '' && receiverSearchData.messageContent === '' && receiverSearchData.messageSender === '') {
+                alert('검색어를 입력해주세요');
+            }
+            else {
+                setIsSearched(true);
+                setIsFirst(true);
+                setIsLast(false);
+                setCurrentPage(0);
+
+                fetch(`${API_BASE_URL}/search/received?page=0`, {
+                    method: 'POST',
+                    headers: headerInfo,
+                    body: JSON.stringify(receiverSearchData)
+                })
+                .then(res => {
+                    if (res.status === 406) {
+                        alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
+                        return;
+                    } 
+                    else if (res.status === 500) {
+                        alert('서버가 불안정합니다');
+                        return;
+                    }
+                    return res.json();
+                })
+                .then((result) => {
+                    if (!!result) {
+                        setMessages(result.content);
+                        setTotalPage(result.totalPages);
+                    }
+                });
+            }
+        } 
+        else if (mode === 'sent') {       // 보낸 메세지 검색
+            if (document.getElementById('message_select_dropdown_button').innerText === '선택') {
+                alert('검색 카테고리를 먼저 선택해주세요');
+            }
+            else if (sentSearchData.messageTitle === '' && sentSearchData.messageContent === '' && sentSearchData.messageReceiver === '') {
+                alert('검색어를 입력해주세요');
+            }
+            else {
+                setIsSearched(true);
+                setIsFirst(true);
+                setIsLast(false);
+                setCurrentPage(0);
+
+                fetch(`${API_BASE_URL}/search/sent?page=0`, {
+                    method: 'POST',
+                    headers: headerInfo,
+                    body: JSON.stringify(sentSearchData)
+                })
+                .then(res => {
+                    if (res.status === 406) {
+                        alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
+                        return;
+                    } 
+                    else if (res.status === 500) {
+                        alert('서버가 불안정합니다');
+                        return;
+                    }
+                    return res.json();
+                })
+                .then((result) => {
+                    if (!!result) {
+                        setMessages(result.content);
+                        setTotalPage(result.totalPages);
+                    }
+                });
+            } 
+        }
+    }
+
+    // 엔터 키 눌렀을 때 동작하는 핸들러
+    const onKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            handleSearch();
+        }
+    };
 
     return (
         <>
@@ -337,6 +747,36 @@ const MessageMain = () => {
                         </tbody>
                     </Table >   
                 </div>
+
+                 {/* 검색 */}
+                {mode === 'received' &&
+                    <div id='message_search_dropdown_div'>
+                        <DropdownButton drop = {'up'} title={'선택'} onSelect={(eventKey) => onSelectItem(eventKey)} id='message_select_dropdown_button' >
+                            <Dropdown.Item eventKey="보낸 사람" id='message_selct_dropdown_item'>보낸 사람</Dropdown.Item>
+                            <Dropdown.Item eventKey="제목" id='message_selct_dropdown_item'>제목</Dropdown.Item>
+                            <Dropdown.Item eventKey="내용" id='message_selct_dropdown_item'>내용</Dropdown.Item>
+                            <Dropdown.Item eventKey="제목+내용" id='message_selct_dropdown_item'>제목+내용</Dropdown.Item>
+                        </DropdownButton>
+                        <Form.Control onChange={searchChangeHandler} type='text' id='message_select_dropdown_form' placeholder='검색' onKeyDown={onKeyPress}/>
+                        <Button onClick={handleSearch} id='message_select_dropdown_search_button' className='btn_gray'>검색</Button>
+                    </div>
+                }
+                {mode === 'sent' && 
+                    <div id='message_search_dropdown_div'>
+                        <DropdownButton drop = {'up'} title={'선택'} onSelect={(eventKey) => onSelectItem(eventKey)} id='message_select_dropdown_button' >
+                            <Dropdown.Item eventKey="받는 사람" id='message_selct_dropdown_item'>받는 사람</Dropdown.Item>
+                            <Dropdown.Item eventKey="제목" id='message_selct_dropdown_item'>제목</Dropdown.Item>
+                            <Dropdown.Item eventKey="내용" id='message_selct_dropdown_item'>내용</Dropdown.Item>
+                            <Dropdown.Item eventKey="제목+내용" id='message_selct_dropdown_item'>제목+내용</Dropdown.Item>
+                        </DropdownButton>
+                        <Form.Control onChange={searchChangeHandler} type='text' id='message_select_dropdown_form' placeholder='검색' onKeyDown={onKeyPress}/>
+                        <Button onClick={handleSearch} id='message_select_dropdown_search_button' className='btn_gray'>검색</Button>
+                    </div>
+                }
+
+
+                {/* 페이지 */}
+                <Pagination currentPage={currentPage} handleChangePage={handleChangePage} isFirst={isFirst} isLast={isLast} totalPage={totalPage} />
             </div>
 
             {/* Modal */}

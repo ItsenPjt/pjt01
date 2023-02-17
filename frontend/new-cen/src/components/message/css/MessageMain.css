@@ -96,3 +96,29 @@
 #message_send_modal_footer {
     text-align: center;
 }
+
+/* 검색 */
+#message_search_dropdown_div {
+    margin-top: 15px;
+
+    display: flex;
+    justify-content: center;
+}
+
+#message_select_dropdown_button{
+    background-color: white;
+    color: black;
+    border: 1px solid #717172;
+}
+
+#message_selct_dropdown_item {
+    color: white;
+}
+
+#message_select_dropdown_form {
+    width: 32%;
+}
+
+#message_select_dropdown_search_button  {
+    width: 60px;
+}

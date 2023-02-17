@@ -21,9 +21,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-//@RequiredArgsConstructor
 @Service
-//@AllArgsConstructor
 @Slf4j
 public class CommentFileService {
 
@@ -68,7 +66,7 @@ public class CommentFileService {
                 .commentFilePath(filePath)
                 .userEmail(user.getUserEmail())
                 .build();
-        CommentFileEntity savedCommentFile = commentFileRepository.save(commentFile);
+        commentFileRepository.save(commentFile);
         return retrive(commentId);
 
     }
@@ -85,7 +83,7 @@ public class CommentFileService {
             throw new RuntimeException("본인이 작성한 댓글이 아닙니다.");
         }
         String commentFilePath =null;
-        if (dto.getCommentFilePath() == null || dto.getCommentFilePath() == ""){
+        if (dto.getCommentFilePath() == null || dto.getCommentFilePath().equals("")){
             commentFilePath = getCommentFile.get().getCommentFilePath();
         }
         else {
@@ -110,7 +108,7 @@ public class CommentFileService {
             throw new RuntimeException("본인이 작성한 댓글파일이 아닙니다.");
         }
 
-        if (getCommentFile.isPresent() && getCommentFile !=null){
+        if (getCommentFile.isPresent() && getCommentFile.get() !=null){
             amazonS3.deleteObject(new DeleteObjectRequest(bucket, getCommentFile.get().getCommentFileName()));
         }
         commentFileRepository.delete(getCommentFile.get());

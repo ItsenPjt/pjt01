@@ -3,6 +3,8 @@ package com.newcen.newcen.message.repository;
 import com.newcen.newcen.comment.dto.request.FixedPageRequest;
 import com.newcen.newcen.common.dto.request.SearchReceivedMessageCondition;
 import com.newcen.newcen.common.dto.request.SearchSentMessageCondition;
+import com.newcen.newcen.message.dto.response.MessageReceivedDetailResponseDTO;
+import com.newcen.newcen.message.dto.response.MessageReceivedListResponseDTO;
 import com.newcen.newcen.message.dto.response.MessageReceivedResponseDTO;
 import com.newcen.newcen.message.dto.response.MessageSentResponseDTO;
 import com.newcen.newcen.message.entity.MessageEntity;
@@ -72,9 +74,10 @@ public class MessageRepositorySupport extends QuerydslRepositorySupport {
         JPQLQuery<MessageEntity> query = jpaQueryFactory.select(qMessageEntity)
                 .from(qMessageEntity)
                 .where(qMessageEntity.receiver.userId.eq(userId),
-                        messageTitleEq(searchReceivedMessageCondition.getMessageTitle()),
-                        messageContentEq(searchReceivedMessageCondition.getMessageContent()),
-                        messageSenderEq(searchReceivedMessageCondition.getMessageSender())
+//                        messageTitleEq(searchReceivedMessageCondition.getMessageTitle()),
+//                        messageContentEq(searchReceivedMessageCondition.getMessageContent()),
+                        messageSenderEq(searchReceivedMessageCondition.getMessageSender()),
+                        ContentMessageTitleEq(searchReceivedMessageCondition.getMessageContent(),searchReceivedMessageCondition.getMessageTitle())
                         )
                 .orderBy(qMessageEntity.messageSenddate.desc());
 
@@ -88,16 +91,30 @@ public class MessageRepositorySupport extends QuerydslRepositorySupport {
 
         return new PageImpl<>(dtoList, pageRequest, totalCount);
     }
+    private BooleanExpression ContentMessageTitleEq(String messageContent,String messageTitle){
+
+        if(!messageTitle.isEmpty() && !messageContent.isEmpty()){
+            return qMessageEntity.messageContent.contains(messageContent).or(qMessageEntity.messageTitle.contains(messageTitle));
+        }
+        if(!messageTitle.isEmpty() && messageContent.isEmpty()){
+            return qMessageEntity.messageTitle.contains(messageTitle);
+        }
+        if(messageTitle.isEmpty() && !messageContent.isEmpty()){
+            return qMessageEntity.messageContent.contains(messageContent);
+        }
+        return null;
+    }
+
 
     private BooleanExpression messageTitleEq(String messageTitle){
-        if(messageTitle == null || messageTitle.isEmpty()){
+        if(messageTitle.isEmpty()){
             return null;
         }
         return qMessageEntity.messageTitle.contains(messageTitle);
     }
 
     private BooleanExpression messageContentEq(String messageContent){
-        if(messageContent == null || messageContent.isEmpty()){
+        if(messageContent.isEmpty()){
             return null;
         }
         return qMessageEntity.messageContent.contains(messageContent);
@@ -110,7 +127,7 @@ public class MessageRepositorySupport extends QuerydslRepositorySupport {
         return qMessageEntity.messageSender.contains(messageSender);
     }
     private BooleanExpression messageReceiverEq(String messageReceiver){
-        if(messageReceiver == null || messageReceiver.isEmpty()){
+        if(messageReceiver.isEmpty()){
             return null;
         }
         return qMessageEntity.messageReceiver.contains(messageReceiver);
@@ -120,10 +137,11 @@ public class MessageRepositorySupport extends QuerydslRepositorySupport {
     public PageImpl<MessageSentResponseDTO> getSentMessageWithSearch(SearchSentMessageCondition searchSentMessageCondition, Pageable pageable, String userId){
         JPQLQuery<MessageEntity> query = jpaQueryFactory.select(qMessageEntity)
                 .from(qMessageEntity)
-                .where(qMessageEntity.receiver.userId.eq(userId),
+                .where(qMessageEntity.sender.userId.eq(userId),
                         messageTitleEq(searchSentMessageCondition.getMessageTitle()),
-                        messageContentEq(searchSentMessageCondition.getMessageContent()),
-                        messageReceiverEq(searchSentMessageCondition.getMessageReceiver())
+                        ContentMessageTitleEq(searchSentMessageCondition.getMessageContent(),searchSentMessageCondition.getMessageTitle())
+//                        messageContentEq(searchSentMessageCondition.getMessageContent()),
+//                        messageReceiverEq(searchSentMessageCondition.getMessageReceiver())
                 )
                 .orderBy(qMessageEntity.messageSenddate.desc());
 

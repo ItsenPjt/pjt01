@@ -38,7 +38,7 @@ public class WebSecurityConfig {
                 .httpBasic().disable() // 기본 시큐리티 인증 해제, 토큰 인증 쓸꺼니까
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) //세션 인증 안함
                 .and()
-                .authorizeRequests().antMatchers( "/**","/").permitAll() //인증요청중에서 "/"경로랑, "/api/auth 경로는 모두 허용
+                .authorizeRequests().antMatchers( "/api/**","/").permitAll() //인증요청중에서 "/"경로랑, "/api/auth 경로는 모두 허용
                 .anyRequest().authenticated(); //그 외의 경로는 모두 인증을 거쳐야함.
 
 

@@ -182,9 +182,7 @@ public class NoticeApiController {
     ) {
 
         try {
-            multipartFile.forEach(f -> {
-                System.out.println("f.getOriginalFilename() = " + f.getOriginalFilename());
-            });
+
             List<String> uploaded = awsS3Service.uploadFile(multipartFile);
             for (int i=0;i<uploaded.size();i++){
                 questionService.createFile(multipartFile.get(i).getOriginalFilename(), userId,boardId,uploaded.get(i));
@@ -251,7 +249,6 @@ public class NoticeApiController {
 
         try {
             QuestionsOneResponseDTO deleted = questionService.deleteFile(userId, boardId,boardFileId);
-//            NoticeOneResponseDTO responseDTO = noticeService .deleteFile(boardId, boardFileId, userId);
             return ResponseEntity
                     .ok()
                     .body(deleted);
@@ -282,15 +279,8 @@ public class NoticeApiController {
                     .badRequest()
                     .body("해당 글이 없습니다.");
         }
-//        UserEntity getUser = userRepository.findByUserId(userId).get();
-//        if (getUser ==null){
-//            log.warn("해당 유저가 없습니다.");
-//            return ResponseEntity
-//                    .badRequest()
-//                    .body("해당 유저가 없습니다.");
-//        }
-        CommentListResponseDTO retrived = commentService.createComment(dto, userId, boardId);
 
+        CommentListResponseDTO retrived = commentService.createComment(dto, userId, boardId);
 
         return ResponseEntity.ok()
                 .body(retrived);

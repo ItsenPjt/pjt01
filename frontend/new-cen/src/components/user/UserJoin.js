@@ -14,7 +14,6 @@ const UserJoin = () => {
 
     // 엔터 키 눌렀을 때 동작하는 핸들러
     const onKeyPress = (e) => {
-        // console.log(e.key);
         if (e.key === 'Enter') {
             loginHandler();
         }
