@@ -122,10 +122,10 @@ public class QuestionService {
         UserEntity user = userRepository.findById(userId).get();
         List<BoardFileEntity> boardFileEntityList = boardFileRepository.findByBoardId(boardId);
         List<CommentEntity> commentList = commentRepositorySupport.findAllByBoardId(boardId);
-        if (boardFileEntityList.size() !=0 && boardFileEntityList !=null){
+        if (boardFileEntityList.size() !=0 && !boardFileEntityList.isEmpty()){
             boardFileEntityList.forEach(t-> amazonS3.deleteObject(new DeleteObjectRequest(bucket, t.getBoardFilePath())));
         }
-        if (commentList.size() !=0 && commentList !=null){
+        if (commentList.size() !=0 && !commentList.isEmpty()){
             commentList.forEach(t->t.getCommentFileList().forEach(yy->amazonS3.deleteObject(new DeleteObjectRequest(bucket, yy.getCommentFilePath()))));
         }
         if (!Objects.equals(boardGet.getUserId(), user.getUserId())){
