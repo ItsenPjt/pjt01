@@ -48,8 +48,6 @@ const FAQContent = () => {
         })
     }, [API_BASE_URL]);
 
-
-
     const [modal, setModal] = useState(false); 
 
     // 모달 닫기

@@ -9,7 +9,6 @@ const NoticeTemplate = () => {
     return (
         <div>
             <NoticeMain />
-
         </div>
     )
 }

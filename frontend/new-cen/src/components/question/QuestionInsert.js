@@ -114,8 +114,6 @@ const QuestionInsert = () => {
             })
             .then((res) => {
 
-                console.log(res);
-
                 // foemData
                 var formData = new FormData(); 
                 for (let i = 0; i < files.length; i++) {

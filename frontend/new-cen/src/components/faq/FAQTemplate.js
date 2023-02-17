@@ -5,10 +5,7 @@ import FAQMain from './FAQMain';
 const FAQTemplate = () => {
     return (
         <div>
-            <FAQMain />
-
-            {/* 검색 컴포넌트 필요 */}
-            
+            <FAQMain />           
         </div>
     )
 }

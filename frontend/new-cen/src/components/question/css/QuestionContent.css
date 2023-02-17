@@ -64,13 +64,13 @@
 
 /* 공지사항 파일 */
 #question_content_file_txt {
-    float: right;
+    /* float: right; */
 
     color: rgba(11, 61, 155, 0.527);
     border: 1px solid #aaa;
     
     border-radius: 10px;    
-    margin-top: 20px;
+    margin-top: 10px;
 
     padding: 5px;
 }
@@ -90,6 +90,8 @@
 
     border: 1px solid #aaa;
     border-radius: 10px;
+
+    overflow: auto;
 }
 
 /* Modal */

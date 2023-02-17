@@ -15,7 +15,6 @@ import { useNavigate } from "react-router-dom";
 
 import './css/FAQMain.css';
 
-
 // 자주 묻는 질문 메인
 const FAQMain = () => {
 
@@ -36,7 +35,6 @@ const FAQMain = () => {
         const path = `/faq/${boardId}`;
         navigate(path);
     }
-
 
      // Pagination 
      const [currentPage, setCurrentPage] = useState(0);
@@ -129,9 +127,6 @@ const FAQMain = () => {
  
      }
   
-
-
-
     // 렌더링 되자마자 할 일 => FAQ api GET 목록 호출
     useEffect(() => {
         fetch(API_BASE_URL)
@@ -148,7 +143,6 @@ const FAQMain = () => {
             setTotalPage(res.totalPages);
         });
     }, [API_BASE_URL]);
-
 
     // 검색 입력 데이터
     const [searchData, setSearchData] = useState({         
@@ -203,7 +197,6 @@ const FAQMain = () => {
 
     // 검색 버튼 클릭 시 
     const handleSearch = () => {
-
 
         if (document.getElementById('notice_select_dropdown_button').innerText === '선택') {
             alert('검색 카테고리를 먼저 선택해주세요');
