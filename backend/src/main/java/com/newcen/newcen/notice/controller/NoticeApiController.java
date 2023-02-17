@@ -200,37 +200,6 @@ public class NoticeApiController {
         }
     }
 
-    // 공지사항 파일 수정 (PATCH)
-//    @PatchMapping("/{board_id}/files/{board_file_id}")
-//    public ResponseEntity<?> updateFileNotice(
-//            @AuthenticationPrincipal String userId,
-//            @PathVariable("board_id") Long boardId,
-//            @PathVariable("board_file_id") String boardFileId,
-//            @Validated @RequestBody NoticeUpdateFileRequestDTO requestDTO,
-//            BindingResult result
-//    ) {
-//        if (result.hasErrors()) {
-//            return ResponseEntity.badRequest()
-//                    .body(result.getFieldError());
-//        }
-//
-//        log.info("/api/todos/{}/file/{} PUT request", boardId, boardFileId);
-//        log.info("modifying dto : {}", requestDTO);
-//
-//        try {
-//            NoticeOneResponseDTO responseDTO = noticeService.updateFile(boardId, boardFileId, requestDTO, userId);
-//            return ResponseEntity
-//                    .ok()
-//                    .body(responseDTO);
-//        } catch (Exception e) {
-//            return ResponseEntity
-//                    .internalServerError()
-//                    .body(NoticeListResponseDTO
-//                            .builder()
-//                            .error(e.getMessage()));
-//        }
-//    }
-
     // 공지사항 파일 삭제 (DELETE)
     @DeleteMapping("/{board_id}/files/{board_file_id}")
     public ResponseEntity<?> deleteFileNotice(
@@ -332,12 +301,10 @@ public class NoticeApiController {
             ){
 
         try {
-//            CommentFileListResponseDTO commentFileList = commentFileService.createCommentFile(dto,userId,commentId);
             List<String> uploaded = awsS3Service.uploadFile(multipartFile);
             for (int i=0;i<uploaded.size();i++){
                 commentFileService.createCommentFile(multipartFile.get(i).getOriginalFilename(),uploaded.get(i),userId,commentId);
             }
-
             return ResponseEntity
                     .ok()
                     .body(uploaded);
