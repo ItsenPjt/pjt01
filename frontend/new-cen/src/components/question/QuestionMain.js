@@ -86,7 +86,6 @@ const QuestionMain = () => {
             });
 
         }else {
-
             fetch(`${API_BASE_URL}?page=${page}`)
             .then(res => {
                 if (res.status === 403) {
@@ -120,7 +119,6 @@ const QuestionMain = () => {
                 }
             });
         }
-
     }
  
 
@@ -208,8 +206,6 @@ const QuestionMain = () => {
 
     // 검색 버튼 클릭 시 
     const handleSearch = () => {
-
-
         if (document.getElementById('notice_select_dropdown_button').innerText === '선택') {
             alert('검색 카테고리를 먼저 선택해주세요');
         }
@@ -217,7 +213,6 @@ const QuestionMain = () => {
             alert('검색어를 입력해주세요');
         }
         else {
-
             setIsSearched(true);
             setIsFirst(true);
             setIsLast(false);
@@ -301,7 +296,6 @@ const QuestionMain = () => {
                 <Button onClick={handleSearch} id='notice_select_dropdown_search_button' className='btn_gray'>검색</Button>
             </div>
             <Pagination currentPage={currentPage} handleChangePage={handleChangePage} isFirst={isFirst} isLast={isLast} totalPage={totalPage} />
-
         </>
     )
 }

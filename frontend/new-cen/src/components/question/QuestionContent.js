@@ -175,6 +175,15 @@ const QuestionContent = () => {
                     </>
                 </div>
 
+                {/* dangerouslySetInnerHTML : String형태를 html로 */}
+                <div>
+                    <Form id='question_contents'
+                        dangerouslySetInnerHTML={{
+                            __html: questionContents.boardContent
+                        }} 
+                    />
+                </div>
+
                 {/* 문의사항 파일 */}
                 {questionFiles.length !== 0 &&
                     <div id='question_content_file_txt'>
@@ -190,15 +199,6 @@ const QuestionContent = () => {
                         }   
                     </div>
                 }
-
-                {/* dangerouslySetInnerHTML : String형태를 html로 */}
-                <div>
-                    <Form id='question_contents'
-                        dangerouslySetInnerHTML={{
-                            __html: questionContents.boardContent
-                        }} 
-                    />
-                </div>
 
                 {/* 댓글 */}
                 <QuestionComment questionId = {questionId}/>

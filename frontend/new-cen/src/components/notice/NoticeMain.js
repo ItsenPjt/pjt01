@@ -130,8 +130,6 @@ const NoticeMain = () => {
                 }
             });
         }
-
-
     }
 
     // 렌더링 되자마자 할 일 => 공지사항 api GET 목록 호출
@@ -223,7 +221,6 @@ const NoticeMain = () => {
     // 검색 버튼 클릭 시 
     const handleSearch = () => {
 
-
         if (document.getElementById('notice_select_dropdown_button').innerText === '선택') {
             alert('검색 카테고리를 먼저 선택해주세요');
         }
@@ -231,7 +228,6 @@ const NoticeMain = () => {
             alert('검색어를 입력해주세요');
         }
         else {
-            
             setIsSearched(true);
             setIsFirst(true);
             setIsLast(false);
@@ -315,7 +311,6 @@ const NoticeMain = () => {
                 <Button onClick={handleSearch} id='notice_select_dropdown_search_button' className='btn_gray'>검색</Button>
             </div>
             <Pagination currentPage={currentPage} handleChangePage={handleChangePage} isFirst={isFirst} isLast={isLast} totalPage={totalPage} />
-
         </>
     )
 }

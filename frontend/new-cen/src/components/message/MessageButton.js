@@ -22,7 +22,6 @@ const MessageButton = ({changeMode, handleDeleteMessage}) => {
 
     const [modal, setModal] = useState(false); 
 
-
     // 모달 닫기
     const handleClose = () => {
         setModal(false);
@@ -54,7 +53,6 @@ const MessageButton = ({changeMode, handleDeleteMessage}) => {
             }
         })
     }
-
 
     // 선택된 수신인 목록
     const receiverListContainer = document.querySelector('#message_receiver_list');
@@ -194,8 +192,6 @@ const MessageButton = ({changeMode, handleDeleteMessage}) => {
             })
         }
     }
-
-   
 
     return (
         <>

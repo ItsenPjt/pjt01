@@ -27,7 +27,6 @@ const AfterLoginRouter = () => {
   return (
 
     // 로그인 후
-
     <>
         <Header />
         <Routes>
@@ -52,11 +51,9 @@ const AfterLoginRouter = () => {
             <Route path="/faq/:faqId" element={<FAQContent />}/>
             <Route path="/faq/update/:faqId" element={<FAQUpdate />}/>
 
-            {/* <Route path="/admin" element={<AdminTemplate />} /> */}
             <Route path="/userlist" element={<AdminUserList />} />
             <Route path="/validlist" element={<AdminValidList />} />
             
-
             <Route path="/message" element={<MessageTemplate />} />
         </Routes>
     </>

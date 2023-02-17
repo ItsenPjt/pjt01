@@ -195,6 +195,15 @@ const NoticeContent = () => {
                     </>                    
                 </div>
 
+                {/* dangerouslySetInnerHTML : String형태를 html로 */}
+                <div>
+                    <Form id='notice_contents'
+                        dangerouslySetInnerHTML={{
+                            __html: noticeContents.boardContent
+                        }} 
+                    />
+                </div>
+
                 {/* 공지사항 파일 */}
                 {noticeFiles.length !== 0 &&
                     <div id='notice_content_file_txt'>
@@ -210,15 +219,6 @@ const NoticeContent = () => {
                         }   
                     </div>
                 }
-
-                {/* dangerouslySetInnerHTML : String형태를 html로 */}
-                <div>
-                    <Form id='notice_contents'
-                        dangerouslySetInnerHTML={{
-                            __html: noticeContents.boardContent
-                        }} 
-                    />
-                </div>
 
                 {/* 댓글 */}
                 { noticeContents.boardCommentIs === 'ON'

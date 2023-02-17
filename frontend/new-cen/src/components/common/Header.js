@@ -41,12 +41,6 @@ const Header = () => {
 
     // 로그아웃
     const logoutHandler = () => {
-        // localStorage.removeItem('ACCESS_TOKEN');
-        // localStorage.removeItem('LOGIN_USERID');
-        // localStorage.removeItem('LOGIN_USERNAME');
-        // localStorage.removeItem('LOGIN_USEREMAIL');
-        // localStorage.removeItem('LOGIN_USERROLE');
-
         sessionStorage.removeItem('ACCESS_TOKEN');
         sessionStorage.removeItem('LOGIN_USERID');
         sessionStorage.removeItem('LOGIN_USERNAME');
@@ -75,8 +69,6 @@ const Header = () => {
     }
 
     const noHeaderPathList = ['/join', '/signup', '/findinfo', '/signset'];
-
-    // console.log(noHeaderPathList.includes(window.location.pathname));
 
     return (
         noHeaderPathList.includes(window.location.pathname)
