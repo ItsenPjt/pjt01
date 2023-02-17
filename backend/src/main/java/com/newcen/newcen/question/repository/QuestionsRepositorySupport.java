@@ -68,8 +68,9 @@ public class QuestionsRepositorySupport extends QuerydslRepositorySupport {
                 .select(qBoardEntity)
                 .from(qBoardEntity)
                 .where(qBoardEntity.boardType.eq(BoardType.QUESTION)
-                        ,boardTitleEq(searchCondition.getBoardTitle())
-                        ,boardContentEq(searchCondition.getBoardContent())
+//                        ,boardTitleEq(searchCondition.getBoardTitle())
+//                        ,boardContentEq(searchCondition.getBoardContent())
+                        ,ContentMessageTitleEq(searchCondition.getBoardContent(),searchCondition.getBoardTitle())
                         ,boardWriterEq(searchCondition.getBoardWriter()))
                 .orderBy(qBoardEntity.createDate.desc());
         long totalCount = query.fetchCount();
@@ -83,7 +84,19 @@ public class QuestionsRepositorySupport extends QuerydslRepositorySupport {
         return new PageImpl<>(dtoList, pageRequest, totalCount);
 
     }
+    private BooleanExpression ContentMessageTitleEq(String boardContent,String boardTitle){
 
+        if(!boardContent.isEmpty() && !boardTitle.isEmpty()){
+            return qBoardEntity.boardTitle.contains(boardTitle).or(qBoardEntity.boardContent.contains(boardContent));
+        }
+        if(!boardContent.isEmpty() && boardTitle.isEmpty()){
+            return qBoardEntity.boardContent.contains(boardContent);
+        }
+        if(boardContent.isEmpty() && !boardTitle.isEmpty()){
+            return qBoardEntity.boardTitle.contains(boardTitle);
+        }
+        return null;
+    }
     private BooleanExpression boardTitleEq(String boardTitle){
         if(boardTitle == null || boardTitle.isEmpty()){
             return null;
