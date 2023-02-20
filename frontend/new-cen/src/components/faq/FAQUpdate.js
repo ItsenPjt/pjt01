@@ -27,7 +27,11 @@ const FAQUpdate = () => {
 
 
     // 자주 묻는 질문 상세 
-    const [faqContent, setFaqContent] = useState({});
+    const [faqContent, setFaqContent] = useState({
+        boardTitle: '',          // FAQ 제목
+        boardCommentIs: 'OFF',      // FAQ 댓글 여부 - FAQ 댓글 항상 OFF
+        boardContent: '',        // FAQ 내용
+    });
 
     // 자주 묻는 질문 제목 
     const handleEditTitle = (e) => {

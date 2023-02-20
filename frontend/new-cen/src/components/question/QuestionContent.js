@@ -163,7 +163,10 @@ const QuestionContent = () => {
                         {USER_ID === questionContents.userId || USER_ROLE === 'ADMIN'
                         ? 
                             <div id='question_content_body_div'>
-                                <Button onClick={onUpdatePage} className='btn_gray btn_size_100'>수정</Button>
+                                {/* 게시물을 등록한 사람인 경우에만 '수정' 버튼이 보이도록 */}
+                                { USER_ID === questionContents.userId && 
+                                    <Button onClick={onUpdatePage} className='btn_gray btn_size_100'>수정</Button>
+                                }
                                 <Button onClick={handleShowDeleteModal} className='btn_orange btn_size_100' id='question_content_delete_btn'>삭제</Button>
                                 <Button onClick={onQuestionPage} className='btn_indigo btn_size_100' id='question_content_list'>목록</Button>
                             </div>
