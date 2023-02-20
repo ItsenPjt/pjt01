@@ -282,11 +282,21 @@
 | <img src="https://user-images.githubusercontent.com/82326116/219449128-ba9b7a7d-8aaa-4883-abe2-e15737474a10.png" alt="KakaoTalk_20230217_025240499" style="zoom: 25%;" width=400 /> | <img src="https://user-images.githubusercontent.com/82326116/219447782-ee46240d-b9d1-4984-8b7e-f38fcf9d3538.jpg" alt="KakaoTalk_20230217_025240499" style="zoom: 25%;" width=400 /> | <img src="https://user-images.githubusercontent.com/82326116/219448503-181eeaca-7611-46b0-b472-6a81911cc722.png" alt="KakaoTalk_20230217_025240499" style="zoom: 25%;" width=400 /> | <img src="https://user-images.githubusercontent.com/82326116/219448121-5cccb578-260e-4aa5-9c93-d9dc487db97e.png" alt="KakaoTalk_20230217_025240499" style="zoom: 25%;" width=400 /> |
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | 이진행<br />(팀장, Back-end)                                 | 이진혁<br />(Back-end & Front-end)                           | 박승연<br />(Back-end & Front-end)                           | 허진영<br />(Back-end & Front-end)                           |
+<<<<<<< HEAD
 | 이름   | 역할                       | 개발 내용                                                    |  
 | 이진행 | 팀장, Back-end             | - JPA 기반 Entity 설계<br />- ERD 설계<br />- 스프링 S3 연동하여 파일 저장 및 다운로드<br />- 검색 기능(제목, 제목+내용, 글쓴이) 개발<br />- 페이지 제네이션<br />- QueryDsl을 활용하여 동적쿼리작성<br />- 문의사항, 공지사항, 메세지 목록 조회, 검색<br /> |
 | 이진혁 | Back-end & Front-end       |                                                              |
 | 박승연 | Back-end & Front-end       |                                                              |
 | 허진영 | 팀원, Back-end & Front-end | - JPA 기반 Entity 설계<br />- ERD 설계<br />- 회원가입 / 회원정보 수정 /회원탈퇴 API 개발<br />- 로그인 / 로그아웃 API 개발<br />- QueryDsl을 활용하여 동적쿼리작성<br />- React를 활용한 View 개발 및 npm build<br />- AWS를 활용한 서버 셋팅 및 운영관리 (IAM, EC2, RDS, S3)<br />- 도메인 관리 및 운영 (DNS NameServer) |
+=======
+
+| 이름   | 역할                 | 개발 내용                                                    |
+| ------ | -------------------- | ------------------------------------------------------------ |
+| 이진행 | 팀장, Back-end       | - JPA 기반 Entity 설계<br />- ERD 설계<br />- 스프링 S3 연동하여 파일 저장 및 다운로드<br />- 검색 기능(제목, 제목+내용, 글쓴이) 개발<br />- 페이지 제네이션<br />- QueryDsl을 활용하여 동적쿼리작성<br />- 문의사항, 공지사항, 메세지, FAQ 페이지 목록조회<br />- 문의사항, 공지사항, 메세지 제목,내용,제목+내용 검색 기능<br />- 게시물 댓글 및 댓글 파일첨부 기능<br /> |
+| 이진혁 | Back-end & Front-end |                                                              |
+| 박승연 | Back-end & Front-end |                                                              |
+| 허진영 | Back-end & Front-end |                                                              |
+>>>>>>> 839a4c1 (feat : readme.md)
 
 
 
@@ -296,10 +306,10 @@
 
 ## :memo: 회고
 
-| 이름   | 내용 |
-| ------ | ---- |
-| 이진행 |      |
-| 이진혁 |      |
-| 박승연 |      |
-| 허진영 |      |
+| 이름   | 내용                                                         |
+| ------ | ------------------------------------------------------------ |
+| 이진행 | jpa를 잘 알고 쓰지 않았다는 것을 깨닫았습니다. 특히 영속성 문제에서 애를 먹었습니다. 어떨때, fetch 타입을 Eger 또는 Lazy로 써야하는지 알게되었습니다. 검색기능을 개발할 때, 동적쿼리를 이용하는 것이 편하다는 것을 알게되었습니다. |
+| 이진혁 |                                                              |
+| 박승연 |                                                              |
+| 허진영 |                                                              |
 
