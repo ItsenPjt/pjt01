@@ -147,7 +147,7 @@
 
 
 
-### 로그인 및 탈퇴
+#### 로그인 및 탈퇴
 
 ![NewCen - Chrome 2023-02-21 21-59-01](https://user-images.githubusercontent.com/82326116/220352579-d79cda8e-549b-4d0a-9faf-6f991fb53c22.gif)
 
