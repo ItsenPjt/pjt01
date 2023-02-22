@@ -1,9 +1,13 @@
 package com.newcen.newcen.question.service;
 
-import com.newcen.newcen.common.config.security.TokenProvider;
-import com.newcen.newcen.common.entity.BoardEntity;
-import com.newcen.newcen.common.entity.BoardFileEntity;
-import com.newcen.newcen.common.entity.UserEntity;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
+import com.newcen.newcen.comment.repository.CommentRepository;
+import com.newcen.newcen.comment.repository.CommentRepositorySupport;
+import com.newcen.newcen.commentFile.repository.CommentFileRepository;
+import com.newcen.newcen.common.dto.request.SearchCondition;
+import com.newcen.newcen.common.entity.*;
+import com.newcen.newcen.common.repository.BoardFileRepository;
 import com.newcen.newcen.question.repository.QuestionsFileRepository;
 import com.newcen.newcen.question.repository.QuestionsRepository;
 import com.newcen.newcen.question.repository.QuestionsRepositorySupport;
@@ -15,6 +19,9 @@ import com.newcen.newcen.question.response.QuestionsOneResponseDTO;
 import com.newcen.newcen.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,17 +33,29 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 public class QuestionService {
+    private final CommentRepository commentRepository;
+
+    private final CommentRepositorySupport commentRepositorySupport;
+
+    private final CommentFileRepository commentFileRepository;
+
     private final UserRepository userRepository;
     private final QuestionsRepository questionsRepository;
 
     private final QuestionsFileRepository questionsFileRepository;
-    private final TokenProvider tokenProvider;
+    private final BoardFileRepository boardFileRepository;
 
     private final QuestionsRepositorySupport questionsRepositorySupport;
 
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
+
+    private final AmazonS3 amazonS3;
+
+
     //문의사항 목록조회
     public QuestionListResponseDTO retrieve(){
-        List<BoardEntity> entityList = questionsRepositorySupport.getQueestionList();
+        List<BoardEntity> entityList = questionsRepositorySupport.getQuestionList();
         List<QuestionResponseDTO> responseDTO = entityList.stream()
                 .map(QuestionResponseDTO::new)
                 .collect(Collectors.toList());
@@ -44,6 +63,17 @@ public class QuestionService {
                 .data(responseDTO)
                 .build();
     }
+    //문의사항 목록조회
+    public PageImpl<QuestionResponseDTO> getPageList(Pageable pageable){
+        PageImpl<QuestionResponseDTO> result = questionsRepositorySupport.getQuestionListPage(pageable);
+        return result;
+    }
+    //문의사항 검색 및 페이지 제네이션
+    public PageImpl<QuestionResponseDTO> getPageListWithSearch(SearchCondition searchCondition, Pageable pageable){
+        PageImpl<QuestionResponseDTO> result = questionsRepositorySupport.getQuestionListPageWithSearch(searchCondition, pageable);
+        return result;
+    }
+
     //문의사항 상세조회
     public QuestionsOneResponseDTO questionDetail(Long boardId){
         BoardEntity boardGet = questionsRepository.getById(boardId);
@@ -71,12 +101,12 @@ public class QuestionService {
         BoardEntity boardGet = questionsRepositorySupport.findBoardByUserIdAndBoardId(userId,boardId);
         String content =null;
         String title = null;
-        if (dto.getBoardContent()==null || dto.getBoardContent()==""){
+        if (dto.getBoardContent().isEmpty()|| dto.getBoardContent().equals("")){
             content = boardGet.getBoardContent();
         }else {
             content = dto.getBoardContent();
         }
-        if (dto.getBoardTitle()==null || dto.getBoardTitle()==""){
+        if (dto.getBoardTitle().isEmpty()|| dto.getBoardTitle().equals("")){
             title = boardGet.getBoardContent();
         }else {
             title = dto.getBoardTitle();
@@ -87,19 +117,48 @@ public class QuestionService {
         return new QuestionResponseDTO(savedBoard);
     }
 
-    //문의사항 삭제
+    //문의사항 삭제, 삭제시 파일 삭제 추가
     public boolean deleteQuestion(String userId, Long boardId){
-        BoardEntity boardGet = questionsRepositorySupport.findBoardByUserIdAndBoardId(userId,boardId);
+
         UserEntity user = userRepository.findById(userId).get();
+        if (user.getUserRole() == UserRole.ADMIN){
+            Optional<BoardEntity> boardGetByAdmin = questionsRepository.findById(boardId);
+            if(boardGetByAdmin.isPresent()){
+                List<BoardFileEntity> boardFileEntityList = boardFileRepository.findByBoardId(boardId);
+                List<CommentEntity> commentList = commentRepositorySupport.findAllByBoardId(boardId);
+                if (boardFileEntityList.size() !=0 && !boardFileEntityList.isEmpty()){
+                    boardFileEntityList.forEach(t-> amazonS3.deleteObject(new DeleteObjectRequest(bucket, t.getBoardFilePath())));
+                }
+                if (commentList.size() !=0 && !commentList.isEmpty()){
+                    commentList.forEach(t->t.getCommentFileList().forEach(yy->amazonS3.deleteObject(new DeleteObjectRequest(bucket, yy.getCommentFilePath()))));
+                }
+
+                questionsRepository.delete(boardGetByAdmin.get());
+                return true;
+            }else
+                return false;
+        }
+        BoardEntity boardGet = questionsRepositorySupport.findBoardByUserIdAndBoardId(userId,boardId);
+
         if (!Objects.equals(boardGet.getUserId(), user.getUserId())){
             throw new RuntimeException("본인이 작성한 글이 아닙니다.");
         }
+
+        List<BoardFileEntity> boardFileEntityList = boardFileRepository.findByBoardId(boardId);
+        List<CommentEntity> commentList = commentRepositorySupport.findAllByBoardId(boardId);
+        if (boardFileEntityList.size() !=0 && !boardFileEntityList.isEmpty()){
+            boardFileEntityList.forEach(t-> amazonS3.deleteObject(new DeleteObjectRequest(bucket, t.getBoardFilePath())));
+        }
+        if (commentList.size() !=0 && !commentList.isEmpty()){
+            commentList.forEach(t->t.getCommentFileList().forEach(yy->amazonS3.deleteObject(new DeleteObjectRequest(bucket, yy.getCommentFilePath()))));
+        }
+
         questionsRepository.delete(boardGet);
         return true;
     }
 
     // 게시물 파일 등록
-    public QuestionsOneResponseDTO createFile(String userId, Long boardId, String boardFilePath){
+    public QuestionsOneResponseDTO createFile(String filename ,String userId, Long boardId, String boardFilePath){
         UserEntity user = null;
         user = userRepository.findById(userId).get();
         BoardEntity board = questionsRepositorySupport.findBoardByUserIdAndBoardId(userId,boardId);
@@ -113,14 +172,16 @@ public class QuestionService {
         BoardFileEntity boardFileEntity = BoardFileEntity.builder()
                 .boardFilePath(boardFilePath)
                 .boardId(boardId)
+                .boardFileName(filename)
                 .build();
         BoardFileEntity savedFileEntity = questionsFileRepository.save(boardFileEntity);
+
         board.getBoardFileEntityList().add(savedFileEntity);
         BoardEntity savedBoard = questionsRepository.save(board);
         return new QuestionsOneResponseDTO(savedBoard);
     }
     //게시물 파일 수정
-    public QuestionResponseDTO updateFile(String userId, Long boardId, String boardFilePath, String boardFileId){
+    public QuestionsOneResponseDTO updateFile(String userId, Long boardId, String boardFilePath, String boardFileId){
         UserEntity user = null;
         BoardEntity board = questionsRepositorySupport.findBoardByUserIdAndBoardId(userId,boardId);
         user = userRepository.findById(userId).get();
@@ -133,23 +194,23 @@ public class QuestionService {
         questionsFileRepository.save(boardFileGetById);
 
         BoardEntity savedBoard = questionsRepository.save(board);
-        return new QuestionResponseDTO(savedBoard);
+        return new QuestionsOneResponseDTO(savedBoard);
     }
-    //게시물 파일 삭제
-    public QuestionResponseDTO deleteFile(String userId, Long boardId, String boardFileId){
+    //문의사항, 공지사항 파일 삭제
+    public QuestionsOneResponseDTO deleteFile(String userId, Long boardId, String boardFileId){
         BoardEntity board = questionsRepositorySupport.findBoardByUserIdAndBoardId(userId,boardId);
-//        Optional<BoardEntity> board = questionsRepository.findById(boardId);
         UserEntity user = userRepository.findById(userId).get();
+        BoardFileEntity boardFile = questionsFileRepository.findById(boardFileId).get();
         if (!Objects.equals(board.getUserId(), user.getUserId())){
             throw new RuntimeException("본인이 작성한 글이 아닙니다.");
         }
         try {
-            System.out.println("====================삭제시작");
-            questionsFileRepository.deleteById(boardFileId);
-            System.out.println("====================삭제끝");
+            questionsFileRepository.selfDeleteById(boardFileId);
+            amazonS3.deleteObject(new DeleteObjectRequest(bucket, boardFile.getBoardFilePath()));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        List<BoardFileEntity> boardFileEntityList = boardFileRepository.findByBoardId(boardId);
         BoardEntity res = BoardEntity.builder()
                 .boardTitle(board.getBoardTitle())
                 .boardContent(board.getBoardContent())
@@ -157,14 +218,13 @@ public class QuestionService {
                 .boardWriter(board.getBoardWriter())
                 .boardCommentIs(board.getBoardCommentIs())
                 .boardId(board.getBoardId())
+                .boardFileEntityList(boardFileEntityList)
                 .boardTitle(board.getBoardTitle())
                 .boardUpdateDate(board.getBoardUpdateDate())
                 .userId(userId)
                 .user(user)
                 .build();
-
-        System.out.println(res.getUser());
-        return new QuestionResponseDTO(res);
+        return new QuestionsOneResponseDTO(res);
     }
 
 

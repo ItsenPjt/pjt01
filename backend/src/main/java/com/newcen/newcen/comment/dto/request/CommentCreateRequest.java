@@ -5,8 +5,6 @@ import com.newcen.newcen.common.entity.CommentEntity;
 import com.newcen.newcen.common.entity.UserEntity;
 import lombok.*;
 
-import javax.validation.constraints.NotBlank;
-
 @Getter
 @Setter
 @ToString
@@ -24,6 +22,7 @@ public class CommentCreateRequest {
                 .userId(user.getUserId())
                 .commentContent(this.commentContent)
                 .commentWriter(user.getUserName())
+                .userEmail(user.getUserEmail())
                 .build();
     }
 }

@@ -17,10 +17,13 @@ public class CommentFileResponseDTO {
     private String commentFileId;
     private String commentFilePath;
 
+    private String userEmail;
+
     public CommentFileResponseDTO(CommentFileEntity commentFileEntity){
         this.commentFileId = commentFileEntity.getCommentFileId();
         this.commentId = commentFileEntity.getCommentId();
         this.commentFilePath = commentFileEntity.getCommentFilePath();
+        this.userEmail = commentFileEntity.getUserEmail();
     }
 
 

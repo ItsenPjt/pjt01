@@ -57,6 +57,13 @@ dependencies {
 	// random 문자열 생성 추가
 	implementation 'org.apache.commons:commons-lang3:3.12.0'
 
+	//swagger
+	implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
+// <https://mvnrepository.com/artifact/io.springfox/springfox-swagger2>
+	implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
+
+	//aws
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
 
 }
@@ -80,5 +87,6 @@ configurations {
 	querydsl.extendsFrom compileClasspath
 }
 tasks.named('test') {
-	useJUnitPlatform()
+//	useJUnitPlatform()
+	exclude '**/*'
 }

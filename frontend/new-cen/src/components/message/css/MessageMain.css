@@ -2,7 +2,7 @@
     width: 60%;
 
     /* 박스 x축 중앙 정렬 : margin 좌우값을 auto로 설정*/
-    margin: 70px auto;  
+    margin: 30px auto;  
 }
 
 /* button className-- */
@@ -22,7 +22,7 @@
 #message_table_main {
     border-radius: 10px;
 
-    height: 600px;
+    height: 670px;
 
     /* 음영처리 */ 
     /* x축, y축, 블러크기, 색상*/
@@ -95,4 +95,30 @@
 
 #message_send_modal_footer {
     text-align: center;
+}
+
+/* 검색 */
+#message_search_dropdown_div {
+    margin-top: 15px;
+
+    display: flex;
+    justify-content: center;
+}
+
+#message_select_dropdown_button{
+    background-color: white;
+    color: black;
+    border: 1px solid #717172;
+}
+
+#message_selct_dropdown_item {
+    color: white;
+}
+
+#message_select_dropdown_form {
+    width: 32%;
+}
+
+#message_select_dropdown_search_button  {
+    width: 60px;
 }

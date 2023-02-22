@@ -21,8 +21,6 @@ public class AnonymousReviseResponseDTO {
     @JsonFormat(pattern = "yyyy년 MM월 dd일")
     private LocalDate userRegdate;
 
-    private String token;   // 인증 토큰
-
     private String message; // 응답 메세지
 
 
@@ -31,7 +29,7 @@ public class AnonymousReviseResponseDTO {
         this.userEmail = entity.getUserEmail();
         this.userName = entity.getUserName();
         this.userRegdate = entity.getUserRegdate();
-        this.token = getToken();
 
     }
+
 }

@@ -26,8 +26,9 @@ class ValidUserRepositoryTest {
 
         // given
         ValidUserEntity validUser = ValidUserEntity.builder()
-                .validUserEmail("postman@naver.com")
+                .validUserEmail("admin@naver.com")
                 .validCode("XY2baJQ")
+                .validActive(1)
                 .build();
 
         // .build() 대신 Setter() 사용 방법

@@ -1,6 +1,5 @@
-import React, { useState }  from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-
+import React, { useState, useEffect }  from 'react';
+import { useParams} from 'react-router-dom';
 
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
@@ -10,12 +9,90 @@ import Editor from '../common/EditorComponent';
 
 import './css/FAQUpdate.css';
 
+import { BASE_URL, FAQ } from '../common/config/host-config';
+import { getToken } from '../common/util/login-util';
+
 // 자주 묻는 질문 수정
 const FAQUpdate = () => {
-    var faqId = useParams().faqId;
+    
+    const API_BASE_URL = BASE_URL + FAQ;
+    const ACCESS_TOKEN = getToken();
+    const headerInfo = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + ACCESS_TOKEN
+    }
+
+    // FAQ 번호
+    const faqId = useParams().faqId;
+
+
+    // 자주 묻는 질문 상세 
+    const [faqContent, setFaqContent] = useState({
+        boardTitle: '',          // FAQ 제목
+        boardCommentIs: 'OFF',      // FAQ 댓글 여부 - FAQ 댓글 항상 OFF
+        boardContent: '',        // FAQ 내용
+    });
+
+    // 자주 묻는 질문 제목 
+    const handleEditTitle = (e) => {
+        setFaqContent({
+            ...faqContent,
+            boardTitle: e.target.value
+        })
+    }
+    
+    // 자주 묻는 질문 내용 수정 값
+    const handleEditContent = (value) => {
+        setFaqContent({
+            ...faqContent,
+            boardContent: value
+        })
+    }
+
+    // 자주 묻는 질문 수정 버튼
+    const handleEditFaq = () => {
+        fetch(`${API_BASE_URL}/${faqId}`, {
+            method: "PATCH",
+            headers: headerInfo,
+            body: JSON.stringify(faqContent)
+        })
+        .then(res => {
+
+            if(res.status === 500) {
+                alert("서버가 불안정합니다!");
+                return;
+            }else if(res.status === 404 ) {
+                alert("세션이 만료되었거나 유효하지 않은 FAQ입니다");
+                window.location.href = "/faq";
+                return;
+            }else if(res.status === 403) {
+                alert("권한이 없습니다");
+                window.location.href = "/faq";
+                return;
+            }
+
+            const path = `/faq/${faqId}`;
+            window.location.href = path;
+        })
+    }
+
+    // 렌더링 되자마자 할 일 => FAQ api GET 상세 호출
+    useEffect(() => {
+        
+        fetch(`${API_BASE_URL}/${faqId}`)
+        .then(res => {
+            if (res.status === 500) {
+                alert('서버가 불안정합니다');
+                return;
+            }
+            return res.json();
+        })
+        .then(res => {
+            setFaqContent(res);
+        })
+    }, [API_BASE_URL]); 
 
     const [modal, setModal] = useState(false); 
-    const [desc, setDesc] = useState('');
 
     // 모달 닫기
     const handleClose = () => {
@@ -26,16 +103,11 @@ const FAQUpdate = () => {
     const handleShowCancelModal = () => {
         setModal(true);     // 모달 열기
     }
-    
-    function onEditorChange(value) {
-        setDesc(value);
-    };
 
     // 자주 묻는 질문 내용 페이지로
-    const navigate = useNavigate();
     const onFaqContentPage = () => {
         const path = `/faq/${faqId}`;
-        navigate(path);
+        window.location.href = path;
     };
     
     return (
@@ -44,18 +116,19 @@ const FAQUpdate = () => {
                 <div className='justify'>
                     <Form>
                         <Form.Group className='mb-3'>
-                            <Form.Control id='faq_update_title' autoFocus type='text'/>
+                            <Form.Control id='faq_update_title' autoFocus type='text' onChange={handleEditTitle} defaultValue={faqContent.boardTitle}/>
                         </Form.Group>
                     </Form>
                 </div>
 
                 <div>
-                    <Editor value={desc} onChange={onEditorChange} />
+                    <Editor id='faq_update_content' onChange={handleEditContent} value={faqContent.boardContent}/>
+                        
                 </div>
 
                 <div id='faq_update_footer_div'>
                     <Button className='btn_gray btn_size_100' onClick={handleShowCancelModal}>취소</Button>
-                    <Button className='btn_orange btn_size_100' id='faq_update_btn'>수정</Button>
+                    <Button className='btn_orange btn_size_100' id='faq_update_btn' onClick={handleEditFaq}>수정</Button>
                 </div>
             </div>
 

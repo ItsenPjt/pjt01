@@ -5,8 +5,10 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 
-import { BASE_URL, QUESTION } from '../common/config/host-config';
-import { getToken } from '../common/util/login-util';
+import { BASE_URL, QUESTION, AWS } from '../common/config/host-config';
+import { getToken, getUserId, getUserRole } from '../common/util/login-util';
+
+import QuestionComment from './QuestionComment';
 
 import './css/QuestionContent.css';
 
@@ -15,10 +17,16 @@ const QuestionContent = () => {
     var questionId = useParams().questionId;
     
     const API_BASE_URL = BASE_URL + QUESTION;
-    const ACCESS_TOKEN = getToken();
+    const API_AWS_URL = BASE_URL + AWS;
 
+    const ACCESS_TOKEN = getToken();
+    const USER_ID = getUserId();        // 권한
+    const USER_ROLE = getUserRole();
+    
     // 문의사항 api 데이터 
-    const [noticeContents, setNoticeContents] = useState([]);
+    const [questionContents, setQuestionContents] = useState([]);
+    const [questionFiles, setQuestionFiles] = useState([]);
+    const [questionFileCount, setQuestionFileCount] = useState(0);  // 파일 개수
 
     const [modal, setModal] = useState(false); 
 
@@ -34,24 +42,53 @@ const QuestionContent = () => {
             method: 'GET',
             headers: headerInfo
         })
-            .then(res => {
-                // if (res.status === 403) {
-                //     alert('로그인이 필요한 서비스입니다');
+        .then(res => {
+            if (res.status === 403) {
+                alert('로그인이 필요한 서비스입니다');
 
-                //     window.location.href = '/';
-                //     return;
-                // } 
-                // else if (res.status === 500) {
-                //     alert('서버가 불안정합니다');
-                //     return;
-                // }
-                return res.json();
-            })
-            .then(result => {
-                console.log(result);
-                setNoticeContents(result);
-            });
+                window.location.href = '/join';
+                return;
+            } 
+            else if (res.status === 500) {
+                alert('서버가 불안정합니다');
+                return;
+            }
+            return res.json();
+        })
+        .then(result => {
+            setQuestionContents(result);
+
+            if (result.boardFileList.length !== 0) {
+                setQuestionFileCount(result.boardFileList.length);
+                setQuestionFiles(result.boardFileList);
+            }
+        });
     }, [API_BASE_URL]);
+
+    // 파일 클릭 시 다운로드
+    const commentFileDown = (filePath) => {
+        fetch(`${API_AWS_URL}/files/${filePath}`, {
+            method: 'GET',
+            headers: headerInfo,
+        })
+        .then(res => {
+            if (res.status === 404) {
+                alert('다시 시도해주세요');
+                return;
+            }
+            else if (res.status === 406) {
+                alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
+                return;
+            } 
+            else if (res.status === 500) {
+                alert('서버가 불안정합니다');
+                return;
+            }
+            else {
+                window.location.href = res.url;
+            }
+        })
+    }
 
     // 모달 닫기
     const handleClose = () => {
@@ -63,9 +100,35 @@ const QuestionContent = () => {
         setModal(true);     // 모달 열기
     }
 
-    // 문의사항 목록 페이지로
-    const onQuestionPage = () => {
-        window.location.href = "/question";
+    // 문의사항 삭제 서버 요청 (DELETE)
+    const handleDeleteQuestion = () => {
+        fetch(`${API_BASE_URL}/${questionId}`, {
+            method: 'DELETE',
+            headers: headerInfo,
+        })
+        .then(res => {
+            if (res.status === 404) {
+                alert('다시 시도해주세요');
+                return;
+            }
+            else if (res.status === 406) {
+                if (ACCESS_TOKEN === '') {
+                    alert('로그인이 필요한 서비스입니다');
+                    window.location.href = '/join';
+                } else {
+                    alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
+                    return;
+                }
+                return;
+            } 
+            else if (res.status === 500) {
+                alert('서버가 불안정합니다');
+                return;
+            }
+            else {
+                window.location.href = "/question";       // 공지사항 목록 페이지로 이동
+            }
+        })
     }
 
     // 문의사항 수정 페이지로
@@ -75,32 +138,73 @@ const QuestionContent = () => {
         navigate(path);
     };
 
+    // 문의사항 목록 페이지로
+    const onQuestionPage = () => {
+        const path = `/question`;
+        navigate(path);
+    };
+
     return (
         <>
             <div id='question_content_main'>
                 <div className='justify'>
                     <div>
                         <Form id='question_content_title'>
-                            {noticeContents.boardTitle}
+                            {questionContents.boardTitle}
                         </Form>
 
                         <div id='question_content_write'>
-                            작성자 : {noticeContents.boardWriter} | 작성일 : {noticeContents.createDate}
+                            작성자 : {questionContents.boardWriter} | 작성일 : {questionContents.createDate}
                         </div>
                     </div>
-
-                    <div id='question_content_body_div'>
-                        <Button className='btn_gray btn_size_100' onClick={onUpdatePage}>수정</Button>
-                        <Button className='btn_orange btn_size_100' id='question_content_delete_btn' onClick={handleShowDeleteModal}>삭제</Button>
-                    </div>
+                    
+                    <>
+                        {/* 관리자나, 게시물 등록한 사람인 경우에만 '수정','삭제' 버튼 보이도록 */}
+                        {USER_ID === questionContents.userId || USER_ROLE === 'ADMIN'
+                        ? 
+                            <div id='question_content_body_div'>
+                                {/* 게시물을 등록한 사람인 경우에만 '수정' 버튼이 보이도록 */}
+                                { USER_ID === questionContents.userId && 
+                                    <Button onClick={onUpdatePage} className='btn_gray btn_size_100'>수정</Button>
+                                }
+                                <Button onClick={handleShowDeleteModal} className='btn_orange btn_size_100' id='question_content_delete_btn'>삭제</Button>
+                                <Button onClick={onQuestionPage} className='btn_indigo btn_size_100' id='question_content_list'>목록</Button>
+                            </div>
+                            :
+                            <div id='question_content_body_div'>
+                                <Button onClick={onQuestionPage} className='btn_indigo btn_size_100'>목록</Button>
+                            </div>
+                        }
+                    </>
                 </div>
 
+                {/* dangerouslySetInnerHTML : String형태를 html로 */}
                 <div>
-                    <Form id='question_contents'>
-                        {noticeContents.boardContent}
-                    </Form>
+                    <Form id='question_contents'
+                        dangerouslySetInnerHTML={{
+                            __html: questionContents.boardContent
+                        }} 
+                    />
                 </div>
 
+                {/* 문의사항 파일 */}
+                {questionFiles.length !== 0 &&
+                    <div id='question_content_file_txt'>
+                        첨부파일({questionFileCount})
+                        {
+                            questionFiles.map((item) => {
+                                return (
+                                    <span key={item.boardFileId} onClick={() => commentFileDown(item.boardFilePath)} id='question_content_file_data'>
+                                        | {item.boardFileName}
+                                    </span>   
+                                )
+                            })
+                        }   
+                    </div>
+                }
+
+                {/* 댓글 */}
+                <QuestionComment questionId = {questionId}/>
             </div>
 
             {/* Modal */}
@@ -111,10 +215,10 @@ const QuestionContent = () => {
                     </div>
 
                     <div id="question_delete_modal_content">
-                        <Button className='btn_gray question_btn btn_size_100' onClick={handleClose}>
+                        <Button onClick={handleClose} className='btn_gray question_btn btn_size_100'>
                             아니오
                         </Button>
-                        <Button className='btn_orange question_btn btn_size_100' id="question_content_delete_btn" onClick={onQuestionPage}>
+                        <Button onClick={handleDeleteQuestion} className='btn_orange question_btn btn_size_100' id="question_content_delete_btn">
                             네
                         </Button>
                     </div>

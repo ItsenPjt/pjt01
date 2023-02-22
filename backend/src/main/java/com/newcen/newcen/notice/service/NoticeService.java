@@ -1,9 +1,12 @@
 package com.newcen.newcen.notice.service;
 
-import com.newcen.newcen.common.entity.*;
+import com.newcen.newcen.common.dto.request.SearchCondition;
+import com.newcen.newcen.common.entity.BoardEntity;
+import com.newcen.newcen.common.entity.BoardFileEntity;
+import com.newcen.newcen.common.entity.UserEntity;
+import com.newcen.newcen.common.entity.UserRole;
 import com.newcen.newcen.notice.dto.request.NoticeCreateFileRequestDTO;
 import com.newcen.newcen.notice.dto.request.NoticeCreateRequestDTO;
-import com.newcen.newcen.notice.dto.request.NoticeUpdateFileRequestDTO;
 import com.newcen.newcen.notice.dto.request.NoticeUpdateRequestDTO;
 import com.newcen.newcen.notice.dto.response.NoticeDetailResponseDTO;
 import com.newcen.newcen.notice.dto.response.NoticeListResponseDTO;
@@ -14,9 +17,10 @@ import com.newcen.newcen.notice.repository.NoticeRepositorySupport;
 import com.newcen.newcen.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -45,6 +49,17 @@ public class NoticeService {
                 .builder()
                 .notices(dtoList)
                 .build();
+    }
+
+    //공지사항 목록 조회 페이지네이션
+    public PageImpl<NoticeDetailResponseDTO> getNoticeList(Pageable pageable){
+        PageImpl<NoticeDetailResponseDTO> result = noticeRepositorySupport.getNoticeList(pageable);
+        return result;
+    }
+    //공지사항 검색 및 페이지 제네이션
+    public PageImpl<NoticeDetailResponseDTO> getPageListWithSearch(SearchCondition searchCondition, Pageable pageable){
+        PageImpl<NoticeDetailResponseDTO> result = noticeRepositorySupport.getPageNoticeListWithSearch(searchCondition, pageable);
+        return result;
     }
 
     // 공지사항 한개 조회 (해당 공지사항의 첨부된 파일 list 조회)
@@ -91,50 +106,48 @@ public class NoticeService {
     // 공지사항 수정
     public NoticeOneResponseDTO update (
             final Long boardId,     // boardId : 수정 대상의 공지사항 id
-            final NoticeUpdateRequestDTO updateRequestDTO,
+            final NoticeUpdateRequestDTO dto,
             final String userId
     ) {
         Optional<BoardEntity> targetEntity = noticeRepository.findById(boardId);    // 수정 target 조회
         Optional<UserEntity> userEntity = userRepository.findById(userId);
-
+        String content =null;
+        String title = null;
         if (!userEntity.get().getUserRole().equals(UserRole.ADMIN)) {
             throw new RuntimeException("관리자가 아닙니다.");
         }
 
         if (targetEntity.isPresent()) {
-            BoardEntity boardEntity =
-                    new BoardEntity(targetEntity.get().getBoardId(),
-                                    BoardType.NOTICE,
-                                    updateRequestDTO.getBoardTitle(),
-                                    userEntity.get().getUserName(),
-                                    updateRequestDTO.getBoardContent(),
-                                    targetEntity.get().getCreateDate(),
-                                    LocalDateTime.now(),
-                                    updateRequestDTO.getBoardCommentIs(),
-                                    userEntity.get().getUserId());
-
-            noticeRepository.save(boardEntity);
+            if (dto.getBoardContent()==null || dto.getBoardContent().equals("")){
+                content = targetEntity.get().getBoardContent();
+            }else {
+                content = dto.getBoardContent();
+            }
+            if (dto.getBoardTitle()==null || dto.getBoardTitle().equals("")){
+                title = targetEntity.get().getBoardContent();
+            }else {
+                title = dto.getBoardTitle();
+            }
+            targetEntity.get().updateBoard(title, content);
+            noticeRepository.save(targetEntity.get());
         }
 
         return retrieveOne(boardId);
     }
 
     // 공지사항 삭제
-    public NoticeListResponseDTO delete (final Long boardId, final String userId) {
-
+    public boolean delete (final Long boardId, final String userId) {
         Optional<UserEntity> userEntity = userRepository.findById(userId);
         if (!userEntity.get().getUserRole().equals(UserRole.ADMIN)) {
             throw new RuntimeException("관리자가 아닙니다.");
         }
-
         try {
             noticeRepository.deleteById(boardId);
         } catch (Exception e) {
             log.error("삭제할 공지사항이 존재하지 않아 삭제에 실패했습니다. - ID: {}, error: {}", boardId, e.getMessage());   // [서버에 기록할 메세지]
-
             throw new RuntimeException("삭제할 공지사항이 존재하지 않아 삭제에 실패했습니다.");      // [클라이언트에게 전달할 메세지]
         }
-        return retrieve();      // 공지사항 목록으로
+        return true;
     }
 
     // 공지사항 파일 등록
@@ -152,55 +165,52 @@ public class NoticeService {
 
         // 파일을 추가할 공지사항 entity
         BoardEntity boardEntity = noticeRepository.findById(boardId).get();
-
         BoardFileEntity boardFile = createFileRequestDTO.toEntity(boardEntity);
         noticeFileRepository.save(boardFile);
-
         log.info("파일이 저장되었습니다. - 파일 주소: {}", createFileRequestDTO.getBoardFilePath());
-
         return retrieveOne(boardFile.getBoardId());
     }
 
     // 공지사항 파일 수정
-    public NoticeOneResponseDTO updateFile (
-            final Long boardId,         // boardId : 수정 대상의 공지사항 id
-            final String boardFileId,   // boardFileId : 수정 대상의 공지사항 파일 id
-            final NoticeUpdateFileRequestDTO updateFileRequestDTO,
-            final String userId
-    ) {
-
-        Optional<BoardEntity> targetBoard = noticeRepository.findById(boardId);     // 수정 대상의 공지사항
-        Optional<BoardFileEntity> targetBoardFile = noticeFileRepository.findById(boardFileId);     // 수정 대상의 공지사항 파일
-        Optional<UserEntity> userEntity = userRepository.findById(userId);
-
-        if (!userEntity.get().getUserRole().equals(UserRole.ADMIN)) {
-            throw new RuntimeException("관리자가 아닙니다.");
-        }
-
-        // 게시물을 작성한 사람과 userId 가 일치해야 함
-        if (!targetBoard.get().getUserId().equals(userId)) {    // 일치하지 않으면
-            throw new RuntimeException("본인이 작성한 글이 아닙니다.");
-        }
-
-        // 파일이 존재하면
-        if (targetBoardFile.isPresent()) {
-
-            // 수정하고자 하는 공지사항 파일이 해당 공지사항에 존재하는 파일이어야 함
-            if (!targetBoard.get().getBoardId().equals(targetBoardFile.get().getBoardId())) {
-                throw new RuntimeException("해당 공지사항의 파일이 아닙니다.");
-            }
-
-            // 생성자로 변경 (BoardFileEntity.java 의 @AllArgsConstructor 이용)
-            BoardFileEntity fileEntity =
-                    new BoardFileEntity(
-                            targetBoardFile.get().getBoardFileId(),
-                            updateFileRequestDTO.getBoardFilePath(),
-                            targetBoard.get().getBoardId());
-
-            noticeFileRepository.save(fileEntity);
-        }
-        return retrieveOne(boardId);
-    }
+//    public NoticeOneResponseDTO updateFile (
+//            final Long boardId,         // boardId : 수정 대상의 공지사항 id
+//            final String boardFileId,   // boardFileId : 수정 대상의 공지사항 파일 id
+//            final NoticeUpdateFileRequestDTO updateFileRequestDTO,
+//            final String userId
+//    ) {
+//
+//        Optional<BoardEntity> targetBoard = noticeRepository.findById(boardId);     // 수정 대상의 공지사항
+//        Optional<BoardFileEntity> targetBoardFile = noticeFileRepository.findById(boardFileId);     // 수정 대상의 공지사항 파일
+//        Optional<UserEntity> userEntity = userRepository.findById(userId);
+//
+//        if (!userEntity.get().getUserRole().equals(UserRole.ADMIN)) {
+//            throw new RuntimeException("관리자가 아닙니다.");
+//        }
+//
+//        // 게시물을 작성한 사람과 userId 가 일치해야 함
+//        if (!targetBoard.get().getUserId().equals(userId)) {    // 일치하지 않으면
+//            throw new RuntimeException("본인이 작성한 글이 아닙니다.");
+//        }
+//
+//        // 파일이 존재하면
+//        if (targetBoardFile.isPresent()) {
+//
+//            // 수정하고자 하는 공지사항 파일이 해당 공지사항에 존재하는 파일이어야 함
+//            if (!targetBoard.get().getBoardId().equals(targetBoardFile.get().getBoardId())) {
+//                throw new RuntimeException("해당 공지사항의 파일이 아닙니다.");
+//            }
+//
+//            // 생성자로 변경 (BoardFileEntity.java 의 @AllArgsConstructor 이용)
+//            BoardFileEntity fileEntity =
+//                    new BoardFileEntity(
+//                            targetBoardFile.get().getBoardFileId(),
+//                            updateFileRequestDTO.getBoardFilePath(),
+//                            targetBoard.get().getBoardId());
+//
+//            noticeFileRepository.save(fileEntity);
+//        }
+//        return retrieveOne(boardId);
+//    }
 
     // 공지사항 파일 삭제
     public NoticeOneResponseDTO deleteFile (
@@ -237,11 +247,4 @@ public class NoticeService {
         return retrieveOne(boardId);
     }
 
-    //공지사항 댓글 목록 조회
-
-    //공지사항 댓글 작성
-
-    //공지사항 댓글 수정
-
-    //공지사항 댓글 삭제
 }

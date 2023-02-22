@@ -8,21 +8,29 @@
     right: 0; */
 }
 
+#titleLogo {
+    display: flex;
+}
+
 .header_title {
+    display: flex;
+    flex-wrap: wrap;
+
     color: white;
     font-weight: 650;
     font-size: 25px;
-    margin-left: 5%;
+    margin-left: 2%;
 }
 
 .header_title_eng {
     color: white;
-    font-size: 15px;
-    margin-left: 5%;
+    font-size: 13px;
+    margin-left: 13%;
+    top: -10px;
 }
 
 .cen_logo {
-    height: 50px;
+    height: 60px;
 }
 
 .me-auto {
@@ -45,3 +53,60 @@
     background-color: #5D5A5A;
     opacity:0.8; 
 }
+
+#header_login {
+    margin-top: 10px;
+    color: white;
+    cursor: pointer;
+}
+
+#header_login:hover {
+    color: rgb(199, 198, 198);
+}
+
+#header_dot {
+    margin-top: 10px;
+    color: white;
+    cursor: pointer;
+}
+
+#header_signup {
+    margin-top: 10px;
+    color: white;
+    cursor: pointer;
+}
+
+#header_signup:hover {
+    color: rgb(199, 198, 198);
+}
+
+#header_user {
+    margin-top: 15px;
+    color: white;
+}
+
+#header_logout {
+    margin-top: 10px;
+    color: #F64E60;
+    cursor: pointer;
+}
+
+#header_menu_before_login {
+    display: flex;
+    justify-content: flex-end;
+    position: absolute;
+    right: 20%;
+}
+
+#header_menu_after_login {
+    position: absolute;
+    right: 20%;
+    top: 0;
+}
+
+#header_user_menu {
+    display: flex;
+}
+
+
+

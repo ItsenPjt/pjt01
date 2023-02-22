@@ -2,13 +2,13 @@
     width: 60%;
 
     /* 박스 x축 중앙 정렬 : margin 좌우값을 auto로 설정*/
-    margin: 70px auto;  
+    margin: 30px auto;  
 }
 
 #notice_table_main {
     border-radius: 10px;
 
-    height: 600px;
+    height: 670px;
 
     /* 음영처리 */ 
     /* x축, y축, 블러크기, 색상*/
@@ -40,4 +40,37 @@
     color: black;
     font-size: 15px;
     cursor: pointer;
+}
+
+/* 검색 */
+#notice_search_dropdown_div {
+    display: flex;
+    justify-content: center;
+}
+
+#notice_select_dropdown_button{
+    background-color: white;
+    color: black;
+    border: 1px solid #717172;
+}
+
+#notice_selct_dropdown_item {
+    color: white;
+}
+
+#notice_select_dropdown_form {
+    width: 20%;
+}
+
+#notice_select_dropdown_search_button  {
+    width: 60px;
+}
+
+/* button className */
+.btn_gray {
+    background-color: #717172;
+    border: none;
+}
+.btn_gray:hover, .btn_gray:active, .btn_gray:focus {
+    background-color: #5e5e5e;
 }

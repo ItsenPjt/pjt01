@@ -1,17 +1,13 @@
 package com.newcen.newcen.users.service;
 
-import com.newcen.newcen.admin.exception.AdminCustomException;
-import com.newcen.newcen.admin.exception.AdminExceptionEnum;
 import com.newcen.newcen.common.config.security.TokenProvider;
 import com.newcen.newcen.common.entity.UserEntity;
-import com.newcen.newcen.common.entity.UserRole;
 import com.newcen.newcen.common.entity.ValidUserEntity;
 import com.newcen.newcen.common.repository.ValidUserRepository;
 import com.newcen.newcen.users.dto.request.AnonymousReviseRequestDTO;
 import com.newcen.newcen.users.dto.request.UserModifyRequestDTO;
 import com.newcen.newcen.users.dto.request.UserSignUpRequestDTO;
 import com.newcen.newcen.users.dto.response.*;
-import com.newcen.newcen.users.exception.DuplicatedEmailException;
 import com.newcen.newcen.users.exception.NoRegisteredArgumentsException;
 import com.newcen.newcen.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +31,19 @@ public class UserService {
     private final TokenProvider tokenProvider;
 
 
+    // Valid 회원 목록 조회
+    @Transactional
+    public ValidUserResponseDTO findValidUser(String email) {
+
+        ValidUserEntity validUserEntityUser = validUserRepository.findByValidUserEmail(email);
+
+        ValidUserResponseDTO dtoUser = new ValidUserResponseDTO(validUserEntityUser);
+
+        log.info("********** - UserFind ValidUserInfo - {}", dtoUser);
+
+        return dtoUser;
+    }
+
     // 회원가입 처리
     @Transactional
     public UserSignUpResponseDTO create(final UserSignUpRequestDTO userSignUpRequestDTO) {
@@ -49,7 +58,7 @@ public class UserService {
 
         if (!compareResult) {
             log.warn("********** - UserInfo unprepared - {}", compareResult);
-            throw new NoRegisteredArgumentsException("Nonexistent UserInfo - 등록되지 않은 회원정보입니다.");
+            throw new NoRegisteredArgumentsException("Nonexistent UserInfo - 등록되지 않은 계정이거나 중복된 회원정보입니다.");
         }
 
         log.info("********** - UserInfo available to use - {}", compareResult);
@@ -112,8 +121,11 @@ public class UserService {
 
         Optional<UserEntity> targetEntity = userRepository.findByUserId(userId);
 
-        targetEntity.ifPresent(entity -> {
+        String message = "";
 
+        if (targetEntity.isPresent()) {
+
+            UserEntity entity = targetEntity.get();
             // 패스워드 인코딩
             String rawPassword = userModifyRequestDTO.getUserPassword();   // 새로운 수정된 평문 암호
             String encodePassword = passwordEncoder.encode(rawPassword);    // 암호화 처리
@@ -121,15 +133,15 @@ public class UserService {
 
             UserEntity savedUser = userRepository.save(entity);
 
-            log.info(
-                    "내정보 수정 성공..!!! - user_id : {}", savedUser.getUserId());
-            log.info("변경된 계정 - user_email : {}", savedUser.getUserEmail());
+            message = "회원정보가 정상적으로 변경되었습니다.";
+            log.info("{}", message);
 
-        });
+        } else {
+            message = "비정상적인 처리입니다.";
+            log.info("{}", message);
+        }
 
-        Optional<UserEntity> result = userRepository.findByUserId(userId);
-
-        return new UserModifyResponseDTO(result.get());
+        return new UserModifyResponseDTO(message);
 
     }
 
@@ -192,9 +204,11 @@ public class UserService {
     public UserDeleteResponseDTO delete(
             final String deleteId) {
 
+        String delEmail;
+
         try {
 
-            String delEmail = userRepository.selectUserEmail(deleteId);
+            delEmail = userRepository.selectUserEmail(deleteId);
 
             userRepository.deleteById(deleteId);  // 로그인된 회원 UUID로 회원정보 삭제
             log.info("User Delete Complete - UserId : {}", deleteId);
@@ -216,7 +230,8 @@ public class UserService {
 
         }
 
-        Optional<ValidUserEntity> endUser = validUserRepository.findById(deleteId);
+        Optional<ValidUserEntity> endUser = validUserRepository.selectValidUserEmail(delEmail);
+        log.info("삭제가 완료되어 존재하지 않는 이메일입니다. - ValidUserEmail : {}", delEmail);
 
         String message = "";
 

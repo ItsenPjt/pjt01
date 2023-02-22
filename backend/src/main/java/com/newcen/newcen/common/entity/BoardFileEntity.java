@@ -1,6 +1,7 @@
 package com.newcen.newcen.common.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.GenericGenerator;
@@ -30,6 +31,10 @@ public class BoardFileEntity {
 
     @Column(name="board_id")
     private Long boardId;
+
+    @Column(name="board_file_name")
+    private String boardFileName;
+
 
     public  void setBoardFilePath(String boardFilePath){
         this.boardFilePath = boardFilePath;

@@ -28,6 +28,26 @@
     float: right;
 }
 
+/* 파일첨부 */
+#question_content_file::file-selector-button {
+    width: 100px;
+    height: 35px;
+        
+    margin-top: 10px;
+    background: #58657F;
+    color: white;
+
+    border: none;
+    border-radius: 5px;
+
+    cursor: pointer;
+}
+
+#question_content_file::file-selector-button:hover {
+    background: #414858;
+    color: white;
+}
+
 /* button className-- */
 .btn_gray {
     background-color: #717172;

@@ -15,9 +15,6 @@ public class SearchCondition {
 
     private String boardContent;
 
-    private BoardType boardType;
-
     private String boardWriter;
-
 
 }

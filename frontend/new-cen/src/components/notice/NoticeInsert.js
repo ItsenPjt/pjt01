@@ -4,9 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip';
 
 import { BASE_URL, NOTICE } from '../common/config/host-config';
-import { getToken } from '../common/util/login-util';
+import { getToken, getUserId } from '../common/util/login-util';
 
 import Editor from '../common/EditorComponent';
 import CommentRadioBtn from '../common/CommentRadioBtn';
@@ -18,6 +20,7 @@ const NoticeInsert = () => {
 
     const API_BASE_URL = BASE_URL + NOTICE;
     const ACCESS_TOKEN = getToken();
+    const USER_ID = getUserId();
 
     // headers
     const headerInfo = {
@@ -27,61 +30,141 @@ const NoticeInsert = () => {
 
     const [modal, setModal] = useState(false); 
     const [noticeData, setNoticeData] = useState({          // 공지사항 입력 데이터
-        title: '',          // 공지사항 제목
-        isComment: 'ON',      // 공지사항 댓글 여부 (default: ON)
-        content: '',        // 공지사항 내용
+        boardTitle: '',          // 공지사항 제목
+        boardCommentIs: 'ON',      // 공지사항 댓글 여부 (default: ON)
+        boardContent: '',        // 공지사항 내용
     });
-
+    
     // title
     const titleChangeHandler = e => {
         setNoticeData({
-            ...noticeData,        // 기존 todo데이터 복사 후 title 추가
-            title: e.target.value,
+            ...noticeData,        // 기존 noticeData 복사 후 boardTitle 추가
+            boardTitle: e.target.value,
         });
     };
 
     // 댓글 허용 여부 (radio)
     const commentChangeHandler = commentStatus => {
         setNoticeData({
-            ...noticeData,        // 기존 todo데이터 복사 후 isComment 추가
-            isComment: commentStatus,
+            ...noticeData,        // 기존 noticeData 복사 후 boardCommentIs 추가
+            boardCommentIs: commentStatus,
         });
     }
 
     // 내용
     const contentChangeHandler = value => {
         setNoticeData({
-            ...noticeData,        // 기존 todo데이터 복사 후 content 추가
-            content: value,
+            ...noticeData,        // 기존 noticeData 복사 후 boardContent 추가
+            boardContent: value,
         });
     };
 
-    // 공지사항 등록 서버 요청  (POST에 대한 응답처리)
+    // 파일
+    var files = [];
+    const FileChangeHandler = e => {        
+        e.preventDefault();
+        files = e.target.files;  
+    }
+
+    // 공지사항 등록
     const handleInsertNotice = () => {
-        console.log(noticeData);
+        if (noticeData.boardTitle === '') {
+            alert('제목을 입력해주세요.');
+        } 
+        else if (noticeData.boardContent === '') {
+            alert('내용을 입력해주세요.');
+        }
+        // 글만 입력되어있을 때 -> 공지사항 등록 서버 요청  (POST에 대한 응답처리)
+        else if (files.length === 0) {
+            fetch(API_BASE_URL, {
+                method: 'POST',
+                headers: headerInfo,
+                body: JSON.stringify(noticeData)
+            })
+            .then(res => {
+                if (res.status === 406) {
+                    if (ACCESS_TOKEN === '') {
+                        alert('로그인이 필요한 서비스입니다');
+                        window.location.href = '/join';
+                    } else {
+                        alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
+                        return;
+                    }
+                    return;
+                } 
+                else if (res.status === 500) {
+                    alert('서버가 불안정합니다');
+                    return;
+                }
+                return res.json();
+            })
+            .then((result) => {
+                if (!!result) {
+                    window.location.href = "/notice";       // 공지사항 목록 페이지로 이동
+                }
+            });
+        } 
+        // 파일 등록 -> 공지사항 등록 서버 요청 후, 파일 등록 서버 요청
+        else {
 
-        fetch(API_BASE_URL, {
-            method: 'POST',
-            headers: headerInfo,
-            body: JSON.stringify(noticeData)
-        })
-        .then(res => {
-            if (res.status === 406) {
-                alert('로그인이 필요한 서비스입니다');
+            // 게시물 등록
+            fetch(API_BASE_URL, {
+                method: 'POST',
+                headers: headerInfo,
+                body: JSON.stringify(noticeData)
+            })
+            .then(res => {
+                if (res.status === 406) {
+                    if (ACCESS_TOKEN === '') {
+                        alert('로그인이 필요한 서비스입니다');
+                        window.location.href = '/join';
+                    } else {
+                        alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
+                        return;
+                    }
+                    return;
+                } 
+                else if (res.status === 500) {
+                    alert('서버가 불안정합니다');
+                    return;
+                }
+                return res.json();
+            })
+            .then((res) => {
 
-                window.location.href = '/';
-                return;
-            } 
-            else if (res.status === 500) {
-                alert('서버가 불안정합니다');
-                return;
-            }
-            return res.json();
-        })
-        .then(result => {
-            console.log(result);
-            // setTodos(result.todos);     // json 갱신
-        });
+                // foemData
+                var formData = new FormData(); 
+                for (let i = 0; i < files.length; i++) {
+                    formData.append('file', files[i]);
+                }
+
+                // 파일 등록
+                const newBoardId = res.noticeDetails[0]["boardId"];
+                if (USER_ID === res.noticeDetails[0]["userId"]) {
+                    fetch(`${API_BASE_URL}/${newBoardId}/files`, {
+                        method: 'POST',
+                        headers: {
+                             'Authorization': 'Bearer ' + ACCESS_TOKEN
+                        },
+                        body: formData
+                    })
+                    .then(res => {
+                        if (res.status === 406) {
+                            alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
+                            return;
+                        } 
+                        else if (res.status === 500) {
+                            alert('서버가 불안정합니다');
+                            return;
+                        }
+                        return res.json();
+                    })
+                    .then(() => {
+                        window.location.href = "/notice";       // 공지사항 목록 페이지로 이동
+                    });
+                }
+            });
+        }
     };
 
     // 모달 닫기
@@ -107,21 +190,38 @@ const NoticeInsert = () => {
                 <div className='justify'>
                     <Form>
                         <Form.Group className='mb-3'>
-                            <Form.Control onChange={titleChangeHandler} value={noticeData.title} id='notice_insert_title' autoFocus type='text' placeholder='공지사항 제목 입력' />
+                            <Form.Control onChange={titleChangeHandler} value={noticeData.boardTitle} id='notice_insert_title' autoFocus type='text' placeholder='공지사항 제목 입력' />
                         </Form.Group>
                     </Form>
 
-                     {/* 라디오 버튼 */} 
+                    {/* 라디오 버튼 */} 
                     <CommentRadioBtn commentStatus={commentChangeHandler}/>
                 </div>
 
                 <div>
-                    <Editor onChange={contentChangeHandler} value={noticeData.content} />
+                    <Editor onChange={contentChangeHandler} value={noticeData.boardContent} />
                 </div>
 
-                <div id='notice_insert_footer_div'>
-                    <Button onClick={handleShowCancelModal} className='btn_gray btn_size_100'>취소</Button>
-                    <Button onClick={handleInsertNotice} className='btn_orange btn_size_100' id='notice_insert_btn'>등록</Button>
+                <div className='justify'>
+                    <div>
+                        {['top'].map((placement) => (
+                            <OverlayTrigger
+                                key={placement}
+                                placement={placement}
+                                overlay={
+                                    <Tooltip id={`tooltip-${placement}`}>
+                                        ctrl 클릭 후 <br />여러 파일 선택 가능
+                                    </Tooltip>
+                                }
+                            >
+                                <input onChange={FileChangeHandler} type='file' name="notice_content_file" id="notice_content_file" multiple/>
+                            </OverlayTrigger>
+                        ))}
+                    </div>
+                    <div id='notice_insert_footer_div'>
+                        <Button onClick={handleShowCancelModal} className='btn_gray btn_size_100'>취소</Button>
+                        <Button onClick={handleInsertNotice} className='btn_orange btn_size_100' id='notice_insert_btn'>등록</Button>
+                    </div>
                 </div>
             </div>
 

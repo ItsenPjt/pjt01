@@ -12,23 +12,18 @@ const UserJoin = () => {
 
     const API_BASE_URL = BASE_URL + USER;
 
+    // 엔터 키 눌렀을 때 동작하는 핸들러
     const onKeyPress = (e) => {
-        console.log(e.key);
         if (e.key === 'Enter') {
             loginHandler();
         }
-    }
+    };
 
     const loginHandler = e => {
-
-        // e.preventDefault();     // 기본 동작 중지
 
         // 이메일 입력태그, 비번 입력태그 가져오기
         const $email = document.getElementById('loginId');
         const $password = document.getElementById('loginPw');
-
-        console.log($email.value);
-        console.log($password.value);
 
         // 서버에 로그인 요청
         fetch(`${API_BASE_URL}/join`, {
@@ -40,42 +35,46 @@ const UserJoin = () => {
             })
         })
         .then(res => res.json())
-        .then(result => {
-            console.log(result);
+        .then(result => {            
             if (result.message) {
                 // 로그인 실패
                 alert(result.message);
             }
             else {
-                alert('로그인 성공..!!');
-
                 // 발급받은 토큰을 저장, 회원정보 저장
                 // 브라우저가 제공하는 로컬스토리지에 저장(브라우저가 종료되어도 남아있음) - 서버X 로컬O
                 // 세션스토리지(브라우저가 종료되면 사라짐) - 서버X 로컬O
-                localStorage.setItem('ACCESS_TOKEN', result.token);
-                localStorage.setItem('LOGIN_USERNAME', result.userName);
+                sessionStorage.setItem('ACCESS_TOKEN', result.token);
+                sessionStorage.setItem('LOGIN_USERNAME', result.userName);
+                sessionStorage.setItem('LOGIN_USEREMAIL', result.userEmail);
+                sessionStorage.setItem('LOGIN_USERROLE', result.userRole);
+                sessionStorage.setItem('LOGIN_USERID', result.userId);
 
                 window.location.href='/';
             }
-
         });
-
     }; // loginHandler()
+
+
+    // 로고 클릭 시
+    const onLogo = () => {
+        window.location.href = "/";
+    };
 
     // 비밀번호 찾기 버튼 클릭 시
     const onFindPwPage = () => {
-        window.location.href = "/findpw";
-    }
+        window.location.href = "/findinfo";
+    };
 
     // 회원가입 버튼 클릭 시
     const onJoinPage = () => {
         window.location.href = "/signup";
-    }
-
+    };
+    
     return (
         <div id='login_main'>
             <div id='login_logo_position'>
-                <img id='login_logo_img' alt='logo' src="/img/logo_title.png"/>
+                <img id='login_logo_img' alt='logo' src="/img/logo_title.png" onClick={onLogo}/>
             </div>
 
             <div id='login_main_content'>
@@ -104,6 +103,6 @@ const UserJoin = () => {
             </div>
         </div>
     )
-}
+};
 
 export default UserJoin;

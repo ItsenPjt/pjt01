@@ -116,10 +116,25 @@ public class AdminService {
 
         String validCode = RandomStringUtils.randomNumeric(6);
         requestDTO.setValidCode(validCode);
-        ValidUserEntity savedValidUser = validUserRepository.save(requestDTO.toEntity());
+        validUserRepository.save(requestDTO.toEntity());
 
         SendEmailDTO emailDTO = new SendEmailDTO(requestDTO);
         emailService.sendSimpleMessage(emailDTO);
+
+        return validUserList(userId);
+    }
+
+    public List<AdminValidUserResponseDTO> validUserDelete(final String userId, final String deleteId) {
+
+        UserEntity admin = adminRepository.findById(userId).orElseThrow(() -> {
+            throw new AdminCustomException(AdminExceptionEnum.USER_NOT_EXIST);
+        });
+
+        if(!admin.getUserRole().equals(UserRole.ADMIN)) {
+            throw new AdminCustomException(AdminExceptionEnum.ACCESS_FORBIDDEN);
+        }
+
+        validUserRepository.deleteById(deleteId);
 
         return validUserList(userId);
     }

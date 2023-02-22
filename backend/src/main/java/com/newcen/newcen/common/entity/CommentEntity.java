@@ -1,6 +1,5 @@
 package com.newcen.newcen.common.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -12,6 +11,7 @@ import java.util.List;
 
 @Entity
 @Getter
+@Setter
 @ToString
 @Builder
 @NoArgsConstructor
@@ -31,6 +31,8 @@ public class CommentEntity {
     @Column(name="comment_writer", nullable = false)
     private String commentWriter;
 
+
+
     @Column(name="comment_createdate")
     @CreationTimestamp
     private LocalDateTime commentCreateDate;
@@ -45,8 +47,11 @@ public class CommentEntity {
     @Column(name="user_id")
     private String userId;
 
-    @JoinColumn(name="comment_file_id")
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE,orphanRemoval = true)
+    @Column(name="comment_user_email")
+    private String userEmail;
+
+    @JoinColumn(name="comment_id")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL,orphanRemoval = true)
     private final List<CommentFileEntity> commentFileList = new ArrayList<>();
 
 

@@ -3,6 +3,7 @@ package com.newcen.newcen.admin.exception;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -37,6 +38,7 @@ public class AdminExceptionAdvice extends DefaultHandlerExceptionResolver {
     }
 
     @ExceptionHandler({
+            EmptyResultDataAccessException.class,
             MissingPathVariableException.class,
             MethodArgumentNotValidException.class,
             MissingServletRequestParameterException.class,
@@ -57,19 +59,6 @@ public class AdminExceptionAdvice extends DefaultHandlerExceptionResolver {
                 );
     }
 
-//    @ExceptionHandler({
-//            HttpRequestMethodNotSupportedException.class,
-//            MethodNotAllowedException.class
-//    })
-//    public ResponseEntity<?> methodNotAllowedHandler(Exception e) {
-//        return ResponseEntity.status(AdminExceptionEnum.NOT_SUPPORTED_METHOD.getStatus())
-//                .body(AdminExceptionEntity.builder()
-//                        .errorCode(AdminExceptionEnum.NOT_SUPPORTED_METHOD.getCode())
-//                        .errorMessage(AdminExceptionEnum.NOT_SUPPORTED_METHOD.getMessage())
-//                        .build()
-//                );
-//    }
-
 
     @ExceptionHandler({AdminCustomException.class})
     public ResponseEntity<?> adminCustomExceptionHandler(AdminCustomException ce) {
@@ -83,11 +72,5 @@ public class AdminExceptionAdvice extends DefaultHandlerExceptionResolver {
     }
 
 
-//    @Override
-//    protected ModelAndView handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex, HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
-//
-//        response.sendError(405, "Method Not Supported");
-//
-//        return super.handleHttpRequestMethodNotSupported(ex, request, response, handler);
-//    }
+
 }

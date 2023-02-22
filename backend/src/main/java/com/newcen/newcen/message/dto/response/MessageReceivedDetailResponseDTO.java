@@ -10,12 +10,14 @@ import lombok.*;
 @Builder
 public class MessageReceivedDetailResponseDTO {
 
+    private String senderId;
     private String messageTitle;
     private String messageContent;
     private String messageSender;
     private String messageSenderEmail;
 
     public MessageReceivedDetailResponseDTO(MessageEntity entity) {
+        this.senderId = entity.getSender().getUserId();
         this.messageTitle = entity.getMessageTitle();
         this.messageContent = entity.getMessageContent();
         this.messageSender = entity.getMessageSender();

@@ -26,6 +26,20 @@ public class UserApiController {
 
     private final UserService userService;
 
+
+    // ValidUser 회원정보 조회하기
+    @GetMapping("/api/user/valid/{email}")
+    public ResponseEntity<?> findValidUserInfo(
+            @PathVariable("email") String email // URL 경로에서 email 을 가져옴
+    ){
+        log.info("/api/user/valid GET request...!!");
+
+        ValidUserResponseDTO responseDTO = userService.findValidUser(email);
+
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+
     // 회원가입 요청처리
     @PostMapping("/api/user/signup")
     public ResponseEntity<?> signup(
@@ -74,7 +88,8 @@ public class UserApiController {
             return ResponseEntity
                     .badRequest()
                     .body(LoginResponseDTO.builder()
-                            .message("로그인 에러")
+                            .message("아이디(로그인 전용 아이디) 또는 비밀번호를 잘못 입력했습니다.\n" +
+                                    "입력하신 내용을 다시 확인해주세요.")
                             .build()
                     );
         }
@@ -103,12 +118,11 @@ public class UserApiController {
 
     // 내정보 변경 요청
     @RequestMapping(
-            value = "/api/user/signset/{id}"
+            value = "/api/user/signset"
             , method = {RequestMethod.PUT, RequestMethod.PATCH}
     )
     public ResponseEntity<?> updateUser(
             @AuthenticationPrincipal String userId  // @AuthenticationPrincipal 로그인 정보를 받아옴
-            , @PathVariable("id") String pathUserId // URL 경로에서 id를 가져옴
             , @Validated @RequestBody UserModifyRequestDTO requestDTO
             , BindingResult result
             , HttpServletRequest request    // PUT 인지, PATCH 인지 요청정보 알 수 있음
@@ -123,7 +137,7 @@ public class UserApiController {
                     .body(result.getFieldError());
         }
 
-        log.info("/api/user/{} {} request", pathUserId, request.getMethod());
+        log.info("/api/user/{} {} request", userId, request.getMethod());
         log.info("modifying dto : {}", requestDTO);
 
         try {
@@ -140,7 +154,7 @@ public class UserApiController {
 
     // 익명 사용자 정보 수정 요청
     @RequestMapping(
-            value = "/api/user/findset/{id}"
+            value = "/api/user/findset"
             , method = {RequestMethod.PUT, RequestMethod.PATCH}
     )
     public ResponseEntity<?> updateAnonymous(
@@ -154,7 +168,7 @@ public class UserApiController {
                     .body(result.getFieldError());
         }
 
-        log.info("/api/user/{} {} request", requestDTO, request.getMethod());
+        log.info("/api/user/findset {} {} request", requestDTO, request.getMethod());
 
         try {
             AnonymousReviseResponseDTO responseDTO = userService.update(requestDTO);
@@ -169,15 +183,15 @@ public class UserApiController {
 
 
     // 회원탈퇴(UserEntity, ValidUserEntity 회원정보 삭제)
-    @DeleteMapping("/api/user/signout/{id}")
+    @DeleteMapping("/api/user/signout")
     public ResponseEntity<?> deleteUser(
             @AuthenticationPrincipal String userId  // @AuthenticationPrincipal 로그인 정보를 받아옴
-            , @PathVariable("id") String deleteId  // URL 경로에서 id를 가져옴
     ) {
 
-        log.info("/api/user/{} DELETE request", userId);
+        log.info("/api/user/signout/{} DELETE request", userId);
 
-        if (deleteId == null || deleteId.trim().equals("")) {
+
+        if (userId == null || userId.trim().equals("")) {
             return ResponseEntity
                     .badRequest()
                     .body(UserListResponseDTO.builder().error("삭제하려는 ID를 전달해주세요"));
@@ -185,7 +199,7 @@ public class UserApiController {
 
         try {
 
-            UserDeleteResponseDTO responseDTO = userService.delete(deleteId);
+            UserDeleteResponseDTO responseDTO = userService.delete(userId);
 
             return ResponseEntity.ok()
                     .body(responseDTO);

@@ -6,23 +6,29 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 
-import { BASE_URL, NOTICE } from '../common/config/host-config';
-import { getToken } from '../common/util/login-util';
+import { BASE_URL, NOTICE, AWS } from '../common/config/host-config';
+import { getToken, getUserId, getUserRole } from '../common/util/login-util';
+
+import NoticeComment from './NoticeComment';
 
 import './css/NoticeContent.css';
-import NoticeNoComment from './NoticeNoComment';
-import NoticeYesCommentBefore from './NoticeYesCommentBefore';
-import NoticeYseCommentAfter from './NoticeYseCommentAfter';
 
 // 공지사항 내용
 const NoticeContent = () => {
     var noticeId = useParams().noticeId;
     
     const API_BASE_URL = BASE_URL + NOTICE;
-    const ACCESS_TOKEN = getToken();
+    const API_AWS_URL = BASE_URL + AWS;
+
+    const ACCESS_TOKEN = getToken();        // 토큰값
+    const USER_ID = getUserId();
+    const USER_ROLE = getUserRole();
 
     // 공지사항 api 데이터 
     const [noticeContents, setNoticeContents] = useState([]);
+    const [noticeFiles, setNoticeFiles] = useState([]);
+    const [noticeFileCount, setNoticeFileCount] = useState(0);  // 파일 개수
+    const [isComment, setIsComment] = useState('');     // 수정(NoticeUpdate) 페이지로 보낼 댓글여부 데이터
 
     const [modal, setModal] = useState(false); 
 
@@ -39,23 +45,59 @@ const NoticeContent = () => {
             headers: headerInfo
         })
             .then(res => {
-                // if (res.status === 403) {
-                //     alert('로그인이 필요한 서비스입니다');
-
-                //     window.location.href = '/';
-                //     return;
-                // } 
-                // else if (res.status === 500) {
-                //     alert('서버가 불안정합니다');
-                //     return;
-                // }
+                if (res.status === 406) {
+                    if (ACCESS_TOKEN === '') {
+                        alert('로그인이 필요한 서비스입니다');
+                        window.location.href = '/join';
+                    } else {
+                        alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
+                        return;
+                    }
+                    return;
+                } 
+                else if (res.status === 500) {
+                    alert('서버가 불안정합니다');
+                    return;
+                }
                 return res.json();
             })
             .then(result => {
-                console.log(result.noticeDetails[0]);
-                setNoticeContents(result.noticeDetails[0]);
+                if (!!result) {
+                    setNoticeContents(result.noticeDetails[0]);
+                    setIsComment(result.noticeDetails[0]["boardCommentIs"]);
+
+                    if (result.boardFileEntityList.length !== 0) {
+                        setNoticeFileCount(result.boardFileEntityList.length);
+                        setNoticeFiles(result.boardFileEntityList);
+                    }
+                }
             });
-    }, [API_BASE_URL, noticeId]);
+    }, [API_BASE_URL]);
+
+    // 파일 클릭 시 다운로드
+    const commentFileDown = (filePath) => {
+        fetch(`${API_AWS_URL}/files/${filePath}`, {
+            method: 'GET',
+            headers: headerInfo,
+        })
+        .then(res => {
+            if (res.status === 404) {
+                alert('다시 시도해주세요');
+                return;
+            }
+            else if (res.status === 406) {
+                alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
+                return;
+            } 
+            else if (res.status === 500) {
+                alert('서버가 불안정합니다');
+                return;
+            }
+            else {
+                window.location.href = res.url;
+            }
+        })
+    }
 
     // 모달 닫기
     const handleClose = () => {
@@ -67,17 +109,60 @@ const NoticeContent = () => {
         setModal(true);     // 모달 열기
     }
 
-    // 공지사항 목록 페이지로
-    const onNoticePage = () => {
-        window.location.href = "/notice";
+    // 공지사항 삭제 서버 요청 (DELETE)
+    const handleDeleteNotice = () => {
+        fetch(`${API_BASE_URL}/${noticeId}`, {
+            method: 'DELETE',
+            headers: headerInfo,
+        })
+        .then(res => {
+            if (res.status === 404) {
+                alert('다시 시도해주세요');
+                return;
+            }
+            else if (res.status === 406) {
+                if (ACCESS_TOKEN === '') {
+                    alert('로그인이 필요한 서비스입니다');
+                    window.location.href = '/join';
+                } else {
+                    alert('오류가 발생했습니다. 잠시 후 다시 이용해주세요');
+                    return;
+                }
+                return;
+            } 
+            else if (res.status === 500) {
+                alert('서버가 불안정합니다');
+                return;
+            }
+            else {
+                window.location.href = "/notice";       // 공지사항 목록 페이지로 이동
+            }
+        })
     }
 
     // 공지사항 수정 페이지로
     const navigate = useNavigate();
     const onUpdatePage = () => {
         const path = `/notice/update/${noticeId}`;
+        navigate(path, {
+            state: {
+                comment: isComment      // NoticeUpdate.js에 댓글여부 값 보내기
+            }
+        });
+    };
+
+    // 공지사항 목록 페이지로
+    const onNoticePage = () => {
+        const path = `/notice`;
         navigate(path);
     };
+       
+    // 댓글 허용 여부에 따라 게시물 내용의 높이가 달라짐
+    if (noticeContents.boardCommentIs === 'ON') {
+        document.getElementById('notice_contents').style.height = '420px';
+    } else if (noticeContents.boardCommentIs === 'OFF'){
+        document.getElementById('notice_contents').style.height = '600px';
+    }
 
     return (
         <>
@@ -93,27 +178,58 @@ const NoticeContent = () => {
                         </div>
                     </div>
 
-                    <div id='notice_content_body_div'>
-                        <Button className='btn_gray btn_size_100' onClick={onUpdatePage}>수정</Button>
-                        <Button className='btn_orange btn_size_100' id='notice_content_delete_btn' onClick={handleShowDeleteModal}>삭제</Button>
-                    </div>
+                    <>
+                        {/* 게시물 등록한 사람인 경우에만 '수정','삭제' 버튼 보이도록 */}
+                        {USER_ID === noticeContents.userId || USER_ROLE === 'ADMIN'
+                        ? 
+                            <div id='notice_content_body_div'>
+                                <Button onClick={onUpdatePage} className='btn_gray btn_size_100'>수정</Button>
+                                <Button onClick={handleShowDeleteModal} className='btn_orange btn_size_100' id='notice_content_delete_btn'>삭제</Button>
+                                <Button onClick={onNoticePage} className='btn_indigo btn_size_100' id='notice_content_list'>목록</Button>
+                            </div>
+                            :
+                            <div id='notice_content_body_div'>
+                                <Button onClick={onNoticePage} className='btn_indigo btn_size_100'>목록</Button>
+                            </div>
+                        }
+                    </>                    
                 </div>
 
+                {/* dangerouslySetInnerHTML : String형태를 html로 */}
                 <div>
-                    <Form id='notice_contents'>
-                        {noticeContents.boardContent}
-                    </Form>
+                    <Form id='notice_contents'
+                        dangerouslySetInnerHTML={{
+                            __html: noticeContents.boardContent
+                        }} 
+                    />
                 </div>
 
-{/* 아래 3개 컴포넌트 DB 에서 데이터에 따라 이용 */}
-                {/* 댓글 X */}
-                <NoticeNoComment />
-<br /><br /><br /><br /><hr />
-                {/* 댓글 O - 댓글 작성 전 */}
-                <NoticeYesCommentBefore />
-<br /><br /><br /><br /><hr />
-                {/* 댓글 O - 댓글 작성 후 */}
-                <NoticeYseCommentAfter />
+                {/* 공지사항 파일 */}
+                {noticeFiles.length !== 0 &&
+                    <div id='notice_content_file_txt'>
+                        첨부파일({noticeFileCount})
+                        {
+                            noticeFiles.map((item) => {
+                                return (
+                                    <span key={item.boardFileId} onClick={() => commentFileDown(item.boardFilePath)} id='notice_content_file_data'>
+                                        | {item.boardFileName}
+                                    </span>   
+                                )
+                            })
+                        }   
+                    </div>
+                }
+
+                {/* 댓글 */}
+                { noticeContents.boardCommentIs === 'ON'
+                    ? 
+                    (
+                        <>
+                            <NoticeComment noticeId = {noticeId} />
+                        </>
+                    )
+                    : ''
+                }
             </div>
 
             {/* Modal */}
@@ -124,10 +240,10 @@ const NoticeContent = () => {
                     </div>
 
                     <div id="notice_delete_modal_content">
-                        <Button className='btn_gray notice_btn btn_size_100' onClick={handleClose}>
+                        <Button onClick={handleClose} className='btn_gray notice_btn btn_size_100'>
                             아니오
                         </Button>
-                        <Button className='btn_orange notice_btn btn_size_100' id="notice_content_delete_btn" onClick={onNoticePage}>
+                        <Button onClick={handleDeleteNotice} className='btn_orange notice_btn btn_size_100' id="notice_content_delete_btn">
                             네
                         </Button>
                     </div>

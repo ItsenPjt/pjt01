@@ -29,7 +29,7 @@ public class CommentResponseDTO {
 
     private List<CommentFileEntity> commentFileList;
 
-
+    private String userEmail;
 
     public CommentResponseDTO(CommentEntity comment){
         this.commentId = comment.getCommentId();
@@ -39,6 +39,7 @@ public class CommentResponseDTO {
         this.commentCreateDate = comment.getCommentCreateDate();
         this.commentUpdateDate =comment.getCommentUpdateDate();
         this.commentFileList = comment.getCommentFileList();
+        this.userEmail = comment.getUserEmail();
     }
 
 }
